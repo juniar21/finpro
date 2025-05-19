@@ -4,7 +4,7 @@ import { UserRouter } from "./routers/user.router";
 import cors from "cors";
 import { AuthRouter } from "./routers/auth.router";
 import path from "path";
-import cron from "node-cron";
+//import cron from "node-cron";
 // import { OrderRouter } from "./routers/order.router";
 
 const PORT: number = 8000;
@@ -27,9 +27,9 @@ app.use("/api/auth", authRouter.getRouter());
 
 
 // scheduler
-cron.schedule("0 7 * * 6,0", () => {
-  console.log("Hello World");
-});
+// cron.schedule("0 7 * * 6,0", () => {
+//   console.log("Hello World");
+// });
 
 app.listen(PORT, () => {
   console.log(`Server running on : http://localhost:${PORT}/api`);
