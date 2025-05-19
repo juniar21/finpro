@@ -79,22 +79,22 @@ export default function Navbar() {
           {/* Icons */}
           <div className="flex items-center space-x-4">
             {/* Cart Icon */}
-            <button aria-label="Cart" className="hover:text-gray-700">
+            <Link href="/shippingcart" aria-label="Cart" className="hover:text-gray-700">
               <svg
-                className="w-6 h-6"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2"
-                viewBox="0 0 24 24"
-                xmlns="http://www.w3.org/2000/svg"
+              className="w-6 h-6"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+              viewBox="0 0 24 24"
+              xmlns="http://www.w3.org/2000/svg"
               >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13l-1.293-2.293a1 1 0 00-.707-.707L3 7m4 6l.6 3M16 17a2 2 0 11-4 0m6 0a2 2 0 11-4 0"
-                ></path>
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13l-1.293-2.293a1 1 0 00-.707-.707L3 7m4 6l.6 3M16 17a2 2 0 11-4 0m6 0a2 2 0 11-4 0"
+              ></path>
               </svg>
-            </button>
+            </Link>
 
             {/* User Icon */}
             <button aria-label="User Account" className="hover:text-gray-700">
