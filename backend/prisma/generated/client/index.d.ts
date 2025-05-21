@@ -397,8 +397,8 @@ export namespace Prisma {
   export import Exact = $Public.Exact
 
   /**
-   * Prisma Client JS version: 6.8.2
-   * Query Engine version: 2060c79ba17c6bb9f5823312b6f6b7f4a845738e
+   * Prisma Client JS version: 6.7.0
+   * Query Engine version: 3cff47a7f5d65c3ea74883f1d736e41d68ce91ed
    */
   export type PrismaVersion = {
     client: string
@@ -2113,6 +2113,9 @@ export namespace Prisma {
     referralCode: string | null
     referredById: string | null
     createdAt: Date | null
+    updatedAt: Date | null
+    isVerify: boolean | null
+    isPendingVerification: boolean | null
   }
 
   export type UserMaxAggregateOutputType = {
@@ -2124,6 +2127,9 @@ export namespace Prisma {
     referralCode: string | null
     referredById: string | null
     createdAt: Date | null
+    updatedAt: Date | null
+    isVerify: boolean | null
+    isPendingVerification: boolean | null
   }
 
   export type UserCountAggregateOutputType = {
@@ -2135,6 +2141,9 @@ export namespace Prisma {
     referralCode: number
     referredById: number
     createdAt: number
+    updatedAt: number
+    isVerify: number
+    isPendingVerification: number
     _all: number
   }
 
@@ -2148,6 +2157,9 @@ export namespace Prisma {
     referralCode?: true
     referredById?: true
     createdAt?: true
+    updatedAt?: true
+    isVerify?: true
+    isPendingVerification?: true
   }
 
   export type UserMaxAggregateInputType = {
@@ -2159,6 +2171,9 @@ export namespace Prisma {
     referralCode?: true
     referredById?: true
     createdAt?: true
+    updatedAt?: true
+    isVerify?: true
+    isPendingVerification?: true
   }
 
   export type UserCountAggregateInputType = {
@@ -2170,6 +2185,9 @@ export namespace Prisma {
     referralCode?: true
     referredById?: true
     createdAt?: true
+    updatedAt?: true
+    isVerify?: true
+    isPendingVerification?: true
     _all?: true
   }
 
@@ -2254,6 +2272,9 @@ export namespace Prisma {
     referralCode: string
     referredById: string | null
     createdAt: Date
+    updatedAt: Date
+    isVerify: boolean
+    isPendingVerification: boolean
     _count: UserCountAggregateOutputType | null
     _min: UserMinAggregateOutputType | null
     _max: UserMaxAggregateOutputType | null
@@ -2282,6 +2303,9 @@ export namespace Prisma {
     referralCode?: boolean
     referredById?: boolean
     createdAt?: boolean
+    updatedAt?: boolean
+    isVerify?: boolean
+    isPendingVerification?: boolean
     referredBy?: boolean | User$referredByArgs<ExtArgs>
     referrals?: boolean | User$referralsArgs<ExtArgs>
     poin?: boolean | User$poinArgs<ExtArgs>
@@ -2300,6 +2324,9 @@ export namespace Prisma {
     referralCode?: boolean
     referredById?: boolean
     createdAt?: boolean
+    updatedAt?: boolean
+    isVerify?: boolean
+    isPendingVerification?: boolean
     referredBy?: boolean | User$referredByArgs<ExtArgs>
   }, ExtArgs["result"]["user"]>
 
@@ -2312,6 +2339,9 @@ export namespace Prisma {
     referralCode?: boolean
     referredById?: boolean
     createdAt?: boolean
+    updatedAt?: boolean
+    isVerify?: boolean
+    isPendingVerification?: boolean
     referredBy?: boolean | User$referredByArgs<ExtArgs>
   }, ExtArgs["result"]["user"]>
 
@@ -2324,9 +2354,12 @@ export namespace Prisma {
     referralCode?: boolean
     referredById?: boolean
     createdAt?: boolean
+    updatedAt?: boolean
+    isVerify?: boolean
+    isPendingVerification?: boolean
   }
 
-  export type UserOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "email" | "password" | "roles" | "referralCode" | "referredById" | "createdAt", ExtArgs["result"]["user"]>
+  export type UserOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "email" | "password" | "roles" | "referralCode" | "referredById" | "createdAt" | "updatedAt" | "isVerify" | "isPendingVerification", ExtArgs["result"]["user"]>
   export type UserInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     referredBy?: boolean | User$referredByArgs<ExtArgs>
     referrals?: boolean | User$referralsArgs<ExtArgs>
@@ -2362,6 +2395,9 @@ export namespace Prisma {
       referralCode: string
       referredById: string | null
       createdAt: Date
+      updatedAt: Date
+      isVerify: boolean
+      isPendingVerification: boolean
     }, ExtArgs["result"]["user"]>
     composites: {}
   }
@@ -2799,6 +2835,9 @@ export namespace Prisma {
     readonly referralCode: FieldRef<"User", 'String'>
     readonly referredById: FieldRef<"User", 'String'>
     readonly createdAt: FieldRef<"User", 'DateTime'>
+    readonly updatedAt: FieldRef<"User", 'DateTime'>
+    readonly isVerify: FieldRef<"User", 'Boolean'>
+    readonly isPendingVerification: FieldRef<"User", 'Boolean'>
   }
     
 
@@ -14747,7 +14786,10 @@ export namespace Prisma {
     roles: 'roles',
     referralCode: 'referralCode',
     referredById: 'referredById',
-    createdAt: 'createdAt'
+    createdAt: 'createdAt',
+    updatedAt: 'updatedAt',
+    isVerify: 'isVerify',
+    isPendingVerification: 'isPendingVerification'
   };
 
   export type UserScalarFieldEnum = (typeof UserScalarFieldEnum)[keyof typeof UserScalarFieldEnum]
@@ -14947,6 +14989,13 @@ export namespace Prisma {
 
 
   /**
+   * Reference to a field of type 'Boolean'
+   */
+  export type BooleanFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Boolean'>
+    
+
+
+  /**
    * Reference to a field of type 'Float'
    */
   export type FloatFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Float'>
@@ -14986,13 +15035,6 @@ export namespace Prisma {
    */
   export type ListEnumOrderStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'OrderStatus[]'>
     
-
-
-  /**
-   * Reference to a field of type 'Boolean'
-   */
-  export type BooleanFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Boolean'>
-    
   /**
    * Deep Input Types
    */
@@ -15010,6 +15052,9 @@ export namespace Prisma {
     referralCode?: StringFilter<"User"> | string
     referredById?: StringNullableFilter<"User"> | string | null
     createdAt?: DateTimeFilter<"User"> | Date | string
+    updatedAt?: DateTimeFilter<"User"> | Date | string
+    isVerify?: BoolFilter<"User"> | boolean
+    isPendingVerification?: BoolFilter<"User"> | boolean
     referredBy?: XOR<UserNullableScalarRelationFilter, UserWhereInput> | null
     referrals?: UserListRelationFilter
     poin?: PoinListRelationFilter
@@ -15027,6 +15072,9 @@ export namespace Prisma {
     referralCode?: SortOrder
     referredById?: SortOrderInput | SortOrder
     createdAt?: SortOrder
+    updatedAt?: SortOrder
+    isVerify?: SortOrder
+    isPendingVerification?: SortOrder
     referredBy?: UserOrderByWithRelationInput
     referrals?: UserOrderByRelationAggregateInput
     poin?: PoinOrderByRelationAggregateInput
@@ -15047,6 +15095,9 @@ export namespace Prisma {
     roles?: EnumRoleFilter<"User"> | $Enums.Role
     referredById?: StringNullableFilter<"User"> | string | null
     createdAt?: DateTimeFilter<"User"> | Date | string
+    updatedAt?: DateTimeFilter<"User"> | Date | string
+    isVerify?: BoolFilter<"User"> | boolean
+    isPendingVerification?: BoolFilter<"User"> | boolean
     referredBy?: XOR<UserNullableScalarRelationFilter, UserWhereInput> | null
     referrals?: UserListRelationFilter
     poin?: PoinListRelationFilter
@@ -15064,6 +15115,9 @@ export namespace Prisma {
     referralCode?: SortOrder
     referredById?: SortOrderInput | SortOrder
     createdAt?: SortOrder
+    updatedAt?: SortOrder
+    isVerify?: SortOrder
+    isPendingVerification?: SortOrder
     _count?: UserCountOrderByAggregateInput
     _max?: UserMaxOrderByAggregateInput
     _min?: UserMinOrderByAggregateInput
@@ -15081,6 +15135,9 @@ export namespace Prisma {
     referralCode?: StringWithAggregatesFilter<"User"> | string
     referredById?: StringNullableWithAggregatesFilter<"User"> | string | null
     createdAt?: DateTimeWithAggregatesFilter<"User"> | Date | string
+    updatedAt?: DateTimeWithAggregatesFilter<"User"> | Date | string
+    isVerify?: BoolWithAggregatesFilter<"User"> | boolean
+    isPendingVerification?: BoolWithAggregatesFilter<"User"> | boolean
   }
 
   export type StoreWhereInput = {
@@ -15756,6 +15813,9 @@ export namespace Prisma {
     roles?: $Enums.Role
     referralCode: string
     createdAt?: Date | string
+    updatedAt?: Date | string
+    isVerify?: boolean
+    isPendingVerification?: boolean
     referredBy?: UserCreateNestedOneWithoutReferralsInput
     referrals?: UserCreateNestedManyWithoutReferredByInput
     poin?: PoinCreateNestedManyWithoutUserInput
@@ -15773,6 +15833,9 @@ export namespace Prisma {
     referralCode: string
     referredById?: string | null
     createdAt?: Date | string
+    updatedAt?: Date | string
+    isVerify?: boolean
+    isPendingVerification?: boolean
     referrals?: UserUncheckedCreateNestedManyWithoutReferredByInput
     poin?: PoinUncheckedCreateNestedManyWithoutUserInput
     vouchers?: VoucherUncheckedCreateNestedManyWithoutUserInput
@@ -15788,6 +15851,9 @@ export namespace Prisma {
     roles?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
     referralCode?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    isVerify?: BoolFieldUpdateOperationsInput | boolean
+    isPendingVerification?: BoolFieldUpdateOperationsInput | boolean
     referredBy?: UserUpdateOneWithoutReferralsNestedInput
     referrals?: UserUpdateManyWithoutReferredByNestedInput
     poin?: PoinUpdateManyWithoutUserNestedInput
@@ -15805,6 +15871,9 @@ export namespace Prisma {
     referralCode?: StringFieldUpdateOperationsInput | string
     referredById?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    isVerify?: BoolFieldUpdateOperationsInput | boolean
+    isPendingVerification?: BoolFieldUpdateOperationsInput | boolean
     referrals?: UserUncheckedUpdateManyWithoutReferredByNestedInput
     poin?: PoinUncheckedUpdateManyWithoutUserNestedInput
     vouchers?: VoucherUncheckedUpdateManyWithoutUserNestedInput
@@ -15821,6 +15890,9 @@ export namespace Prisma {
     referralCode: string
     referredById?: string | null
     createdAt?: Date | string
+    updatedAt?: Date | string
+    isVerify?: boolean
+    isPendingVerification?: boolean
   }
 
   export type UserUpdateManyMutationInput = {
@@ -15831,6 +15903,9 @@ export namespace Prisma {
     roles?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
     referralCode?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    isVerify?: BoolFieldUpdateOperationsInput | boolean
+    isPendingVerification?: BoolFieldUpdateOperationsInput | boolean
   }
 
   export type UserUncheckedUpdateManyInput = {
@@ -15842,6 +15917,9 @@ export namespace Prisma {
     referralCode?: StringFieldUpdateOperationsInput | string
     referredById?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    isVerify?: BoolFieldUpdateOperationsInput | boolean
+    isPendingVerification?: BoolFieldUpdateOperationsInput | boolean
   }
 
   export type StoreCreateInput = {
@@ -16559,6 +16637,11 @@ export namespace Prisma {
     not?: NestedDateTimeFilter<$PrismaModel> | Date | string
   }
 
+  export type BoolFilter<$PrismaModel = never> = {
+    equals?: boolean | BooleanFieldRefInput<$PrismaModel>
+    not?: NestedBoolFilter<$PrismaModel> | boolean
+  }
+
   export type UserNullableScalarRelationFilter = {
     is?: UserWhereInput | null
     isNot?: UserWhereInput | null
@@ -16628,6 +16711,9 @@ export namespace Prisma {
     referralCode?: SortOrder
     referredById?: SortOrder
     createdAt?: SortOrder
+    updatedAt?: SortOrder
+    isVerify?: SortOrder
+    isPendingVerification?: SortOrder
   }
 
   export type UserMaxOrderByAggregateInput = {
@@ -16639,6 +16725,9 @@ export namespace Prisma {
     referralCode?: SortOrder
     referredById?: SortOrder
     createdAt?: SortOrder
+    updatedAt?: SortOrder
+    isVerify?: SortOrder
+    isPendingVerification?: SortOrder
   }
 
   export type UserMinOrderByAggregateInput = {
@@ -16650,6 +16739,9 @@ export namespace Prisma {
     referralCode?: SortOrder
     referredById?: SortOrder
     createdAt?: SortOrder
+    updatedAt?: SortOrder
+    isVerify?: SortOrder
+    isPendingVerification?: SortOrder
   }
 
   export type StringWithAggregatesFilter<$PrismaModel = never> = {
@@ -16710,6 +16802,14 @@ export namespace Prisma {
     _count?: NestedIntFilter<$PrismaModel>
     _min?: NestedDateTimeFilter<$PrismaModel>
     _max?: NestedDateTimeFilter<$PrismaModel>
+  }
+
+  export type BoolWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: boolean | BooleanFieldRefInput<$PrismaModel>
+    not?: NestedBoolWithAggregatesFilter<$PrismaModel> | boolean
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedBoolFilter<$PrismaModel>
+    _max?: NestedBoolFilter<$PrismaModel>
   }
 
   export type FloatFilter<$PrismaModel = never> = {
@@ -17194,11 +17294,6 @@ export namespace Prisma {
     amount?: SortOrder
   }
 
-  export type BoolFilter<$PrismaModel = never> = {
-    equals?: boolean | BooleanFieldRefInput<$PrismaModel>
-    not?: NestedBoolFilter<$PrismaModel> | boolean
-  }
-
   export type VoucherCountOrderByAggregateInput = {
     id?: SortOrder
     code?: SortOrder
@@ -17237,14 +17332,6 @@ export namespace Prisma {
   export type VoucherSumOrderByAggregateInput = {
     percentage?: SortOrder
     maxDiscount?: SortOrder
-  }
-
-  export type BoolWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: boolean | BooleanFieldRefInput<$PrismaModel>
-    not?: NestedBoolWithAggregatesFilter<$PrismaModel> | boolean
-    _count?: NestedIntFilter<$PrismaModel>
-    _min?: NestedBoolFilter<$PrismaModel>
-    _max?: NestedBoolFilter<$PrismaModel>
   }
 
   export type UserCreateNestedOneWithoutReferralsInput = {
@@ -17333,6 +17420,10 @@ export namespace Prisma {
 
   export type DateTimeFieldUpdateOperationsInput = {
     set?: Date | string
+  }
+
+  export type BoolFieldUpdateOperationsInput = {
+    set?: boolean
   }
 
   export type UserUpdateOneWithoutReferralsNestedInput = {
@@ -18041,10 +18132,6 @@ export namespace Prisma {
     connect?: OrderWhereUniqueInput | OrderWhereUniqueInput[]
   }
 
-  export type BoolFieldUpdateOperationsInput = {
-    set?: boolean
-  }
-
   export type UserUpdateOneWithoutVouchersNestedInput = {
     create?: XOR<UserCreateWithoutVouchersInput, UserUncheckedCreateWithoutVouchersInput>
     connectOrCreate?: UserCreateOrConnectWithoutVouchersInput
@@ -18129,6 +18216,11 @@ export namespace Prisma {
     not?: NestedDateTimeFilter<$PrismaModel> | Date | string
   }
 
+  export type NestedBoolFilter<$PrismaModel = never> = {
+    equals?: boolean | BooleanFieldRefInput<$PrismaModel>
+    not?: NestedBoolFilter<$PrismaModel> | boolean
+  }
+
   export type NestedStringWithAggregatesFilter<$PrismaModel = never> = {
     equals?: string | StringFieldRefInput<$PrismaModel>
     in?: string[] | ListStringFieldRefInput<$PrismaModel>
@@ -18207,6 +18299,14 @@ export namespace Prisma {
     _count?: NestedIntFilter<$PrismaModel>
     _min?: NestedDateTimeFilter<$PrismaModel>
     _max?: NestedDateTimeFilter<$PrismaModel>
+  }
+
+  export type NestedBoolWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: boolean | BooleanFieldRefInput<$PrismaModel>
+    not?: NestedBoolWithAggregatesFilter<$PrismaModel> | boolean
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedBoolFilter<$PrismaModel>
+    _max?: NestedBoolFilter<$PrismaModel>
   }
 
   export type NestedFloatFilter<$PrismaModel = never> = {
@@ -18294,19 +18394,6 @@ export namespace Prisma {
     _max?: NestedDateTimeNullableFilter<$PrismaModel>
   }
 
-  export type NestedBoolFilter<$PrismaModel = never> = {
-    equals?: boolean | BooleanFieldRefInput<$PrismaModel>
-    not?: NestedBoolFilter<$PrismaModel> | boolean
-  }
-
-  export type NestedBoolWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: boolean | BooleanFieldRefInput<$PrismaModel>
-    not?: NestedBoolWithAggregatesFilter<$PrismaModel> | boolean
-    _count?: NestedIntFilter<$PrismaModel>
-    _min?: NestedBoolFilter<$PrismaModel>
-    _max?: NestedBoolFilter<$PrismaModel>
-  }
-
   export type UserCreateWithoutReferralsInput = {
     id?: string
     name: string
@@ -18315,6 +18402,9 @@ export namespace Prisma {
     roles?: $Enums.Role
     referralCode: string
     createdAt?: Date | string
+    updatedAt?: Date | string
+    isVerify?: boolean
+    isPendingVerification?: boolean
     referredBy?: UserCreateNestedOneWithoutReferralsInput
     poin?: PoinCreateNestedManyWithoutUserInput
     vouchers?: VoucherCreateNestedManyWithoutUserInput
@@ -18331,6 +18421,9 @@ export namespace Prisma {
     referralCode: string
     referredById?: string | null
     createdAt?: Date | string
+    updatedAt?: Date | string
+    isVerify?: boolean
+    isPendingVerification?: boolean
     poin?: PoinUncheckedCreateNestedManyWithoutUserInput
     vouchers?: VoucherUncheckedCreateNestedManyWithoutUserInput
     cartItems?: CartItemUncheckedCreateNestedManyWithoutUserInput
@@ -18350,6 +18443,9 @@ export namespace Prisma {
     roles?: $Enums.Role
     referralCode: string
     createdAt?: Date | string
+    updatedAt?: Date | string
+    isVerify?: boolean
+    isPendingVerification?: boolean
     referrals?: UserCreateNestedManyWithoutReferredByInput
     poin?: PoinCreateNestedManyWithoutUserInput
     vouchers?: VoucherCreateNestedManyWithoutUserInput
@@ -18365,6 +18461,9 @@ export namespace Prisma {
     roles?: $Enums.Role
     referralCode: string
     createdAt?: Date | string
+    updatedAt?: Date | string
+    isVerify?: boolean
+    isPendingVerification?: boolean
     referrals?: UserUncheckedCreateNestedManyWithoutReferredByInput
     poin?: PoinUncheckedCreateNestedManyWithoutUserInput
     vouchers?: VoucherUncheckedCreateNestedManyWithoutUserInput
@@ -18523,6 +18622,9 @@ export namespace Prisma {
     roles?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
     referralCode?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    isVerify?: BoolFieldUpdateOperationsInput | boolean
+    isPendingVerification?: BoolFieldUpdateOperationsInput | boolean
     referredBy?: UserUpdateOneWithoutReferralsNestedInput
     poin?: PoinUpdateManyWithoutUserNestedInput
     vouchers?: VoucherUpdateManyWithoutUserNestedInput
@@ -18539,6 +18641,9 @@ export namespace Prisma {
     referralCode?: StringFieldUpdateOperationsInput | string
     referredById?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    isVerify?: BoolFieldUpdateOperationsInput | boolean
+    isPendingVerification?: BoolFieldUpdateOperationsInput | boolean
     poin?: PoinUncheckedUpdateManyWithoutUserNestedInput
     vouchers?: VoucherUncheckedUpdateManyWithoutUserNestedInput
     cartItems?: CartItemUncheckedUpdateManyWithoutUserNestedInput
@@ -18573,6 +18678,9 @@ export namespace Prisma {
     referralCode?: StringFilter<"User"> | string
     referredById?: StringNullableFilter<"User"> | string | null
     createdAt?: DateTimeFilter<"User"> | Date | string
+    updatedAt?: DateTimeFilter<"User"> | Date | string
+    isVerify?: BoolFilter<"User"> | boolean
+    isPendingVerification?: BoolFilter<"User"> | boolean
   }
 
   export type PoinUpsertWithWhereUniqueWithoutUserInput = {
@@ -19163,6 +19271,9 @@ export namespace Prisma {
     roles?: $Enums.Role
     referralCode: string
     createdAt?: Date | string
+    updatedAt?: Date | string
+    isVerify?: boolean
+    isPendingVerification?: boolean
     referredBy?: UserCreateNestedOneWithoutReferralsInput
     referrals?: UserCreateNestedManyWithoutReferredByInput
     poin?: PoinCreateNestedManyWithoutUserInput
@@ -19179,6 +19290,9 @@ export namespace Prisma {
     referralCode: string
     referredById?: string | null
     createdAt?: Date | string
+    updatedAt?: Date | string
+    isVerify?: boolean
+    isPendingVerification?: boolean
     referrals?: UserUncheckedCreateNestedManyWithoutReferredByInput
     poin?: PoinUncheckedCreateNestedManyWithoutUserInput
     vouchers?: VoucherUncheckedCreateNestedManyWithoutUserInput
@@ -19238,6 +19352,9 @@ export namespace Prisma {
     roles?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
     referralCode?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    isVerify?: BoolFieldUpdateOperationsInput | boolean
+    isPendingVerification?: BoolFieldUpdateOperationsInput | boolean
     referredBy?: UserUpdateOneWithoutReferralsNestedInput
     referrals?: UserUpdateManyWithoutReferredByNestedInput
     poin?: PoinUpdateManyWithoutUserNestedInput
@@ -19254,6 +19371,9 @@ export namespace Prisma {
     referralCode?: StringFieldUpdateOperationsInput | string
     referredById?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    isVerify?: BoolFieldUpdateOperationsInput | boolean
+    isPendingVerification?: BoolFieldUpdateOperationsInput | boolean
     referrals?: UserUncheckedUpdateManyWithoutReferredByNestedInput
     poin?: PoinUncheckedUpdateManyWithoutUserNestedInput
     vouchers?: VoucherUncheckedUpdateManyWithoutUserNestedInput
@@ -19303,6 +19423,9 @@ export namespace Prisma {
     roles?: $Enums.Role
     referralCode: string
     createdAt?: Date | string
+    updatedAt?: Date | string
+    isVerify?: boolean
+    isPendingVerification?: boolean
     referredBy?: UserCreateNestedOneWithoutReferralsInput
     referrals?: UserCreateNestedManyWithoutReferredByInput
     poin?: PoinCreateNestedManyWithoutUserInput
@@ -19319,6 +19442,9 @@ export namespace Prisma {
     referralCode: string
     referredById?: string | null
     createdAt?: Date | string
+    updatedAt?: Date | string
+    isVerify?: boolean
+    isPendingVerification?: boolean
     referrals?: UserUncheckedCreateNestedManyWithoutReferredByInput
     poin?: PoinUncheckedCreateNestedManyWithoutUserInput
     vouchers?: VoucherUncheckedCreateNestedManyWithoutUserInput
@@ -19446,6 +19572,9 @@ export namespace Prisma {
     roles?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
     referralCode?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    isVerify?: BoolFieldUpdateOperationsInput | boolean
+    isPendingVerification?: BoolFieldUpdateOperationsInput | boolean
     referredBy?: UserUpdateOneWithoutReferralsNestedInput
     referrals?: UserUpdateManyWithoutReferredByNestedInput
     poin?: PoinUpdateManyWithoutUserNestedInput
@@ -19462,6 +19591,9 @@ export namespace Prisma {
     referralCode?: StringFieldUpdateOperationsInput | string
     referredById?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    isVerify?: BoolFieldUpdateOperationsInput | boolean
+    isPendingVerification?: BoolFieldUpdateOperationsInput | boolean
     referrals?: UserUncheckedUpdateManyWithoutReferredByNestedInput
     poin?: PoinUncheckedUpdateManyWithoutUserNestedInput
     vouchers?: VoucherUncheckedUpdateManyWithoutUserNestedInput
@@ -19785,6 +19917,9 @@ export namespace Prisma {
     roles?: $Enums.Role
     referralCode: string
     createdAt?: Date | string
+    updatedAt?: Date | string
+    isVerify?: boolean
+    isPendingVerification?: boolean
     referredBy?: UserCreateNestedOneWithoutReferralsInput
     referrals?: UserCreateNestedManyWithoutReferredByInput
     vouchers?: VoucherCreateNestedManyWithoutUserInput
@@ -19801,6 +19936,9 @@ export namespace Prisma {
     referralCode: string
     referredById?: string | null
     createdAt?: Date | string
+    updatedAt?: Date | string
+    isVerify?: boolean
+    isPendingVerification?: boolean
     referrals?: UserUncheckedCreateNestedManyWithoutReferredByInput
     vouchers?: VoucherUncheckedCreateNestedManyWithoutUserInput
     cartItems?: CartItemUncheckedCreateNestedManyWithoutUserInput
@@ -19831,6 +19969,9 @@ export namespace Prisma {
     roles?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
     referralCode?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    isVerify?: BoolFieldUpdateOperationsInput | boolean
+    isPendingVerification?: BoolFieldUpdateOperationsInput | boolean
     referredBy?: UserUpdateOneWithoutReferralsNestedInput
     referrals?: UserUpdateManyWithoutReferredByNestedInput
     vouchers?: VoucherUpdateManyWithoutUserNestedInput
@@ -19847,6 +19988,9 @@ export namespace Prisma {
     referralCode?: StringFieldUpdateOperationsInput | string
     referredById?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    isVerify?: BoolFieldUpdateOperationsInput | boolean
+    isPendingVerification?: BoolFieldUpdateOperationsInput | boolean
     referrals?: UserUncheckedUpdateManyWithoutReferredByNestedInput
     vouchers?: VoucherUncheckedUpdateManyWithoutUserNestedInput
     cartItems?: CartItemUncheckedUpdateManyWithoutUserNestedInput
@@ -19861,6 +20005,9 @@ export namespace Prisma {
     roles?: $Enums.Role
     referralCode: string
     createdAt?: Date | string
+    updatedAt?: Date | string
+    isVerify?: boolean
+    isPendingVerification?: boolean
     referredBy?: UserCreateNestedOneWithoutReferralsInput
     referrals?: UserCreateNestedManyWithoutReferredByInput
     poin?: PoinCreateNestedManyWithoutUserInput
@@ -19877,6 +20024,9 @@ export namespace Prisma {
     referralCode: string
     referredById?: string | null
     createdAt?: Date | string
+    updatedAt?: Date | string
+    isVerify?: boolean
+    isPendingVerification?: boolean
     referrals?: UserUncheckedCreateNestedManyWithoutReferredByInput
     poin?: PoinUncheckedCreateNestedManyWithoutUserInput
     cartItems?: CartItemUncheckedCreateNestedManyWithoutUserInput
@@ -19949,6 +20099,9 @@ export namespace Prisma {
     roles?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
     referralCode?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    isVerify?: BoolFieldUpdateOperationsInput | boolean
+    isPendingVerification?: BoolFieldUpdateOperationsInput | boolean
     referredBy?: UserUpdateOneWithoutReferralsNestedInput
     referrals?: UserUpdateManyWithoutReferredByNestedInput
     poin?: PoinUpdateManyWithoutUserNestedInput
@@ -19965,6 +20118,9 @@ export namespace Prisma {
     referralCode?: StringFieldUpdateOperationsInput | string
     referredById?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    isVerify?: BoolFieldUpdateOperationsInput | boolean
+    isPendingVerification?: BoolFieldUpdateOperationsInput | boolean
     referrals?: UserUncheckedUpdateManyWithoutReferredByNestedInput
     poin?: PoinUncheckedUpdateManyWithoutUserNestedInput
     cartItems?: CartItemUncheckedUpdateManyWithoutUserNestedInput
@@ -19995,6 +20151,9 @@ export namespace Prisma {
     roles?: $Enums.Role
     referralCode: string
     createdAt?: Date | string
+    updatedAt?: Date | string
+    isVerify?: boolean
+    isPendingVerification?: boolean
   }
 
   export type PoinCreateManyUserInput = {
@@ -20044,6 +20203,9 @@ export namespace Prisma {
     roles?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
     referralCode?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    isVerify?: BoolFieldUpdateOperationsInput | boolean
+    isPendingVerification?: BoolFieldUpdateOperationsInput | boolean
     referrals?: UserUpdateManyWithoutReferredByNestedInput
     poin?: PoinUpdateManyWithoutUserNestedInput
     vouchers?: VoucherUpdateManyWithoutUserNestedInput
@@ -20059,6 +20221,9 @@ export namespace Prisma {
     roles?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
     referralCode?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    isVerify?: BoolFieldUpdateOperationsInput | boolean
+    isPendingVerification?: BoolFieldUpdateOperationsInput | boolean
     referrals?: UserUncheckedUpdateManyWithoutReferredByNestedInput
     poin?: PoinUncheckedUpdateManyWithoutUserNestedInput
     vouchers?: VoucherUncheckedUpdateManyWithoutUserNestedInput
@@ -20074,6 +20239,9 @@ export namespace Prisma {
     roles?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
     referralCode?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    isVerify?: BoolFieldUpdateOperationsInput | boolean
+    isPendingVerification?: BoolFieldUpdateOperationsInput | boolean
   }
 
   export type PoinUpdateWithoutUserInput = {

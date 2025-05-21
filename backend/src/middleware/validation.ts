@@ -8,8 +8,7 @@ export const validateRegister = [
     .isEmail()
     .withMessage("Ivalid email format"),
   body("password").notEmpty().withMessage("Password required"),
-  body("username").notEmpty().withMessage("Username required"),
-  body("fullname").notEmpty().withMessage("Fullname required"),
+  body("name").notEmpty().withMessage("Username required"),
 
   (req: Request, res: Response, next: NextFunction) => {
     const errors = validationResult(req);

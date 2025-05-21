@@ -10,20 +10,23 @@ datasource db {
 }
 
 model User {
-  id           String     @id @default(uuid())
-  name         String
-  email        String     @unique
-  password     String
-  roles        Role       @default(CUSTOMER)
-  referralCode String     @unique
-  referredBy   User?      @relation("Referral", fields: [referredById], references: [id])
-  referredById String?
-  referrals    User[]     @relation("Referral")
-  poin         Poin[]
-  vouchers     Voucher[]
-  cartItems    CartItem[]
-  orders       Order[]
-  createdAt    DateTime   @default(now())
+  id                    String     @id @default(uuid())
+  name                  String
+  email                 String     @unique
+  password              String
+  roles                 Role       @default(CUSTOMER)
+  referralCode          String     @unique
+  referredBy            User?      @relation("Referral", fields: [referredById], references: [id])
+  referredById          String?
+  referrals             User[]     @relation("Referral")
+  poin                  Poin[]
+  vouchers              Voucher[]
+  cartItems             CartItem[]
+  orders                Order[]
+  createdAt             DateTime   @default(now())
+  updatedAt             DateTime   @updatedAt
+  isVerify              Boolean    @default(false)
+  isPendingVerification Boolean    @default(true)
 }
 
 enum Role {

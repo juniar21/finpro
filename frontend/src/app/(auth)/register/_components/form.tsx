@@ -14,24 +14,27 @@ const RegisterSchema = yup.object().shape({
     .string()
     .min(6, "Minimal 6 karakter")
     .required("password wajib diisi"),
-  username: yup.string().required("username wajib diisi"),
-  fullname: yup.string().required("fullname wajib diisi"),
+  name: yup.string().required("username wajib diisi"),
+  role: yup
+    .string()
+    .oneOf(["CUSTOMER", "ADMIN", "SUPER_ADMIN"], "Invalid role")
+    .required("Role is required"),
 });
 
 interface IRegisterForm {
-  username: string;
-  fullname: string;
+  name: string;
   email: string;
   password: string;
+  role: string; // Add role field to form interface
 }
 
 export default function FormRegister() {
   const [showPassword, setShowPassword] = useState(false);
   const initialValues: IRegisterForm = {
-    username: "",
-    fullname: "",
+    name: "",
     email: "",
     password: "",
+    role: "CUSTOMER", // Default role
   };
 
   const onRegister = async (
@@ -102,26 +105,24 @@ export default function FormRegister() {
               ) : null}
 
               <Field
-                placeholder="Username"
-                name="username"
+                placeholder="name"
+                name="name"
                 type="text"
                 className="mt-2 mb-1 p-2 border border-gray-300 placeholder:text-[14px] rounded-md shadow-md"
               />
-              {touched.username && errors.username ? (
+              {touched.name && errors.name ? (
                 <div className="text-red-500 text-[12px]">
-                  {errors.username}
+                  {errors.name}
                 </div>
               ) : null}
-              <Field
-                placeholder="Fullname"
-                name="fullname"
-                type="text"
-                className="mt-2 mb-1 p-2 border border-gray-300 placeholder:text-[14px] rounded-md shadow-md"
-              />
-              {touched.fullname && errors.fullname ? (
-                <div className="text-red-500 text-[12px]">
-                  {errors.fullname}
-                </div>
+
+              <Field as="select" name="role" className="mt-2 mb-1 p-2 border border-gray-300 rounded-md shadow-md">
+                <option value="CUSTOMER">Customer</option>
+                <option value="ADMIN">Admin</option>
+                <option value="SUPER_ADMIN">Super Admin</option>
+              </Field>
+              {touched.role && errors.role ? (
+                <div className="text-red-500 text-[12px]">{errors.role}</div>
               ) : null}
 
               <button

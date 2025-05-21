@@ -1,7 +1,6 @@
 import { Request, Response } from "express";
 import prisma from "../prisma";
 import { Prisma } from "../../prisma/generated/client";
-// import { redis } from "../helpers/redis";
 
 export class UserController {
   async getUser(req: Request, res: Response) {
@@ -10,14 +9,12 @@ export class UserController {
       const filter: Prisma.UserWhereInput = {};
 
       if (search) {
-        filter.username = { contains: search as string };
+        filter.name = { contains: search as string, mode: "insensitive" };
       }
 
       const users = await prisma.user.findMany({
         where: filter,
         orderBy: { id: "asc" },
-        // take: 2,
-        // skip: 2,
       });
 
       const stats = await prisma.user.aggregate({
@@ -26,71 +23,89 @@ export class UserController {
         _min: { createdAt: true },
       });
 
-      res.status(200).send({
+      res.status(200).json({
         message: "User data",
         users,
         stats,
       });
     } catch (err) {
-      console.log(err);
-      res.status(400).send(err);
+      console.error(err);
+      res.status(400).json({ error: err });
     }
   }
 
   async getUserId(req: Request, res: Response) {
     try {
       const { id } = req.params;
-      const user = await prisma.user.findUnique({ where: { id: +id } });
+      const user = await prisma.user.findUnique({ where: { id } });
 
-      if (!user) throw { message: "User not found" };
-
-      res.status(200).send({
-        message: "User detail",
-        user,
-      });
+      if (!user) {
+        res.status(404).json({ message: "User not found" });
+      } else {
+        res.status(200).json({
+          message: "User detail",
+          user,
+        });
+      }
     } catch (err) {
-      res.status(400).send(err);
+      console.error(err);
+      res.status(400).json({ error: err });
     }
   }
 
   async updateUser(req: Request, res: Response) {
     try {
-      const data: Prisma.UserUpdateInput = req.body;
-      await prisma.user.update({ where: { id: req.user?.id }, data });
+      if (!req.user?.id) {
+        res.status(401).json({ message: "Unauthorized" });
+      } else {
+        const data: Prisma.UserUpdateInput = req.body;
 
-      res.status(200).send({
-        message: "User updated ✅",
-      });
+        await prisma.user.update({
+          where: { id: String(req.user.id) },
+          data,
+        });
+
+        res.status(200).json({
+          message: "User updated ✅",
+        });
+      }
     } catch (err) {
-      console.log(err);
-      res.status(400).send(err);
+      console.error(err);
+      res.status(400).json({ error: err });
     }
   }
 
   async deleteUser(req: Request, res: Response) {
     try {
       const { id } = req.params;
-      await prisma.user.delete({ where: { id: +id } });
 
-      res.status(200).send({
+      await prisma.user.delete({
+        where: { id },
+      });
+
+      res.status(200).json({
         message: "User deleted ✅",
       });
     } catch (err) {
-      console.log(err);
-      res.status(400).send(err);
+      console.error(err);
+      res.status(400).json({ error: err });
     }
   }
 
   async getUserPost(req: Request, res: Response) {
     try {
-      const user = await prisma.user.findUnique({
-        where: { id: req.user?.id },
-      });
+      if (!req.user?.id) {
+        res.status(401).json({ message: "Unauthorized" });
+      } else {
+        const user = await prisma.user.findUnique({
+          where: { id: String(req.user.id) },
+        });
 
-      res.status(200).send({ user });
+        res.status(200).json({ user });
+      }
     } catch (err) {
-      console.log(err);
-      res.status(400).send(err);
+      console.error(err);
+      res.status(400).json({ error: err });
     }
   }
 }

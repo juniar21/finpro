@@ -23,6 +23,7 @@ export class AuthRouter {
       this.authMiddleware.verifyToken,
       this.authController.verify
     );
+    
   }
 
   getRouter(): Router {
