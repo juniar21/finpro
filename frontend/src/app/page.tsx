@@ -6,11 +6,12 @@ import Footer from "@/components/navbar/navbar/footer";
 import Navbar from "@/components/navbar/navbar/Navbar";
 import Banner from "@/components/landingpage/Banner";
 import TopSellingSection from "@/components/landingpage/topselling";
+import Sidebar from "@/components/navbar/navbar/Sidebar";
 
 export default function Home() {
   return (
     <div>
-    
+    <Sidebar/>
     <Navbar />
     <Banner />
     <Brands />

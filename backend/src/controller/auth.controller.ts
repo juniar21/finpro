@@ -9,7 +9,7 @@ import handlebars from "handlebars";
 
 export class AuthController {
   async register(req: Request, res: Response) {
-    let errorMessage = null;  // Variable to hold any error message
+    let errorMessage = null; // Variable to hold any error message
     let statusCode = 200; // Default success status code
 
     try {
@@ -113,9 +113,7 @@ export class AuthController {
     }
   }
 
-  // Other methods (login, verify) remain the same...
-
-
+  // Login method
   async login(req: Request, res: Response) {
     try {
       const { email, password } = req.body;
@@ -144,6 +142,7 @@ export class AuthController {
               name: user.name,
               email: user.email,
               role: user.roles,
+              referralCode: user.referralCode, 
             },
             access_token,
           });
@@ -155,6 +154,7 @@ export class AuthController {
     }
   }
 
+  // Verification method
   async verify(req: Request, res: Response) {
     try {
       await prisma.user.update({

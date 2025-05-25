@@ -6,7 +6,10 @@ import * as yup from "yup";
 import { AiFillEye, AiFillEyeInvisible } from "react-icons/ai";
 import Image from "next/image";
 import { signIn } from "next-auth/react";
+import axios from "@/lib/axios";
+import { toast } from "react-toastify";
 
+// Validasi form menggunakan Yup
 const LoginSchema = yup.object().shape({
   email: yup.string().email("Format email salah").required("email wajib diisi"),
   password: yup
@@ -22,25 +25,44 @@ interface ILoginForm {
 
 export default function FormLogin() {
   const [showPassword, setShowPassword] = useState(false);
+
+  // Initial values untuk form
   const initialValues: ILoginForm = {
     email: "",
     password: "",
   };
 
+  // Fungsi untuk menangani login
   const onLogin = async (
     value: ILoginForm,
     action: FormikHelpers<ILoginForm>
   ) => {
     try {
-      const data = await signIn("credentials", {
-        email: value.email,
-        password: value.password,
+  
+      const { data } = await axios.post("/auth/login", value);
+      const user = data.data;
+
+      console.log("Login data:", user);
+      await signIn("credentials", {
         redirectTo: "/",
+        id: user.id,
+        email: user.email,
+        password: value.password,  
+        name: user.name,
+        avatar: user.avatar ?? "", 
+        referralCode: user.referralCode ?? "",  
+        referralBy: user.referredBy ?? "", 
+        role: user.role,  
+        accessToken: data.access_token,
       });
+
+  
+
+      toast.success(data.message);
       action.resetForm();
-      console.log(data);
     } catch (err) {
-      console.log(err);
+      console.error(err);
+      toast.error("An error occurred during login!");
     }
   };
 
@@ -63,6 +85,7 @@ export default function FormLogin() {
                   height={75}
                 />
               </div>
+              {/* Field untuk email */}
               <Field
                 placeholder="Email"
                 name="email"
@@ -73,6 +96,7 @@ export default function FormLogin() {
                 <div className="text-red-500 text-[12px]">{errors.email}</div>
               ) : null}
 
+              {/* Field untuk password */}
               <div className="relative">
                 <Field
                   placeholder="Password"
@@ -98,12 +122,13 @@ export default function FormLogin() {
                 </div>
               ) : null}
 
+              {/* Submit button */}
               <button
-                className=" text-white py-2 px-3 mt-2 rounded-md bg-blue-500 disabled:bg-gray-400 disabled:cursor-none text-sm"
+                className="text-white py-2 px-3 mt-2 rounded-md bg-blue-500 disabled:bg-gray-400 disabled:cursor-none text-sm"
                 type="submit"
                 disabled={isSubmitting}
               >
-                {isSubmitting ? "Loading" : "Masuk"}
+                {isSubmitting ? "Loading..." : "Masuk"}
               </button>
             </Form>
           );
