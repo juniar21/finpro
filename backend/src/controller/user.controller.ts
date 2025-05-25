@@ -8,13 +8,21 @@ export class UserController {
       const { search } = req.query;
       const filter: Prisma.UserWhereInput = {};
 
-      if (search) {
-        filter.name = { contains: search as string, mode: "insensitive" };
+      if (search && typeof search === "string") {
+        filter.name = { contains: search, mode: "insensitive" };
       }
 
       const users = await prisma.user.findMany({
         where: filter,
-        orderBy: { id: "asc" },
+        orderBy: { createdAt: "asc" },
+        select: {
+          id: true,
+          name: true,
+          email: true,
+          roles: true,
+          isVerify: true,
+          createdAt: true,
+        },
       });
 
       const stats = await prisma.user.aggregate({
@@ -30,26 +38,41 @@ export class UserController {
       });
     } catch (err) {
       console.error(err);
-      res.status(400).json({ error: err });
+      if (!res.headersSent) res.status(500).json({ error: (err as Error).message || err });
     }
   }
 
   async getUserId(req: Request, res: Response) {
     try {
       const { id } = req.params;
-      const user = await prisma.user.findUnique({ where: { id } });
-
-      if (!user) {
-        res.status(404).json({ message: "User not found" });
+      if (!id) {
+        res.status(400).json({ message: "Missing user id" });
       } else {
-        res.status(200).json({
-          message: "User detail",
-          user,
+        const user = await prisma.user.findUnique({
+          where: { id },
+          select: {
+            id: true,
+            name: true,
+            email: true,
+            roles: true,
+            referralCode: true,
+            referredById: true,
+            isVerify: true,
+            isPendingVerification: true,
+            createdAt: true,
+            updatedAt: true,
+          },
         });
+
+        if (!user) {
+          res.status(404).json({ message: "User not found" });
+        } else {
+          res.status(200).json({ message: "User detail", user });
+        }
       }
     } catch (err) {
       console.error(err);
-      res.status(400).json({ error: err });
+      if (!res.headersSent) res.status(500).json({ error: (err as Error).message || err });
     }
   }
 
@@ -65,47 +88,64 @@ export class UserController {
           data,
         });
 
-        res.status(200).json({
-          message: "User updated ✅",
-        });
+        res.status(200).json({ message: "User updated ✅" });
       }
     } catch (err) {
       console.error(err);
-      res.status(400).json({ error: err });
+      if (!res.headersSent) res.status(500).json({ error: (err as Error).message || err });
     }
   }
 
   async deleteUser(req: Request, res: Response) {
     try {
       const { id } = req.params;
-
-      await prisma.user.delete({
-        where: { id },
-      });
-
-      res.status(200).json({
-        message: "User deleted ✅",
-      });
+      if (!id) {
+        res.status(400).json({ message: "Missing user id" });
+      } else {
+        const user = await prisma.user.findUnique({ where: { id } });
+        if (!user) {
+          res.status(404).json({ message: "User not found" });
+        } else {
+          await prisma.user.delete({ where: { id } });
+          res.status(200).json({ message: "User deleted ✅" });
+        }
+      }
     } catch (err) {
       console.error(err);
-      res.status(400).json({ error: err });
+      if (!res.headersSent) res.status(500).json({ error: (err as Error).message || err });
     }
   }
 
-  async getUserPost(req: Request, res: Response) {
+  async getUserDetailWithRelations(req: Request, res: Response) {
     try {
       if (!req.user?.id) {
         res.status(401).json({ message: "Unauthorized" });
       } else {
         const user = await prisma.user.findUnique({
           where: { id: String(req.user.id) },
+          include: {
+            poin: true,
+            vouchers: true,
+            cartItems: true,
+            orders: true,
+            referredBy: {
+              select: { id: true, name: true, email: true },
+            },
+            referrals: {
+              select: { id: true, name: true, email: true },
+            },
+          },
         });
 
-        res.status(200).json({ user });
+        if (!user) {
+          res.status(404).json({ message: "User not found" });
+        } else {
+          res.status(200).json({ message: "User detail with relations", user });
+        }
       }
     } catch (err) {
       console.error(err);
-      res.status(400).json({ error: err });
+      if (!res.headersSent) res.status(500).json({ error: (err as Error).message || err });
     }
   }
 }

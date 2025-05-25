@@ -11,7 +11,6 @@ import Sidebar from "@/components/navbar/navbar/Sidebar";
 export default function Home() {
   return (
     <div>
-    <Sidebar/>
     <Navbar />
     <Banner />
     <Brands />

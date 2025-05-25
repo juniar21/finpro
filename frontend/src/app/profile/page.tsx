@@ -67,14 +67,13 @@ export default function ProfilePage() {
       if (password) formData.append("password", password);
       if (avatarFile) formData.append("avatar", avatarFile);
 
-      // Jika backend butuh token, bisa ambil dari session.accessToken
-      // Misal header Authorization Bearer:
+
       const token = session.accessToken;
 
-      const res = await axios.post("/users/update-profile", formData, {
+      const res = await axios.patch("/users/update-profile", formData, {
         headers: {
-          "Content-Type": "multipart/form-data",
-          ...(token ? { Authorization: `Bearer ${token}` } : {}),
+          Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
         },
       });
 

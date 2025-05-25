@@ -23,10 +23,10 @@ export class UserRouter {
     this.router.get(
       "/post",
       this.authMiddleware.verifyToken,
-      this.userController.getUserPost
+      this.userController.getUser
     );
     this.router.patch(
-      "/",
+      "/update-profile",
       this.authMiddleware.verifyToken,
       this.userController.updateUser
     );
