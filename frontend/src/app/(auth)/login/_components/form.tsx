@@ -8,6 +8,7 @@ import Image from "next/image";
 import { signIn } from "next-auth/react";
 import axios from "@/lib/axios";
 import { toast } from "react-toastify";
+import { FcGoogle } from "react-icons/fc";
 
 // Validasi form menggunakan Yup
 const LoginSchema = yup.object().shape({
@@ -130,6 +131,24 @@ export default function FormLogin() {
               >
                 {isSubmitting ? "Loading..." : "Masuk"}
               </button>
+
+                  {/* Divider */}
+              <div className="flex items-center my-3">
+                <div className="flex-grow h-[1px] bg-gray-300" />
+                <span className="mx-2 text-sm text-gray-500">atau</span>
+                <div className="flex-grow h-[1px] bg-gray-300" />
+              </div>
+
+              {/* Google Login */}
+              <button
+                type="button"
+                onClick={() => signIn("google", { callbackUrl: "/" })}
+                className="flex items-center justify-center gap-2 py-2 px-3 rounded-md border border-gray-300 text-sm text-gray-700 hover:bg-gray-100"
+              >
+                <FcGoogle size={20} />
+                Login dengan Google
+              </button>
+
             </Form>
           );
         }}

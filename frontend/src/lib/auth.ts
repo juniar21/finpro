@@ -2,6 +2,7 @@ import NextAuth from "next-auth";
 import { Session } from "next-auth";
 import { JWT } from "next-auth/jwt";
 import Credentials from "next-auth/providers/credentials";
+import Google from "next-auth/providers/google";
 
 export const { auth, handlers, signIn, signOut } = NextAuth({
   providers: [
@@ -10,6 +11,10 @@ export const { auth, handlers, signIn, signOut } = NextAuth({
         if (user) return user;
         return null;
       },
+    }),
+      Google({
+      clientId: process.env.GOOGLE_CLIENT_ID!,
+      clientSecret: process.env.GOOGLE_CLIENT_SECRET!,
     }),
   ],
   pages: {

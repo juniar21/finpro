@@ -2109,6 +2109,7 @@ export namespace Prisma {
     name: string | null
     email: string | null
     password: string | null
+    avatar: string | null
     roles: $Enums.Role | null
     referralCode: string | null
     referredById: string | null
@@ -2123,6 +2124,7 @@ export namespace Prisma {
     name: string | null
     email: string | null
     password: string | null
+    avatar: string | null
     roles: $Enums.Role | null
     referralCode: string | null
     referredById: string | null
@@ -2137,6 +2139,7 @@ export namespace Prisma {
     name: number
     email: number
     password: number
+    avatar: number
     roles: number
     referralCode: number
     referredById: number
@@ -2153,6 +2156,7 @@ export namespace Prisma {
     name?: true
     email?: true
     password?: true
+    avatar?: true
     roles?: true
     referralCode?: true
     referredById?: true
@@ -2167,6 +2171,7 @@ export namespace Prisma {
     name?: true
     email?: true
     password?: true
+    avatar?: true
     roles?: true
     referralCode?: true
     referredById?: true
@@ -2181,6 +2186,7 @@ export namespace Prisma {
     name?: true
     email?: true
     password?: true
+    avatar?: true
     roles?: true
     referralCode?: true
     referredById?: true
@@ -2268,6 +2274,7 @@ export namespace Prisma {
     name: string
     email: string
     password: string
+    avatar: string
     roles: $Enums.Role
     referralCode: string
     referredById: string | null
@@ -2299,6 +2306,7 @@ export namespace Prisma {
     name?: boolean
     email?: boolean
     password?: boolean
+    avatar?: boolean
     roles?: boolean
     referralCode?: boolean
     referredById?: boolean
@@ -2320,6 +2328,7 @@ export namespace Prisma {
     name?: boolean
     email?: boolean
     password?: boolean
+    avatar?: boolean
     roles?: boolean
     referralCode?: boolean
     referredById?: boolean
@@ -2335,6 +2344,7 @@ export namespace Prisma {
     name?: boolean
     email?: boolean
     password?: boolean
+    avatar?: boolean
     roles?: boolean
     referralCode?: boolean
     referredById?: boolean
@@ -2350,6 +2360,7 @@ export namespace Prisma {
     name?: boolean
     email?: boolean
     password?: boolean
+    avatar?: boolean
     roles?: boolean
     referralCode?: boolean
     referredById?: boolean
@@ -2359,7 +2370,7 @@ export namespace Prisma {
     isPendingVerification?: boolean
   }
 
-  export type UserOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "email" | "password" | "roles" | "referralCode" | "referredById" | "createdAt" | "updatedAt" | "isVerify" | "isPendingVerification", ExtArgs["result"]["user"]>
+  export type UserOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "email" | "password" | "avatar" | "roles" | "referralCode" | "referredById" | "createdAt" | "updatedAt" | "isVerify" | "isPendingVerification", ExtArgs["result"]["user"]>
   export type UserInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     referredBy?: boolean | User$referredByArgs<ExtArgs>
     referrals?: boolean | User$referralsArgs<ExtArgs>
@@ -2391,6 +2402,7 @@ export namespace Prisma {
       name: string
       email: string
       password: string
+      avatar: string
       roles: $Enums.Role
       referralCode: string
       referredById: string | null
@@ -2831,6 +2843,7 @@ export namespace Prisma {
     readonly name: FieldRef<"User", 'String'>
     readonly email: FieldRef<"User", 'String'>
     readonly password: FieldRef<"User", 'String'>
+    readonly avatar: FieldRef<"User", 'String'>
     readonly roles: FieldRef<"User", 'Role'>
     readonly referralCode: FieldRef<"User", 'String'>
     readonly referredById: FieldRef<"User", 'String'>
@@ -14783,6 +14796,7 @@ export namespace Prisma {
     name: 'name',
     email: 'email',
     password: 'password',
+    avatar: 'avatar',
     roles: 'roles',
     referralCode: 'referralCode',
     referredById: 'referredById',
@@ -15048,6 +15062,7 @@ export namespace Prisma {
     name?: StringFilter<"User"> | string
     email?: StringFilter<"User"> | string
     password?: StringFilter<"User"> | string
+    avatar?: StringFilter<"User"> | string
     roles?: EnumRoleFilter<"User"> | $Enums.Role
     referralCode?: StringFilter<"User"> | string
     referredById?: StringNullableFilter<"User"> | string | null
@@ -15068,6 +15083,7 @@ export namespace Prisma {
     name?: SortOrder
     email?: SortOrder
     password?: SortOrder
+    avatar?: SortOrder
     roles?: SortOrder
     referralCode?: SortOrder
     referredById?: SortOrderInput | SortOrder
@@ -15092,6 +15108,7 @@ export namespace Prisma {
     NOT?: UserWhereInput | UserWhereInput[]
     name?: StringFilter<"User"> | string
     password?: StringFilter<"User"> | string
+    avatar?: StringFilter<"User"> | string
     roles?: EnumRoleFilter<"User"> | $Enums.Role
     referredById?: StringNullableFilter<"User"> | string | null
     createdAt?: DateTimeFilter<"User"> | Date | string
@@ -15111,6 +15128,7 @@ export namespace Prisma {
     name?: SortOrder
     email?: SortOrder
     password?: SortOrder
+    avatar?: SortOrder
     roles?: SortOrder
     referralCode?: SortOrder
     referredById?: SortOrderInput | SortOrder
@@ -15131,6 +15149,7 @@ export namespace Prisma {
     name?: StringWithAggregatesFilter<"User"> | string
     email?: StringWithAggregatesFilter<"User"> | string
     password?: StringWithAggregatesFilter<"User"> | string
+    avatar?: StringWithAggregatesFilter<"User"> | string
     roles?: EnumRoleWithAggregatesFilter<"User"> | $Enums.Role
     referralCode?: StringWithAggregatesFilter<"User"> | string
     referredById?: StringNullableWithAggregatesFilter<"User"> | string | null
@@ -15810,6 +15829,7 @@ export namespace Prisma {
     name: string
     email: string
     password: string
+    avatar?: string
     roles?: $Enums.Role
     referralCode: string
     createdAt?: Date | string
@@ -15829,6 +15849,7 @@ export namespace Prisma {
     name: string
     email: string
     password: string
+    avatar?: string
     roles?: $Enums.Role
     referralCode: string
     referredById?: string | null
@@ -15848,6 +15869,7 @@ export namespace Prisma {
     name?: StringFieldUpdateOperationsInput | string
     email?: StringFieldUpdateOperationsInput | string
     password?: StringFieldUpdateOperationsInput | string
+    avatar?: StringFieldUpdateOperationsInput | string
     roles?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
     referralCode?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -15867,6 +15889,7 @@ export namespace Prisma {
     name?: StringFieldUpdateOperationsInput | string
     email?: StringFieldUpdateOperationsInput | string
     password?: StringFieldUpdateOperationsInput | string
+    avatar?: StringFieldUpdateOperationsInput | string
     roles?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
     referralCode?: StringFieldUpdateOperationsInput | string
     referredById?: NullableStringFieldUpdateOperationsInput | string | null
@@ -15886,6 +15909,7 @@ export namespace Prisma {
     name: string
     email: string
     password: string
+    avatar?: string
     roles?: $Enums.Role
     referralCode: string
     referredById?: string | null
@@ -15900,6 +15924,7 @@ export namespace Prisma {
     name?: StringFieldUpdateOperationsInput | string
     email?: StringFieldUpdateOperationsInput | string
     password?: StringFieldUpdateOperationsInput | string
+    avatar?: StringFieldUpdateOperationsInput | string
     roles?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
     referralCode?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -15913,6 +15938,7 @@ export namespace Prisma {
     name?: StringFieldUpdateOperationsInput | string
     email?: StringFieldUpdateOperationsInput | string
     password?: StringFieldUpdateOperationsInput | string
+    avatar?: StringFieldUpdateOperationsInput | string
     roles?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
     referralCode?: StringFieldUpdateOperationsInput | string
     referredById?: NullableStringFieldUpdateOperationsInput | string | null
@@ -16707,6 +16733,7 @@ export namespace Prisma {
     name?: SortOrder
     email?: SortOrder
     password?: SortOrder
+    avatar?: SortOrder
     roles?: SortOrder
     referralCode?: SortOrder
     referredById?: SortOrder
@@ -16721,6 +16748,7 @@ export namespace Prisma {
     name?: SortOrder
     email?: SortOrder
     password?: SortOrder
+    avatar?: SortOrder
     roles?: SortOrder
     referralCode?: SortOrder
     referredById?: SortOrder
@@ -16735,6 +16763,7 @@ export namespace Prisma {
     name?: SortOrder
     email?: SortOrder
     password?: SortOrder
+    avatar?: SortOrder
     roles?: SortOrder
     referralCode?: SortOrder
     referredById?: SortOrder
@@ -18399,6 +18428,7 @@ export namespace Prisma {
     name: string
     email: string
     password: string
+    avatar?: string
     roles?: $Enums.Role
     referralCode: string
     createdAt?: Date | string
@@ -18417,6 +18447,7 @@ export namespace Prisma {
     name: string
     email: string
     password: string
+    avatar?: string
     roles?: $Enums.Role
     referralCode: string
     referredById?: string | null
@@ -18440,6 +18471,7 @@ export namespace Prisma {
     name: string
     email: string
     password: string
+    avatar?: string
     roles?: $Enums.Role
     referralCode: string
     createdAt?: Date | string
@@ -18458,6 +18490,7 @@ export namespace Prisma {
     name: string
     email: string
     password: string
+    avatar?: string
     roles?: $Enums.Role
     referralCode: string
     createdAt?: Date | string
@@ -18619,6 +18652,7 @@ export namespace Prisma {
     name?: StringFieldUpdateOperationsInput | string
     email?: StringFieldUpdateOperationsInput | string
     password?: StringFieldUpdateOperationsInput | string
+    avatar?: StringFieldUpdateOperationsInput | string
     roles?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
     referralCode?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -18637,6 +18671,7 @@ export namespace Prisma {
     name?: StringFieldUpdateOperationsInput | string
     email?: StringFieldUpdateOperationsInput | string
     password?: StringFieldUpdateOperationsInput | string
+    avatar?: StringFieldUpdateOperationsInput | string
     roles?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
     referralCode?: StringFieldUpdateOperationsInput | string
     referredById?: NullableStringFieldUpdateOperationsInput | string | null
@@ -18674,6 +18709,7 @@ export namespace Prisma {
     name?: StringFilter<"User"> | string
     email?: StringFilter<"User"> | string
     password?: StringFilter<"User"> | string
+    avatar?: StringFilter<"User"> | string
     roles?: EnumRoleFilter<"User"> | $Enums.Role
     referralCode?: StringFilter<"User"> | string
     referredById?: StringNullableFilter<"User"> | string | null
@@ -19268,6 +19304,7 @@ export namespace Prisma {
     name: string
     email: string
     password: string
+    avatar?: string
     roles?: $Enums.Role
     referralCode: string
     createdAt?: Date | string
@@ -19286,6 +19323,7 @@ export namespace Prisma {
     name: string
     email: string
     password: string
+    avatar?: string
     roles?: $Enums.Role
     referralCode: string
     referredById?: string | null
@@ -19349,6 +19387,7 @@ export namespace Prisma {
     name?: StringFieldUpdateOperationsInput | string
     email?: StringFieldUpdateOperationsInput | string
     password?: StringFieldUpdateOperationsInput | string
+    avatar?: StringFieldUpdateOperationsInput | string
     roles?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
     referralCode?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -19367,6 +19406,7 @@ export namespace Prisma {
     name?: StringFieldUpdateOperationsInput | string
     email?: StringFieldUpdateOperationsInput | string
     password?: StringFieldUpdateOperationsInput | string
+    avatar?: StringFieldUpdateOperationsInput | string
     roles?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
     referralCode?: StringFieldUpdateOperationsInput | string
     referredById?: NullableStringFieldUpdateOperationsInput | string | null
@@ -19420,6 +19460,7 @@ export namespace Prisma {
     name: string
     email: string
     password: string
+    avatar?: string
     roles?: $Enums.Role
     referralCode: string
     createdAt?: Date | string
@@ -19438,6 +19479,7 @@ export namespace Prisma {
     name: string
     email: string
     password: string
+    avatar?: string
     roles?: $Enums.Role
     referralCode: string
     referredById?: string | null
@@ -19569,6 +19611,7 @@ export namespace Prisma {
     name?: StringFieldUpdateOperationsInput | string
     email?: StringFieldUpdateOperationsInput | string
     password?: StringFieldUpdateOperationsInput | string
+    avatar?: StringFieldUpdateOperationsInput | string
     roles?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
     referralCode?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -19587,6 +19630,7 @@ export namespace Prisma {
     name?: StringFieldUpdateOperationsInput | string
     email?: StringFieldUpdateOperationsInput | string
     password?: StringFieldUpdateOperationsInput | string
+    avatar?: StringFieldUpdateOperationsInput | string
     roles?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
     referralCode?: StringFieldUpdateOperationsInput | string
     referredById?: NullableStringFieldUpdateOperationsInput | string | null
@@ -19914,6 +19958,7 @@ export namespace Prisma {
     name: string
     email: string
     password: string
+    avatar?: string
     roles?: $Enums.Role
     referralCode: string
     createdAt?: Date | string
@@ -19932,6 +19977,7 @@ export namespace Prisma {
     name: string
     email: string
     password: string
+    avatar?: string
     roles?: $Enums.Role
     referralCode: string
     referredById?: string | null
@@ -19966,6 +20012,7 @@ export namespace Prisma {
     name?: StringFieldUpdateOperationsInput | string
     email?: StringFieldUpdateOperationsInput | string
     password?: StringFieldUpdateOperationsInput | string
+    avatar?: StringFieldUpdateOperationsInput | string
     roles?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
     referralCode?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -19984,6 +20031,7 @@ export namespace Prisma {
     name?: StringFieldUpdateOperationsInput | string
     email?: StringFieldUpdateOperationsInput | string
     password?: StringFieldUpdateOperationsInput | string
+    avatar?: StringFieldUpdateOperationsInput | string
     roles?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
     referralCode?: StringFieldUpdateOperationsInput | string
     referredById?: NullableStringFieldUpdateOperationsInput | string | null
@@ -20002,6 +20050,7 @@ export namespace Prisma {
     name: string
     email: string
     password: string
+    avatar?: string
     roles?: $Enums.Role
     referralCode: string
     createdAt?: Date | string
@@ -20020,6 +20069,7 @@ export namespace Prisma {
     name: string
     email: string
     password: string
+    avatar?: string
     roles?: $Enums.Role
     referralCode: string
     referredById?: string | null
@@ -20096,6 +20146,7 @@ export namespace Prisma {
     name?: StringFieldUpdateOperationsInput | string
     email?: StringFieldUpdateOperationsInput | string
     password?: StringFieldUpdateOperationsInput | string
+    avatar?: StringFieldUpdateOperationsInput | string
     roles?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
     referralCode?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -20114,6 +20165,7 @@ export namespace Prisma {
     name?: StringFieldUpdateOperationsInput | string
     email?: StringFieldUpdateOperationsInput | string
     password?: StringFieldUpdateOperationsInput | string
+    avatar?: StringFieldUpdateOperationsInput | string
     roles?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
     referralCode?: StringFieldUpdateOperationsInput | string
     referredById?: NullableStringFieldUpdateOperationsInput | string | null
@@ -20148,6 +20200,7 @@ export namespace Prisma {
     name: string
     email: string
     password: string
+    avatar?: string
     roles?: $Enums.Role
     referralCode: string
     createdAt?: Date | string
@@ -20200,6 +20253,7 @@ export namespace Prisma {
     name?: StringFieldUpdateOperationsInput | string
     email?: StringFieldUpdateOperationsInput | string
     password?: StringFieldUpdateOperationsInput | string
+    avatar?: StringFieldUpdateOperationsInput | string
     roles?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
     referralCode?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -20218,6 +20272,7 @@ export namespace Prisma {
     name?: StringFieldUpdateOperationsInput | string
     email?: StringFieldUpdateOperationsInput | string
     password?: StringFieldUpdateOperationsInput | string
+    avatar?: StringFieldUpdateOperationsInput | string
     roles?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
     referralCode?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -20236,6 +20291,7 @@ export namespace Prisma {
     name?: StringFieldUpdateOperationsInput | string
     email?: StringFieldUpdateOperationsInput | string
     password?: StringFieldUpdateOperationsInput | string
+    avatar?: StringFieldUpdateOperationsInput | string
     roles?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
     referralCode?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string

@@ -4,6 +4,7 @@ import { UserRouter } from "./routers/user.router";
 import cors from "cors";
 import { AuthRouter } from "./routers/auth.router";
 import path from "path";
+import { RewardRouter } from "./routers/reward.router";
 //import cron from "node-cron";
 // import { OrderRouter } from "./routers/order.router";
 
@@ -24,6 +25,9 @@ app.use("/api/users", userRouter.getRouter());
 
 const authRouter = new AuthRouter();
 app.use("/api/auth", authRouter.getRouter());
+
+const rewardRouter = new RewardRouter();
+app.use("/api/rewards", rewardRouter.getRouter());
 
 
 // scheduler

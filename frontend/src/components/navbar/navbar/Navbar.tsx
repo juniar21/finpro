@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useSession, signOut } from "next-auth/react"; // Importing useSession for user session
 import Image from "next/image";
 
+
 export default function Navbar() {
   const [showPromo, setShowPromo] = useState(true);
 
@@ -97,11 +98,26 @@ export default function Navbar() {
             {/* User Icon */}
             <div className="flex items-center space-x-4">
               {session ? (
-                // If user is logged in, display their name and avatar
                 <div className="flex items-center space-x-2">
-                  <Link href="/profile" className="text-sm font-semibold hover:underline">
+                    <button
+                    type="button"
+                    className="focus:outline-none hover:cursor-pointer"
+                    onClick={() => window.location.href = '/profile'}
+                    >
+                    <Image
+                      src={
+                      session.user.avatar ||
+                      "https://res.cloudinary.com/dexlqslwj/image/upload/v1744257672/blank-image_yfczs3_ogl5pp.jpg"
+                      }
+                      height={40}
+                      width={40}
+                      alt="avatar"
+                      className="rounded-full"
+                    />
+                    </button>
+                    <Link href="/profile" className="text-sm font-semibold hover:underline">
                     {session.user?.name}
-                  </Link>
+                    </Link>
                   <button
                     onClick={() => signOut()}
                     className="text-sm text-gray-600 hover:text-gray-800 hover:underline hover:cursor-pointer"
