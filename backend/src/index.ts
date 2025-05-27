@@ -5,7 +5,6 @@ import cors from "cors";
 import { AuthRouter } from "./routers/auth.router";
 import path from "path";
 import { RewardRouter } from "./routers/reward.router";
-// import { StoreAdminRouter } from "./routers/store-admin.routers";
 //import cron from "node-cron";
 // import { OrderRouter } from "./routers/order.router";
 
@@ -29,9 +28,6 @@ app.use("/api/auth", authRouter.getRouter());
 
 const rewardRouter = new RewardRouter();
 app.use("/api/rewards", rewardRouter.getRouter());
-
-// const storeAdminRouter = new StoreAdminRouter();
-// app.use("/store-admin", storeAdminRouter.getRouter());
 
 
 // scheduler

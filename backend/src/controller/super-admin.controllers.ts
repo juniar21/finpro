@@ -1,160 +1,107 @@
-// import { PrismaClient } from "../../prisma/generated/client";
-// import { Request, Response } from "express";
-// import bcrypt from "bcrypt";
-// import { generateReferralCode } from "../helpers/reffcode";
+// import { Request, Response } from 'express';
+// import bcrypt from 'bcrypt';
+// import prisma from '../prisma';
 
-// const prisma = new PrismaClient();
-
-// export class SuperAdminController {
-//   async createUser(req: Request, res: Response) {
+// export const superAdminController = {
+//   async getAll(req: Request, res: Response) {
 //     try {
-//       const { email, password, roles, name } = req.body;
-//       let avatarUrl = null;
+//       const superAdmins = await prisma.user.findMany({
+//         where: { roles: 'SUPER_ADMIN' },
+//       });
+//       res.json(superAdmins);
+//     } catch (error) {
+//       res.status(500).json({ error: 'Internal server error' });
+//     }
+//   },
 
-//       if (req.file) {
-//         try {
-//           const result = await uploadAvatarImage(req.file.path);
-//           avatarUrl = result.secure_url;
-//         } catch (error) {
-//           const uploadError = error as Error;
-//           return res.status(400).json({
-//             error: "Failed to upload avatar",
-//             details: uploadError.message,
-//           });
-//         }
+
+//   async getById(req: Request, res: Response) {
+//     try {
+//       const { id } = req.params;
+//       const superAdmin = await prisma.user.findUnique({ where: { id } });
+
+//       if (!superAdmin || superAdmin.roles !== 'SUPER_ADMIN') {
+//         return res.status(404).json({ error: 'Super Admin not found' });
 //       }
 
-//       const existingUser = await prisma.user.findUnique({
-//         where: { email },
-//       });
+//       res.json(superAdmin);
+//     } catch (error) {
+//       res.status(500).json({ error: 'Internal server error' });
+//     }
+//   },
 
+//   // CREATE new Super Admin
+//   async create(req: Request, res: Response) {
+//     try {
+//       const { name, email, password } = req.body;
+
+//       const existingUser = await prisma.user.findUnique({ where: { email } });
 //       if (existingUser) {
-//         if (avatarUrl) {
-//           await deleteAvatarImage(avatarUrl);
-//         }
-//         return res.status(400).json({ error: "Email already exists" });
+//         return res.status(400).json({ error: 'Email already in use' });
 //       }
 
 //       const hashedPassword = await bcrypt.hash(password, 10);
+//       const referralCode = Math.random().toString(36).substring(2, 8).toUpperCase();
 
-//       const newUser = await prisma.user.create({
+//       const newSuperAdmin = await prisma.user.create({
 //         data: {
+//           name,
 //           email,
 //           password: hashedPassword,
-//           roles,
+//           roles: 'SUPER_ADMIN',
+//           referralCode,
+//           isVerify: true,
+//           isPendingVerification: false
+//         }
+//       });
+
+//       res.status(201).json(newSuperAdmin);
+//     } catch (error) {
+//       res.status(500).json({ error: 'Internal server error' });
+//     }
+//   },
+
+//   // UPDATE Super Admin
+//   async update(req: Request, res: Response) {
+//     try {
+//       const { id } = req.params;
+//       const { name, email, password } = req.body;
+
+//       const user = await prisma.user.findUnique({ where: { id } });
+//       if (!user || user.roles !== 'SUPER_ADMIN') {
+//         return res.status(404).json({ error: 'Super Admin not found' });
+//       }
+
+//       const updatedUser = await prisma.user.update({
+//         where: { id },
+//         data: {
 //           name,
-//           referralCode: roles === "CUSTOMER" ? generateReferralCode(8) : null,
-//           isVerify: true,
-//           isPendingVerification: false,
-//           // avatar: avatarUrl // if you store avatar in DB
-//         },
+//           email,
+//           password: password ? await bcrypt.hash(password, 10) : undefined,
+//         }
 //       });
 
-//       return res.status(201).json({
-//         status: "success",
-//         message: "User created successfully",
-//         data: newUser,
-//       });
+//       res.json(updatedUser);
 //     } catch (error) {
-//       console.error("Create user error:", error);
-//       return res.status(500).json({ error: "Could not create user" });
+//       res.status(500).json({ error: 'Internal server error' });
 //     }
-//   }
+//   },
 
-//   async getAllUsers(req: Request, res: Response) {
+//   // DELETE Super Admin
+//   async delete(req: Request, res: Response) {
 //     try {
-//       const page = Number(req.query.page) || 1;
-//       const limit = Number(req.query.limit) || 10;
-//       const skip = (page - 1) * limit;
-//       const totalUsers = await prisma.user.count();
-//       const users = await prisma.user.findMany({
-//         select: {
-//           id: true,
-//           email: true,
-//           name: true,
-//           roles: true,
-//           referralCode: true,
-//           isVerify: true,
-//           isPendingVerification: true,
-//           createdAt: true,
-//           updatedAt: true,
-//         },
-//         skip,
-//         take: limit,
-//       });
+//       const { id } = req.params;
 
-//       const totalPages = Math.ceil(totalUsers / limit);
+//       const user = await prisma.user.findUnique({ where: { id } });
+//       if (!user || user.roles !== 'SUPER_ADMIN') {
+//         return res.status(404).json({ error: 'Super Admin not found' });
+//       }
 
-//       return res.status(200).json({
-//         status: "success",
-//         data: users,
-//         pagination: {
-//           total: totalUsers,
-//           page,
-//           limit,
-//           totalPages,
-//           hasNextPage: page < totalPages,
-//           hasPrevPage: page > 1,
-//         },
-//       });
+//       await prisma.user.delete({ where: { id } });
+
+//       res.json({ message: 'Super Admin deleted successfully' });
 //     } catch (error) {
-//       console.error("Error fetching users:", error);
-//       return res.status(500).json({ error: "Could not fetch users" });
+//       res.status(500).json({ error: 'Internal server error' });
 //     }
 //   }
-
-//   async getUserById(req: Request, res: Response) {
-//     try {
-//       const user = await prisma.user.findUnique({
-//         where: { id: req.params.id },
-//         select: {
-//           id: true,
-//           email: true,
-//           name: true,
-//           roles: true,
-//           referralCode: true,
-//           isVerify: true,
-//           isPendingVerification: true,
-//           createdAt: true,
-//           updatedAt: true,
-//           referredBy: true,
-//           referrals: true,
-//           poin: true,
-//           vouchers: true,
-//           cartItems: true,
-//           orders: true,
-//         },
-//       });
-//       if (!user) return res.status(404).json({ error: "User not found" });
-//       return res.status(200).json({ status: "success", data: user });
-//     } catch (error) {
-//       return res.status(500).json({ error: "Could not fetch user" });
-//     }
-//   }
-
-//   async updateUserRole(req: Request, res: Response) {
-//     try {
-//       const { roles } = req.body;
-//       const user = await prisma.user.update({
-//         where: { id: req.params.id },
-//         data: { roles },
-//       });
-//       return res.status(200).json({ status: "success", data: user });
-//     } catch (error) {
-//       return res.status(500).json({ error: "Could not update user role" });
-//     }
-//   }
-
-//   async deleteUser(req: Request, res: Response) {
-//     try {
-//       await prisma.user.delete({
-//         where: { id: req.params.id },
-//       });
-//       return res
-//         .status(200)
-//         .json({ status: "success", message: "User deleted successfully" });
-//     } catch (error) {
-//       return res.status(500).json({ error: "Could not delete user" });
-//     }
-//   }
-// }
+// };

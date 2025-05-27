@@ -12,7 +12,7 @@ export const { auth, handlers, signIn, signOut } = NextAuth({
         return null;
       },
     }),
-    Google({
+      Google({
       clientId: process.env.GOOGLE_CLIENT_ID!,
       clientSecret: process.env.GOOGLE_CLIENT_SECRET!,
     }),

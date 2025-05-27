@@ -20,6 +20,7 @@ export class UserController {
           name: true,
           email: true,
           roles: true,
+          avatar: true,
           isVerify: true,
           createdAt: true,
         },
