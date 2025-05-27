@@ -1,13 +1,15 @@
 import { Request, Response } from "express";
 import prisma from "../prisma";
 import { compare, genSalt, hash } from "bcrypt";
-import { sign } from "jsonwebtoken";
+import { sign, verify } from "jsonwebtoken";
 import { transporter } from "../helpers/mailer";
 import path from "path";
 import fs from "fs";
 import handlebars from "handlebars";
 
 export class AuthController {
+
+  // Registration method
   async register(req: Request, res: Response) {
     let errorMessage = null; // Variable to hold any error message
     let statusCode = 200; // Default success status code
@@ -98,7 +100,7 @@ export class AuthController {
           html,
         });
 
-        // If everything was successful, update the status code and message
+        // Send the success response after everything is done
         res.status(201).send({ message: "User created ✅" });
       }
     } catch (err) {
@@ -166,6 +168,99 @@ export class AuthController {
     } catch (err) {
       console.error(err);
       res.status(400).send({ message: "Verification failed", error: err });
+    }
+  }
+
+   // Request password reset
+  async requestPasswordReset(req: Request, res: Response) {
+    try {
+      const { email } = req.body;
+
+      // Check if the user exists
+      const user = await prisma.user.findUnique({ where: { email } });
+
+      if (!user) {
+        res.status(404).send({ message: "User not found" });
+        return;
+      }
+
+      // Create reset token (valid for 1 hour)
+      const resetToken = sign({ email: user.email }, process.env.KEY_JWT!, {
+        expiresIn: "1h", // Token valid for 1 hour
+      });
+
+      // Generate the reset link
+      const resetLink = `${process.env.URL_FE}/reset-password/${resetToken}`;
+
+      const templatePath = path.join(__dirname, "../templates", "resetpass.hbs");
+      const templateSource = fs.readFileSync(templatePath, "utf-8");
+      const compiledTemplate = handlebars.compile(templateSource);
+      const html = compiledTemplate({
+        name: user.name, // Pass user's name
+        resetLink, // Pass reset link with token
+      });
+
+      await transporter.sendMail({
+        from: process.env.GMAIL_USER,
+        to: email,
+        subject: "Password Reset Request",
+        html,
+      });
+
+      res.status(200).send({
+        message: "Password reset email sent successfully. Please check your inbox.",
+      });
+    } catch (err) {
+      console.error(err);
+      res.status(500).send({ message: "Server error during reset request" });
+    }
+  }
+
+  // Verify password reset and update password
+  async verifyPasswordReset(req: Request, res: Response) {
+    try {
+     
+      const token = req.headers["authorization"]?.split(" ")[1]; 
+
+      if (!token) {
+        res.status(400).send({ message: "Token is required" });
+      } else {
+        const { password, confirmPassword } = req.body;
+
+        // Check if passwords match
+        if (password !== confirmPassword) {
+          // Send response when passwords do not match
+          res.status(400).send({ message: "Passwords do not match" });
+        } else {
+          // Decode the token to get the user's email
+          const decoded: any = verify(token as string, process.env.KEY_JWT!);
+
+          // Find the user based on email decoded from the token
+          const user = await prisma.user.findUnique({ where: { email: decoded.email } });
+
+          if (!user) {
+            // Send response if user does not exist
+            res.status(400).send({ message: "Invalid password reset token" });
+          } else {
+            // Hash the new password
+            const salt = await genSalt(10);
+            const hashedPassword = await hash(password, salt);
+
+            // Update the user's password
+            await prisma.user.update({
+              where: { email: decoded.email },
+              data: { password: hashedPassword },
+            });
+
+            // Send password reset success response
+            res.status(200).send({ message: "Password reset successfully" });
+          }
+        }
+      }
+    } catch (err) {
+      console.error(err);
+      // Send error response if something goes wrong
+      res.status(500).send({ message: "Error resetting password" });
     }
   }
 }

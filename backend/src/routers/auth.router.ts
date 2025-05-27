@@ -23,6 +23,17 @@ export class AuthRouter {
       this.authMiddleware.verifyToken,
       this.authController.verify
     );
+     this.router.post(
+      "/reset-password-request",
+      this.authController.requestPasswordReset
+    );
+
+    // Password Reset Verification Route
+    this.router.post(
+      "/reset-password-verify",
+      this.authMiddleware.verifyToken,
+      this.authController.verifyPasswordReset
+    );
     
   }
 

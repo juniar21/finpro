@@ -1,17 +1,21 @@
-import VerifyPage from "@/components/verify";
+import ResetVerifyPage from "@/components/PasswordReset";
 
+export default function Page(){
+  return(
+<div>
+<ResetVerifyPage />
+</div>
+  )
+//   params,
+// }: {
+//   params: { token: string }; // Directly destructure params
+// }) {
+//   const { token } = params; // Get the token
 
-
-
-export default async function Page({
-  params,
-}: {
-  params: Promise<{ token: string }>;
-}) {
-  const token = (await params).token;
-  return (
-    <div>
-      <VerifyPage token={token} />
-    </div>
-  );
+//   return (
+//     <div>
+//       {/* Pass token as a prop to ResetVerifyPage */}
+//       <ResetVerifyPage token={token} />
+//     </div>
+//   );
 }
