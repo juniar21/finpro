@@ -71,11 +71,12 @@ export default function ProfilePage() {
       const token = session.accessToken;
 
       const res = await axios.patch("/users/update-profile", formData, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-            "Content-Type": "application/json",
-        },
-      });
+  headers: {
+    Authorization: `Bearer ${token}`,
+    
+  },
+});
+
 
       if (res.data.success) {
         setMessage("Profil berhasil diperbarui.");

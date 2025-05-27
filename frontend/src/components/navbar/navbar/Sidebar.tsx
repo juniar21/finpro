@@ -39,9 +39,9 @@ export default function Sidebar() {
               <RiCoupon2Line className="w-5 h-5" />
                 My Coupon
               </Link>
-              <Link href={`/profile/ticket`} className="flex items-center gap-3 rounded-md p-3 transition duration-300 hover:bg-gray-300">
+              <Link href={`/profile/order`} className="flex items-center gap-3 rounded-md p-3 transition duration-300 hover:bg-gray-300">
               <TiTicket className="w-5 h-5" />
-                My Ticket
+                My Order
               </Link>
               <Link href={`/profile/payment`} className="flex items-center gap-3 rounded-md p-3 transition duration-300 hover:bg-gray-300">
               <MdOutlinePayment className="w-5 h-5" />

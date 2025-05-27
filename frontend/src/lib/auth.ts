@@ -2,6 +2,7 @@ import NextAuth from "next-auth";
 import { Session } from "next-auth";
 import { JWT } from "next-auth/jwt";
 import Credentials from "next-auth/providers/credentials";
+import Google from "next-auth/providers/google";
 
 export const { auth, handlers, signIn, signOut } = NextAuth({
   providers: [
@@ -11,14 +12,21 @@ export const { auth, handlers, signIn, signOut } = NextAuth({
         return null;
       },
     }),
+    Google({
+      clientId: process.env.GOOGLE_CLIENT_ID!,
+      clientSecret: process.env.GOOGLE_CLIENT_SECRET!,
+    }),
   ],
+
   pages: {
     signIn: "/login",
   },
+
   session: {
     strategy: "jwt",
     maxAge: 60 * 60,
   },
+
   callbacks: {
     async jwt({ token, user }) {
       if (user) {
@@ -26,15 +34,15 @@ export const { auth, handlers, signIn, signOut } = NextAuth({
         token.name = user.name;
         token.email = user.email;
         token.role = user.role;
-        token.avatar = user.avatar
+        token.avatar = user.avatar;
         token.referralCode = user.referralCode;
         token.referredById = user.referredById;
         token.accessToken = user.accessToken;
       }
       return token;
     },
+
     async session({ token, session }: { token: JWT; session: Session }) {
-      console.log("session token:", token);
       session.user = {
         id: token.id as string,
         name: token.name as string,
@@ -43,9 +51,6 @@ export const { auth, handlers, signIn, signOut } = NextAuth({
         referralCode: token.referralCode as string,
         referredById: token.referredById as string,
         avatar: token.avatar as string,
-        
-
-        
       };
       session.accessToken = token.accessToken as string;
       return session;
