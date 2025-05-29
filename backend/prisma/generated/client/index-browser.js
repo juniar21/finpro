@@ -135,6 +135,24 @@ exports.Prisma.UserScalarFieldEnum = {
   isPendingVerification: 'isPendingVerification'
 };
 
+exports.Prisma.AddressScalarFieldEnum = {
+  address_id: 'address_id',
+  id: 'id',
+  address_name: 'address_name',
+  address: 'address',
+  subdistrict: 'subdistrict',
+  city: 'city',
+  city_id: 'city_id',
+  province: 'province',
+  province_id: 'province_id',
+  postcode: 'postcode',
+  latitude: 'latitude',
+  longitude: 'longitude',
+  is_primary: 'is_primary',
+  created_at: 'created_at',
+  updated_at: 'updated_at'
+};
+
 exports.Prisma.StoreScalarFieldEnum = {
   id: 'id',
   name: 'name',
@@ -260,6 +278,7 @@ exports.OrderStatus = exports.$Enums.OrderStatus = {
 
 exports.Prisma.ModelName = {
   User: 'User',
+  Address: 'Address',
   Store: 'Store',
   Category: 'Category',
   Product: 'Product',

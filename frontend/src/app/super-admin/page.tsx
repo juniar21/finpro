@@ -1,5 +1,4 @@
 "use client";
-
 import Navbar from "@/components/navbar/navbar/Navbar";
 import Footer from "@/components/navbar/navbar/footer";
 import Sidebarsup from "@/components/navbar/navbar/Sidebarsup";
@@ -8,6 +7,8 @@ import { useEffect, useState } from "react";
 import { VscVerifiedFilled } from "react-icons/vsc";
 import Image from "next/image";
 import Link from "next/link";
+import AddStoreAdminModal from "@/components/modal/addadminstore";
+
 
 type User = {
   id: string;
@@ -38,7 +39,7 @@ export default function SuperAdminDashboard() {
         id: "1",
         name: "Evan",
         email: "evan@example.com",
-        role: "SUPER_ADMIN",
+        role: "STORE_ADMIN",
       },
       {
         id: "2",
@@ -198,6 +199,7 @@ export default function SuperAdminDashboard() {
                         {user.role === "STORE_ADMIN"
                           ? `${user.storeName} (${user.storeLocation})`
                           : "-"}
+
                       </td>
                       <td className="p-3 space-x-2">
                         {user.role === "STORE_ADMIN" && (
@@ -228,68 +230,13 @@ export default function SuperAdminDashboard() {
       <Footer />
 
       {/* Modal Tambah Store Admin */}
-      {isAddModalOpen && (
-        <div className="fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center z-50">
-          <div className="bg-white rounded-lg p-6 w-full max-w-md shadow-lg">
-            <h2 className="text-xl font-bold mb-4">Tambah Store Admin</h2>
-
-            <label className="block mb-2 font-medium">Nama</label>
-            <input
-              type="text"
-              value={newUser.name}
-              onChange={(e) => setNewUser({ ...newUser, name: e.target.value })}
-              className="w-full border p-2 rounded mb-4"
-              placeholder="Nama Store Admin"
-            />
-
-            <label className="block mb-2 font-medium">Email</label>
-            <input
-              type="email"
-              value={newUser.email}
-              onChange={(e) => setNewUser({ ...newUser, email: e.target.value })}
-              className="w-full border p-2 rounded mb-4"
-              placeholder="Email Store Admin"
-            />
-
-            <label className="block mb-2 font-medium">Nama Toko</label>
-            <input
-              type="text"
-              value={newUser.storeName}
-              onChange={(e) =>
-                setNewUser({ ...newUser, storeName: e.target.value })
-              }
-              className="w-full border p-2 rounded mb-4"
-              placeholder="Contoh: Toko Sumber Rejeki"
-            />
-
-            <label className="block mb-2 font-medium">Lokasi Toko</label>
-            <input
-              type="text"
-              value={newUser.storeLocation}
-              onChange={(e) =>
-                setNewUser({ ...newUser, storeLocation: e.target.value })
-              }
-              className="w-full border p-2 rounded mb-4"
-              placeholder="Contoh: Bukittinggi"
-            />
-
-            <div className="flex justify-end gap-2">
-              <button
-                onClick={() => setIsAddModalOpen(false)}
-                className="px-4 py-2 bg-gray-200 rounded hover:bg-gray-300"
-              >
-                Batal
-              </button>
-              <button
-                onClick={handleAddUser}
-                className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
-              >
-                Simpan
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
+      <AddStoreAdminModal
+        isOpen={isAddModalOpen}
+        setIsOpen={setIsAddModalOpen}
+        newUser={newUser}
+        setNewUser={setNewUser}
+        handleAddUser={handleAddUser}
+      />
     </>
   );
 }
