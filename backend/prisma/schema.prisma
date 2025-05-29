@@ -65,6 +65,7 @@ model Store {
   products  ProductStock[]
   orders    Order[]        @relation("StoreOrders")
   createdAt DateTime       @default(now())
+  
 }
 
 model Category {
