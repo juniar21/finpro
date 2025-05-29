@@ -1,4 +1,6 @@
 "use client";
+
+import axios from "axios";
 import Navbar from "@/components/navbar/navbar/Navbar";
 import Footer from "@/components/navbar/navbar/footer";
 import Sidebarsup from "@/components/navbar/navbar/Sidebarsup";
@@ -8,7 +10,6 @@ import { VscVerifiedFilled } from "react-icons/vsc";
 import Image from "next/image";
 import Link from "next/link";
 import AddStoreAdminModal from "@/components/modal/addadminstore";
-
 
 type User = {
   id: string;
@@ -32,33 +33,24 @@ export default function SuperAdminDashboard() {
     storeLocation: "",
   });
 
-  // Load dummy data on mount
+  // ✅ Fetch user STORE_ADMIN dari API backend
+  const fetchUsers = async () => {
+  try {
+    const token = session?.accessToken; // pastikan kamu punya token dari session
+    const res = await axios.get("/super-admin/store-admins", {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    setUsers(res.data);
+  } catch (error) {
+    console.error("Gagal fetch users:", error);
+  }
+};
+
+
   useEffect(() => {
-    const dummyUsers: User[] = [
-      {
-        id: "1",
-        name: "Evan",
-        email: "evan@example.com",
-        role: "STORE_ADMIN",
-      },
-      {
-        id: "2",
-        name: "Alice",
-        email: "alice@example.com",
-        role: "STORE_ADMIN",
-        storeName: "Toko Alice",
-        storeLocation: "Padang",
-      },
-      {
-        id: "3",
-        name: "Charlie",
-        email: "charlie@example.com",
-        role: "STORE_ADMIN",
-        storeName: "Toko Charlie",
-        storeLocation: "Solok",
-      },
-    ];
-    setUsers(dummyUsers);
+    fetchUsers();
   }, []);
 
   if (loading) {
@@ -83,13 +75,19 @@ export default function SuperAdminDashboard() {
     alert(`Edit user ID: ${userId} (Coming soon)`);
   };
 
-  const handleDelete = (userId: string) => {
+  const handleDelete = async (userId: string) => {
     if (confirm("Yakin ingin menghapus user ini?")) {
-      setUsers(users.filter((user) => user.id !== userId));
+      try {
+        await axios.delete(`/api/users/store-admins/${userId}`);
+        setUsers(users.filter((user) => user.id !== userId));
+      } catch (error) {
+        alert("Gagal menghapus user.");
+        console.error(error);
+      }
     }
   };
 
-  const handleAddUser = () => {
+  const handleAddUser = async () => {
     const { name, email, storeName, storeLocation } = newUser;
 
     if (!name || !email || !storeName || !storeLocation) {
@@ -97,18 +95,20 @@ export default function SuperAdminDashboard() {
       return;
     }
 
-    const newUserObj: User = {
-      id: Date.now().toString(),
-      name,
-      email,
-      role: "STORE_ADMIN",
-      storeName,
-      storeLocation,
-    };
-
-    setUsers([...users, newUserObj]);
-    setNewUser({ name: "", email: "", storeName: "", storeLocation: "" });
-    setIsAddModalOpen(false);
+    try {
+      const res = await axios.post("/api/users/store-admins", {
+        name,
+        email,
+        storeName,
+        storeLocation,
+      });
+      setUsers([...users, res.data]);
+      setNewUser({ name: "", email: "", storeName: "", storeLocation: "" });
+      setIsAddModalOpen(false);
+    } catch (error) {
+      alert("Gagal menambah user.");
+      console.error(error);
+    }
   };
 
   return (
@@ -199,7 +199,6 @@ export default function SuperAdminDashboard() {
                         {user.role === "STORE_ADMIN"
                           ? `${user.storeName} (${user.storeLocation})`
                           : "-"}
-
                       </td>
                       <td className="p-3 space-x-2">
                         {user.role === "STORE_ADMIN" && (

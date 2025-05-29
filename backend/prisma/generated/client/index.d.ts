@@ -3538,20 +3538,8 @@ export namespace Prisma {
 
   export type AggregateAddress = {
     _count: AddressCountAggregateOutputType | null
-    _avg: AddressAvgAggregateOutputType | null
-    _sum: AddressSumAggregateOutputType | null
     _min: AddressMinAggregateOutputType | null
     _max: AddressMaxAggregateOutputType | null
-  }
-
-  export type AddressAvgAggregateOutputType = {
-    latitude: number | null
-    longitude: number | null
-  }
-
-  export type AddressSumAggregateOutputType = {
-    latitude: number | null
-    longitude: number | null
   }
 
   export type AddressMinAggregateOutputType = {
@@ -3565,8 +3553,6 @@ export namespace Prisma {
     province: string | null
     province_id: string | null
     postcode: string | null
-    latitude: number | null
-    longitude: number | null
     is_primary: boolean | null
     created_at: Date | null
     updated_at: Date | null
@@ -3583,8 +3569,6 @@ export namespace Prisma {
     province: string | null
     province_id: string | null
     postcode: string | null
-    latitude: number | null
-    longitude: number | null
     is_primary: boolean | null
     created_at: Date | null
     updated_at: Date | null
@@ -3601,24 +3585,12 @@ export namespace Prisma {
     province: number
     province_id: number
     postcode: number
-    latitude: number
-    longitude: number
     is_primary: number
     created_at: number
     updated_at: number
     _all: number
   }
 
-
-  export type AddressAvgAggregateInputType = {
-    latitude?: true
-    longitude?: true
-  }
-
-  export type AddressSumAggregateInputType = {
-    latitude?: true
-    longitude?: true
-  }
 
   export type AddressMinAggregateInputType = {
     address_id?: true
@@ -3631,8 +3603,6 @@ export namespace Prisma {
     province?: true
     province_id?: true
     postcode?: true
-    latitude?: true
-    longitude?: true
     is_primary?: true
     created_at?: true
     updated_at?: true
@@ -3649,8 +3619,6 @@ export namespace Prisma {
     province?: true
     province_id?: true
     postcode?: true
-    latitude?: true
-    longitude?: true
     is_primary?: true
     created_at?: true
     updated_at?: true
@@ -3667,8 +3635,6 @@ export namespace Prisma {
     province?: true
     province_id?: true
     postcode?: true
-    latitude?: true
-    longitude?: true
     is_primary?: true
     created_at?: true
     updated_at?: true
@@ -3713,18 +3679,6 @@ export namespace Prisma {
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
      * 
-     * Select which fields to average
-    **/
-    _avg?: AddressAvgAggregateInputType
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
-     * 
-     * Select which fields to sum
-    **/
-    _sum?: AddressSumAggregateInputType
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
-     * 
      * Select which fields to find the minimum value
     **/
     _min?: AddressMinAggregateInputType
@@ -3755,8 +3709,6 @@ export namespace Prisma {
     take?: number
     skip?: number
     _count?: AddressCountAggregateInputType | true
-    _avg?: AddressAvgAggregateInputType
-    _sum?: AddressSumAggregateInputType
     _min?: AddressMinAggregateInputType
     _max?: AddressMaxAggregateInputType
   }
@@ -3772,14 +3724,10 @@ export namespace Prisma {
     province: string
     province_id: string
     postcode: string | null
-    latitude: number
-    longitude: number
     is_primary: boolean
     created_at: Date
     updated_at: Date
     _count: AddressCountAggregateOutputType | null
-    _avg: AddressAvgAggregateOutputType | null
-    _sum: AddressSumAggregateOutputType | null
     _min: AddressMinAggregateOutputType | null
     _max: AddressMaxAggregateOutputType | null
   }
@@ -3809,8 +3757,6 @@ export namespace Prisma {
     province?: boolean
     province_id?: boolean
     postcode?: boolean
-    latitude?: boolean
-    longitude?: boolean
     is_primary?: boolean
     created_at?: boolean
     updated_at?: boolean
@@ -3828,8 +3774,6 @@ export namespace Prisma {
     province?: boolean
     province_id?: boolean
     postcode?: boolean
-    latitude?: boolean
-    longitude?: boolean
     is_primary?: boolean
     created_at?: boolean
     updated_at?: boolean
@@ -3847,8 +3791,6 @@ export namespace Prisma {
     province?: boolean
     province_id?: boolean
     postcode?: boolean
-    latitude?: boolean
-    longitude?: boolean
     is_primary?: boolean
     created_at?: boolean
     updated_at?: boolean
@@ -3866,14 +3808,12 @@ export namespace Prisma {
     province?: boolean
     province_id?: boolean
     postcode?: boolean
-    latitude?: boolean
-    longitude?: boolean
     is_primary?: boolean
     created_at?: boolean
     updated_at?: boolean
   }
 
-  export type AddressOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"address_id" | "id" | "address_name" | "address" | "subdistrict" | "city" | "city_id" | "province" | "province_id" | "postcode" | "latitude" | "longitude" | "is_primary" | "created_at" | "updated_at", ExtArgs["result"]["address"]>
+  export type AddressOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"address_id" | "id" | "address_name" | "address" | "subdistrict" | "city" | "city_id" | "province" | "province_id" | "postcode" | "is_primary" | "created_at" | "updated_at", ExtArgs["result"]["address"]>
   export type AddressInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     user?: boolean | UserDefaultArgs<ExtArgs>
   }
@@ -3900,8 +3840,6 @@ export namespace Prisma {
       province: string
       province_id: string
       postcode: string | null
-      latitude: number
-      longitude: number
       is_primary: boolean
       created_at: Date
       updated_at: Date
@@ -4339,8 +4277,6 @@ export namespace Prisma {
     readonly province: FieldRef<"Address", 'String'>
     readonly province_id: FieldRef<"Address", 'String'>
     readonly postcode: FieldRef<"Address", 'String'>
-    readonly latitude: FieldRef<"Address", 'Float'>
-    readonly longitude: FieldRef<"Address", 'Float'>
     readonly is_primary: FieldRef<"Address", 'Boolean'>
     readonly created_at: FieldRef<"Address", 'DateTime'>
     readonly updated_at: FieldRef<"Address", 'DateTime'>
@@ -4764,28 +4700,14 @@ export namespace Prisma {
 
   export type AggregateStore = {
     _count: StoreCountAggregateOutputType | null
-    _avg: StoreAvgAggregateOutputType | null
-    _sum: StoreSumAggregateOutputType | null
     _min: StoreMinAggregateOutputType | null
     _max: StoreMaxAggregateOutputType | null
-  }
-
-  export type StoreAvgAggregateOutputType = {
-    latitude: number | null
-    longitude: number | null
-  }
-
-  export type StoreSumAggregateOutputType = {
-    latitude: number | null
-    longitude: number | null
   }
 
   export type StoreMinAggregateOutputType = {
     id: string | null
     name: string | null
     address: string | null
-    latitude: number | null
-    longitude: number | null
     createdAt: Date | null
   }
 
@@ -4793,8 +4715,6 @@ export namespace Prisma {
     id: string | null
     name: string | null
     address: string | null
-    latitude: number | null
-    longitude: number | null
     createdAt: Date | null
   }
 
@@ -4802,29 +4722,15 @@ export namespace Prisma {
     id: number
     name: number
     address: number
-    latitude: number
-    longitude: number
     createdAt: number
     _all: number
   }
 
 
-  export type StoreAvgAggregateInputType = {
-    latitude?: true
-    longitude?: true
-  }
-
-  export type StoreSumAggregateInputType = {
-    latitude?: true
-    longitude?: true
-  }
-
   export type StoreMinAggregateInputType = {
     id?: true
     name?: true
     address?: true
-    latitude?: true
-    longitude?: true
     createdAt?: true
   }
 
@@ -4832,8 +4738,6 @@ export namespace Prisma {
     id?: true
     name?: true
     address?: true
-    latitude?: true
-    longitude?: true
     createdAt?: true
   }
 
@@ -4841,8 +4745,6 @@ export namespace Prisma {
     id?: true
     name?: true
     address?: true
-    latitude?: true
-    longitude?: true
     createdAt?: true
     _all?: true
   }
@@ -4885,18 +4787,6 @@ export namespace Prisma {
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
      * 
-     * Select which fields to average
-    **/
-    _avg?: StoreAvgAggregateInputType
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
-     * 
-     * Select which fields to sum
-    **/
-    _sum?: StoreSumAggregateInputType
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
-     * 
      * Select which fields to find the minimum value
     **/
     _min?: StoreMinAggregateInputType
@@ -4927,8 +4817,6 @@ export namespace Prisma {
     take?: number
     skip?: number
     _count?: StoreCountAggregateInputType | true
-    _avg?: StoreAvgAggregateInputType
-    _sum?: StoreSumAggregateInputType
     _min?: StoreMinAggregateInputType
     _max?: StoreMaxAggregateInputType
   }
@@ -4937,12 +4825,8 @@ export namespace Prisma {
     id: string
     name: string
     address: string
-    latitude: number
-    longitude: number
     createdAt: Date
     _count: StoreCountAggregateOutputType | null
-    _avg: StoreAvgAggregateOutputType | null
-    _sum: StoreSumAggregateOutputType | null
     _min: StoreMinAggregateOutputType | null
     _max: StoreMaxAggregateOutputType | null
   }
@@ -4965,8 +4849,6 @@ export namespace Prisma {
     id?: boolean
     name?: boolean
     address?: boolean
-    latitude?: boolean
-    longitude?: boolean
     createdAt?: boolean
     products?: boolean | Store$productsArgs<ExtArgs>
     orders?: boolean | Store$ordersArgs<ExtArgs>
@@ -4977,8 +4859,6 @@ export namespace Prisma {
     id?: boolean
     name?: boolean
     address?: boolean
-    latitude?: boolean
-    longitude?: boolean
     createdAt?: boolean
   }, ExtArgs["result"]["store"]>
 
@@ -4986,8 +4866,6 @@ export namespace Prisma {
     id?: boolean
     name?: boolean
     address?: boolean
-    latitude?: boolean
-    longitude?: boolean
     createdAt?: boolean
   }, ExtArgs["result"]["store"]>
 
@@ -4995,12 +4873,10 @@ export namespace Prisma {
     id?: boolean
     name?: boolean
     address?: boolean
-    latitude?: boolean
-    longitude?: boolean
     createdAt?: boolean
   }
 
-  export type StoreOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "address" | "latitude" | "longitude" | "createdAt", ExtArgs["result"]["store"]>
+  export type StoreOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "address" | "createdAt", ExtArgs["result"]["store"]>
   export type StoreInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     products?: boolean | Store$productsArgs<ExtArgs>
     orders?: boolean | Store$ordersArgs<ExtArgs>
@@ -5019,8 +4895,6 @@ export namespace Prisma {
       id: string
       name: string
       address: string
-      latitude: number
-      longitude: number
       createdAt: Date
     }, ExtArgs["result"]["store"]>
     composites: {}
@@ -5450,8 +5324,6 @@ export namespace Prisma {
     readonly id: FieldRef<"Store", 'String'>
     readonly name: FieldRef<"Store", 'String'>
     readonly address: FieldRef<"Store", 'String'>
-    readonly latitude: FieldRef<"Store", 'Float'>
-    readonly longitude: FieldRef<"Store", 'Float'>
     readonly createdAt: FieldRef<"Store", 'DateTime'>
   }
     
@@ -16174,8 +16046,6 @@ export namespace Prisma {
     province: 'province',
     province_id: 'province_id',
     postcode: 'postcode',
-    latitude: 'latitude',
-    longitude: 'longitude',
     is_primary: 'is_primary',
     created_at: 'created_at',
     updated_at: 'updated_at'
@@ -16188,8 +16058,6 @@ export namespace Prisma {
     id: 'id',
     name: 'name',
     address: 'address',
-    latitude: 'latitude',
-    longitude: 'longitude',
     createdAt: 'createdAt'
   };
 
@@ -16385,20 +16253,6 @@ export namespace Prisma {
 
 
   /**
-   * Reference to a field of type 'Float'
-   */
-  export type FloatFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Float'>
-    
-
-
-  /**
-   * Reference to a field of type 'Float[]'
-   */
-  export type ListFloatFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Float[]'>
-    
-
-
-  /**
    * Reference to a field of type 'Int'
    */
   export type IntFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Int'>
@@ -16423,6 +16277,20 @@ export namespace Prisma {
    * Reference to a field of type 'OrderStatus[]'
    */
   export type ListEnumOrderStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'OrderStatus[]'>
+    
+
+
+  /**
+   * Reference to a field of type 'Float'
+   */
+  export type FloatFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Float'>
+    
+
+
+  /**
+   * Reference to a field of type 'Float[]'
+   */
+  export type ListFloatFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Float[]'>
     
   /**
    * Deep Input Types
@@ -16551,8 +16419,6 @@ export namespace Prisma {
     province?: StringFilter<"Address"> | string
     province_id?: StringFilter<"Address"> | string
     postcode?: StringNullableFilter<"Address"> | string | null
-    latitude?: FloatFilter<"Address"> | number
-    longitude?: FloatFilter<"Address"> | number
     is_primary?: BoolFilter<"Address"> | boolean
     created_at?: DateTimeFilter<"Address"> | Date | string
     updated_at?: DateTimeFilter<"Address"> | Date | string
@@ -16570,8 +16436,6 @@ export namespace Prisma {
     province?: SortOrder
     province_id?: SortOrder
     postcode?: SortOrderInput | SortOrder
-    latitude?: SortOrder
-    longitude?: SortOrder
     is_primary?: SortOrder
     created_at?: SortOrder
     updated_at?: SortOrder
@@ -16592,8 +16456,6 @@ export namespace Prisma {
     province?: StringFilter<"Address"> | string
     province_id?: StringFilter<"Address"> | string
     postcode?: StringNullableFilter<"Address"> | string | null
-    latitude?: FloatFilter<"Address"> | number
-    longitude?: FloatFilter<"Address"> | number
     is_primary?: BoolFilter<"Address"> | boolean
     created_at?: DateTimeFilter<"Address"> | Date | string
     updated_at?: DateTimeFilter<"Address"> | Date | string
@@ -16611,16 +16473,12 @@ export namespace Prisma {
     province?: SortOrder
     province_id?: SortOrder
     postcode?: SortOrderInput | SortOrder
-    latitude?: SortOrder
-    longitude?: SortOrder
     is_primary?: SortOrder
     created_at?: SortOrder
     updated_at?: SortOrder
     _count?: AddressCountOrderByAggregateInput
-    _avg?: AddressAvgOrderByAggregateInput
     _max?: AddressMaxOrderByAggregateInput
     _min?: AddressMinOrderByAggregateInput
-    _sum?: AddressSumOrderByAggregateInput
   }
 
   export type AddressScalarWhereWithAggregatesInput = {
@@ -16637,8 +16495,6 @@ export namespace Prisma {
     province?: StringWithAggregatesFilter<"Address"> | string
     province_id?: StringWithAggregatesFilter<"Address"> | string
     postcode?: StringNullableWithAggregatesFilter<"Address"> | string | null
-    latitude?: FloatWithAggregatesFilter<"Address"> | number
-    longitude?: FloatWithAggregatesFilter<"Address"> | number
     is_primary?: BoolWithAggregatesFilter<"Address"> | boolean
     created_at?: DateTimeWithAggregatesFilter<"Address"> | Date | string
     updated_at?: DateTimeWithAggregatesFilter<"Address"> | Date | string
@@ -16651,8 +16507,6 @@ export namespace Prisma {
     id?: StringFilter<"Store"> | string
     name?: StringFilter<"Store"> | string
     address?: StringFilter<"Store"> | string
-    latitude?: FloatFilter<"Store"> | number
-    longitude?: FloatFilter<"Store"> | number
     createdAt?: DateTimeFilter<"Store"> | Date | string
     products?: ProductStockListRelationFilter
     orders?: OrderListRelationFilter
@@ -16662,8 +16516,6 @@ export namespace Prisma {
     id?: SortOrder
     name?: SortOrder
     address?: SortOrder
-    latitude?: SortOrder
-    longitude?: SortOrder
     createdAt?: SortOrder
     products?: ProductStockOrderByRelationAggregateInput
     orders?: OrderOrderByRelationAggregateInput
@@ -16676,8 +16528,6 @@ export namespace Prisma {
     NOT?: StoreWhereInput | StoreWhereInput[]
     name?: StringFilter<"Store"> | string
     address?: StringFilter<"Store"> | string
-    latitude?: FloatFilter<"Store"> | number
-    longitude?: FloatFilter<"Store"> | number
     createdAt?: DateTimeFilter<"Store"> | Date | string
     products?: ProductStockListRelationFilter
     orders?: OrderListRelationFilter
@@ -16687,14 +16537,10 @@ export namespace Prisma {
     id?: SortOrder
     name?: SortOrder
     address?: SortOrder
-    latitude?: SortOrder
-    longitude?: SortOrder
     createdAt?: SortOrder
     _count?: StoreCountOrderByAggregateInput
-    _avg?: StoreAvgOrderByAggregateInput
     _max?: StoreMaxOrderByAggregateInput
     _min?: StoreMinOrderByAggregateInput
-    _sum?: StoreSumOrderByAggregateInput
   }
 
   export type StoreScalarWhereWithAggregatesInput = {
@@ -16704,8 +16550,6 @@ export namespace Prisma {
     id?: StringWithAggregatesFilter<"Store"> | string
     name?: StringWithAggregatesFilter<"Store"> | string
     address?: StringWithAggregatesFilter<"Store"> | string
-    latitude?: FloatWithAggregatesFilter<"Store"> | number
-    longitude?: FloatWithAggregatesFilter<"Store"> | number
     createdAt?: DateTimeWithAggregatesFilter<"Store"> | Date | string
   }
 
@@ -17447,8 +17291,6 @@ export namespace Prisma {
     province: string
     province_id: string
     postcode?: string | null
-    latitude: number
-    longitude: number
     is_primary?: boolean
     created_at?: Date | string
     updated_at?: Date | string
@@ -17466,8 +17308,6 @@ export namespace Prisma {
     province: string
     province_id: string
     postcode?: string | null
-    latitude: number
-    longitude: number
     is_primary?: boolean
     created_at?: Date | string
     updated_at?: Date | string
@@ -17483,8 +17323,6 @@ export namespace Prisma {
     province?: StringFieldUpdateOperationsInput | string
     province_id?: StringFieldUpdateOperationsInput | string
     postcode?: NullableStringFieldUpdateOperationsInput | string | null
-    latitude?: FloatFieldUpdateOperationsInput | number
-    longitude?: FloatFieldUpdateOperationsInput | number
     is_primary?: BoolFieldUpdateOperationsInput | boolean
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -17502,8 +17340,6 @@ export namespace Prisma {
     province?: StringFieldUpdateOperationsInput | string
     province_id?: StringFieldUpdateOperationsInput | string
     postcode?: NullableStringFieldUpdateOperationsInput | string | null
-    latitude?: FloatFieldUpdateOperationsInput | number
-    longitude?: FloatFieldUpdateOperationsInput | number
     is_primary?: BoolFieldUpdateOperationsInput | boolean
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -17520,8 +17356,6 @@ export namespace Prisma {
     province: string
     province_id: string
     postcode?: string | null
-    latitude: number
-    longitude: number
     is_primary?: boolean
     created_at?: Date | string
     updated_at?: Date | string
@@ -17537,8 +17371,6 @@ export namespace Prisma {
     province?: StringFieldUpdateOperationsInput | string
     province_id?: StringFieldUpdateOperationsInput | string
     postcode?: NullableStringFieldUpdateOperationsInput | string | null
-    latitude?: FloatFieldUpdateOperationsInput | number
-    longitude?: FloatFieldUpdateOperationsInput | number
     is_primary?: BoolFieldUpdateOperationsInput | boolean
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -17555,8 +17387,6 @@ export namespace Prisma {
     province?: StringFieldUpdateOperationsInput | string
     province_id?: StringFieldUpdateOperationsInput | string
     postcode?: NullableStringFieldUpdateOperationsInput | string | null
-    latitude?: FloatFieldUpdateOperationsInput | number
-    longitude?: FloatFieldUpdateOperationsInput | number
     is_primary?: BoolFieldUpdateOperationsInput | boolean
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -17566,8 +17396,6 @@ export namespace Prisma {
     id?: string
     name: string
     address: string
-    latitude: number
-    longitude: number
     createdAt?: Date | string
     products?: ProductStockCreateNestedManyWithoutStoreInput
     orders?: OrderCreateNestedManyWithoutStoreInput
@@ -17577,8 +17405,6 @@ export namespace Prisma {
     id?: string
     name: string
     address: string
-    latitude: number
-    longitude: number
     createdAt?: Date | string
     products?: ProductStockUncheckedCreateNestedManyWithoutStoreInput
     orders?: OrderUncheckedCreateNestedManyWithoutStoreInput
@@ -17588,8 +17414,6 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
     address?: StringFieldUpdateOperationsInput | string
-    latitude?: FloatFieldUpdateOperationsInput | number
-    longitude?: FloatFieldUpdateOperationsInput | number
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     products?: ProductStockUpdateManyWithoutStoreNestedInput
     orders?: OrderUpdateManyWithoutStoreNestedInput
@@ -17599,8 +17423,6 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
     address?: StringFieldUpdateOperationsInput | string
-    latitude?: FloatFieldUpdateOperationsInput | number
-    longitude?: FloatFieldUpdateOperationsInput | number
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     products?: ProductStockUncheckedUpdateManyWithoutStoreNestedInput
     orders?: OrderUncheckedUpdateManyWithoutStoreNestedInput
@@ -17610,8 +17432,6 @@ export namespace Prisma {
     id?: string
     name: string
     address: string
-    latitude: number
-    longitude: number
     createdAt?: Date | string
   }
 
@@ -17619,8 +17439,6 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
     address?: StringFieldUpdateOperationsInput | string
-    latitude?: FloatFieldUpdateOperationsInput | number
-    longitude?: FloatFieldUpdateOperationsInput | number
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
@@ -17628,8 +17446,6 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
     address?: StringFieldUpdateOperationsInput | string
-    latitude?: FloatFieldUpdateOperationsInput | number
-    longitude?: FloatFieldUpdateOperationsInput | number
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
@@ -18465,17 +18281,6 @@ export namespace Prisma {
     _max?: NestedBoolFilter<$PrismaModel>
   }
 
-  export type FloatFilter<$PrismaModel = never> = {
-    equals?: number | FloatFieldRefInput<$PrismaModel>
-    in?: number[] | ListFloatFieldRefInput<$PrismaModel>
-    notIn?: number[] | ListFloatFieldRefInput<$PrismaModel>
-    lt?: number | FloatFieldRefInput<$PrismaModel>
-    lte?: number | FloatFieldRefInput<$PrismaModel>
-    gt?: number | FloatFieldRefInput<$PrismaModel>
-    gte?: number | FloatFieldRefInput<$PrismaModel>
-    not?: NestedFloatFilter<$PrismaModel> | number
-  }
-
   export type UserScalarRelationFilter = {
     is?: UserWhereInput
     isNot?: UserWhereInput
@@ -18492,16 +18297,9 @@ export namespace Prisma {
     province?: SortOrder
     province_id?: SortOrder
     postcode?: SortOrder
-    latitude?: SortOrder
-    longitude?: SortOrder
     is_primary?: SortOrder
     created_at?: SortOrder
     updated_at?: SortOrder
-  }
-
-  export type AddressAvgOrderByAggregateInput = {
-    latitude?: SortOrder
-    longitude?: SortOrder
   }
 
   export type AddressMaxOrderByAggregateInput = {
@@ -18515,8 +18313,6 @@ export namespace Prisma {
     province?: SortOrder
     province_id?: SortOrder
     postcode?: SortOrder
-    latitude?: SortOrder
-    longitude?: SortOrder
     is_primary?: SortOrder
     created_at?: SortOrder
     updated_at?: SortOrder
@@ -18533,32 +18329,9 @@ export namespace Prisma {
     province?: SortOrder
     province_id?: SortOrder
     postcode?: SortOrder
-    latitude?: SortOrder
-    longitude?: SortOrder
     is_primary?: SortOrder
     created_at?: SortOrder
     updated_at?: SortOrder
-  }
-
-  export type AddressSumOrderByAggregateInput = {
-    latitude?: SortOrder
-    longitude?: SortOrder
-  }
-
-  export type FloatWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: number | FloatFieldRefInput<$PrismaModel>
-    in?: number[] | ListFloatFieldRefInput<$PrismaModel>
-    notIn?: number[] | ListFloatFieldRefInput<$PrismaModel>
-    lt?: number | FloatFieldRefInput<$PrismaModel>
-    lte?: number | FloatFieldRefInput<$PrismaModel>
-    gt?: number | FloatFieldRefInput<$PrismaModel>
-    gte?: number | FloatFieldRefInput<$PrismaModel>
-    not?: NestedFloatWithAggregatesFilter<$PrismaModel> | number
-    _count?: NestedIntFilter<$PrismaModel>
-    _avg?: NestedFloatFilter<$PrismaModel>
-    _sum?: NestedFloatFilter<$PrismaModel>
-    _min?: NestedFloatFilter<$PrismaModel>
-    _max?: NestedFloatFilter<$PrismaModel>
   }
 
   export type ProductStockListRelationFilter = {
@@ -18575,22 +18348,13 @@ export namespace Prisma {
     id?: SortOrder
     name?: SortOrder
     address?: SortOrder
-    latitude?: SortOrder
-    longitude?: SortOrder
     createdAt?: SortOrder
-  }
-
-  export type StoreAvgOrderByAggregateInput = {
-    latitude?: SortOrder
-    longitude?: SortOrder
   }
 
   export type StoreMaxOrderByAggregateInput = {
     id?: SortOrder
     name?: SortOrder
     address?: SortOrder
-    latitude?: SortOrder
-    longitude?: SortOrder
     createdAt?: SortOrder
   }
 
@@ -18598,14 +18362,7 @@ export namespace Prisma {
     id?: SortOrder
     name?: SortOrder
     address?: SortOrder
-    latitude?: SortOrder
-    longitude?: SortOrder
     createdAt?: SortOrder
-  }
-
-  export type StoreSumOrderByAggregateInput = {
-    latitude?: SortOrder
-    longitude?: SortOrder
   }
 
   export type ProductListRelationFilter = {
@@ -18903,6 +18660,17 @@ export namespace Prisma {
     _max?: NestedDateTimeNullableFilter<$PrismaModel>
   }
 
+  export type FloatFilter<$PrismaModel = never> = {
+    equals?: number | FloatFieldRefInput<$PrismaModel>
+    in?: number[] | ListFloatFieldRefInput<$PrismaModel>
+    notIn?: number[] | ListFloatFieldRefInput<$PrismaModel>
+    lt?: number | FloatFieldRefInput<$PrismaModel>
+    lte?: number | FloatFieldRefInput<$PrismaModel>
+    gt?: number | FloatFieldRefInput<$PrismaModel>
+    gte?: number | FloatFieldRefInput<$PrismaModel>
+    not?: NestedFloatFilter<$PrismaModel> | number
+  }
+
   export type WarehouseCountOrderByAggregateInput = {
     id?: SortOrder
     name?: SortOrder
@@ -18938,6 +18706,22 @@ export namespace Prisma {
   export type WarehouseSumOrderByAggregateInput = {
     latitude?: SortOrder
     longitude?: SortOrder
+  }
+
+  export type FloatWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: number | FloatFieldRefInput<$PrismaModel>
+    in?: number[] | ListFloatFieldRefInput<$PrismaModel>
+    notIn?: number[] | ListFloatFieldRefInput<$PrismaModel>
+    lt?: number | FloatFieldRefInput<$PrismaModel>
+    lte?: number | FloatFieldRefInput<$PrismaModel>
+    gt?: number | FloatFieldRefInput<$PrismaModel>
+    gte?: number | FloatFieldRefInput<$PrismaModel>
+    not?: NestedFloatWithAggregatesFilter<$PrismaModel> | number
+    _count?: NestedIntFilter<$PrismaModel>
+    _avg?: NestedFloatFilter<$PrismaModel>
+    _sum?: NestedFloatFilter<$PrismaModel>
+    _min?: NestedFloatFilter<$PrismaModel>
+    _max?: NestedFloatFilter<$PrismaModel>
   }
 
   export type OrderScalarRelationFilter = {
@@ -19343,14 +19127,6 @@ export namespace Prisma {
     create?: XOR<UserCreateWithoutAddressInput, UserUncheckedCreateWithoutAddressInput>
     connectOrCreate?: UserCreateOrConnectWithoutAddressInput
     connect?: UserWhereUniqueInput
-  }
-
-  export type FloatFieldUpdateOperationsInput = {
-    set?: number
-    increment?: number
-    decrement?: number
-    multiply?: number
-    divide?: number
   }
 
   export type UserUpdateOneRequiredWithoutAddressNestedInput = {
@@ -19815,6 +19591,14 @@ export namespace Prisma {
     connect?: OrderWhereUniqueInput | OrderWhereUniqueInput[]
   }
 
+  export type FloatFieldUpdateOperationsInput = {
+    set?: number
+    increment?: number
+    decrement?: number
+    multiply?: number
+    divide?: number
+  }
+
   export type OrderUpdateManyWithoutWarehouseNestedInput = {
     create?: XOR<OrderCreateWithoutWarehouseInput, OrderUncheckedCreateWithoutWarehouseInput> | OrderCreateWithoutWarehouseInput[] | OrderUncheckedCreateWithoutWarehouseInput[]
     connectOrCreate?: OrderCreateOrConnectWithoutWarehouseInput | OrderCreateOrConnectWithoutWarehouseInput[]
@@ -20082,33 +19866,6 @@ export namespace Prisma {
     _max?: NestedBoolFilter<$PrismaModel>
   }
 
-  export type NestedFloatFilter<$PrismaModel = never> = {
-    equals?: number | FloatFieldRefInput<$PrismaModel>
-    in?: number[] | ListFloatFieldRefInput<$PrismaModel>
-    notIn?: number[] | ListFloatFieldRefInput<$PrismaModel>
-    lt?: number | FloatFieldRefInput<$PrismaModel>
-    lte?: number | FloatFieldRefInput<$PrismaModel>
-    gt?: number | FloatFieldRefInput<$PrismaModel>
-    gte?: number | FloatFieldRefInput<$PrismaModel>
-    not?: NestedFloatFilter<$PrismaModel> | number
-  }
-
-  export type NestedFloatWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: number | FloatFieldRefInput<$PrismaModel>
-    in?: number[] | ListFloatFieldRefInput<$PrismaModel>
-    notIn?: number[] | ListFloatFieldRefInput<$PrismaModel>
-    lt?: number | FloatFieldRefInput<$PrismaModel>
-    lte?: number | FloatFieldRefInput<$PrismaModel>
-    gt?: number | FloatFieldRefInput<$PrismaModel>
-    gte?: number | FloatFieldRefInput<$PrismaModel>
-    not?: NestedFloatWithAggregatesFilter<$PrismaModel> | number
-    _count?: NestedIntFilter<$PrismaModel>
-    _avg?: NestedFloatFilter<$PrismaModel>
-    _sum?: NestedFloatFilter<$PrismaModel>
-    _min?: NestedFloatFilter<$PrismaModel>
-    _max?: NestedFloatFilter<$PrismaModel>
-  }
-
   export type NestedIntWithAggregatesFilter<$PrismaModel = never> = {
     equals?: number | IntFieldRefInput<$PrismaModel>
     in?: number[] | ListIntFieldRefInput<$PrismaModel>
@@ -20123,6 +19880,17 @@ export namespace Prisma {
     _sum?: NestedIntFilter<$PrismaModel>
     _min?: NestedIntFilter<$PrismaModel>
     _max?: NestedIntFilter<$PrismaModel>
+  }
+
+  export type NestedFloatFilter<$PrismaModel = never> = {
+    equals?: number | FloatFieldRefInput<$PrismaModel>
+    in?: number[] | ListFloatFieldRefInput<$PrismaModel>
+    notIn?: number[] | ListFloatFieldRefInput<$PrismaModel>
+    lt?: number | FloatFieldRefInput<$PrismaModel>
+    lte?: number | FloatFieldRefInput<$PrismaModel>
+    gt?: number | FloatFieldRefInput<$PrismaModel>
+    gte?: number | FloatFieldRefInput<$PrismaModel>
+    not?: NestedFloatFilter<$PrismaModel> | number
   }
 
   export type NestedEnumOrderStatusFilter<$PrismaModel = never> = {
@@ -20165,6 +19933,22 @@ export namespace Prisma {
     _count?: NestedIntNullableFilter<$PrismaModel>
     _min?: NestedDateTimeNullableFilter<$PrismaModel>
     _max?: NestedDateTimeNullableFilter<$PrismaModel>
+  }
+
+  export type NestedFloatWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: number | FloatFieldRefInput<$PrismaModel>
+    in?: number[] | ListFloatFieldRefInput<$PrismaModel>
+    notIn?: number[] | ListFloatFieldRefInput<$PrismaModel>
+    lt?: number | FloatFieldRefInput<$PrismaModel>
+    lte?: number | FloatFieldRefInput<$PrismaModel>
+    gt?: number | FloatFieldRefInput<$PrismaModel>
+    gte?: number | FloatFieldRefInput<$PrismaModel>
+    not?: NestedFloatWithAggregatesFilter<$PrismaModel> | number
+    _count?: NestedIntFilter<$PrismaModel>
+    _avg?: NestedFloatFilter<$PrismaModel>
+    _sum?: NestedFloatFilter<$PrismaModel>
+    _min?: NestedFloatFilter<$PrismaModel>
+    _max?: NestedFloatFilter<$PrismaModel>
   }
 
   export type UserCreateWithoutReferralsInput = {
@@ -20394,8 +20178,6 @@ export namespace Prisma {
     province: string
     province_id: string
     postcode?: string | null
-    latitude: number
-    longitude: number
     is_primary?: boolean
     created_at?: Date | string
     updated_at?: Date | string
@@ -20411,8 +20193,6 @@ export namespace Prisma {
     province: string
     province_id: string
     postcode?: string | null
-    latitude: number
-    longitude: number
     is_primary?: boolean
     created_at?: Date | string
     updated_at?: Date | string
@@ -20662,8 +20442,6 @@ export namespace Prisma {
     province?: StringFilter<"Address"> | string
     province_id?: StringFilter<"Address"> | string
     postcode?: StringNullableFilter<"Address"> | string | null
-    latitude?: FloatFilter<"Address"> | number
-    longitude?: FloatFilter<"Address"> | number
     is_primary?: BoolFilter<"Address"> | boolean
     created_at?: DateTimeFilter<"Address"> | Date | string
     updated_at?: DateTimeFilter<"Address"> | Date | string
@@ -21110,8 +20888,6 @@ export namespace Prisma {
     id?: string
     name: string
     address: string
-    latitude: number
-    longitude: number
     createdAt?: Date | string
     orders?: OrderCreateNestedManyWithoutStoreInput
   }
@@ -21120,8 +20896,6 @@ export namespace Prisma {
     id?: string
     name: string
     address: string
-    latitude: number
-    longitude: number
     createdAt?: Date | string
     orders?: OrderUncheckedCreateNestedManyWithoutStoreInput
   }
@@ -21175,8 +20949,6 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
     address?: StringFieldUpdateOperationsInput | string
-    latitude?: FloatFieldUpdateOperationsInput | number
-    longitude?: FloatFieldUpdateOperationsInput | number
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     orders?: OrderUpdateManyWithoutStoreNestedInput
   }
@@ -21185,8 +20957,6 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
     address?: StringFieldUpdateOperationsInput | string
-    latitude?: FloatFieldUpdateOperationsInput | number
-    longitude?: FloatFieldUpdateOperationsInput | number
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     orders?: OrderUncheckedUpdateManyWithoutStoreNestedInput
   }
@@ -21458,8 +21228,6 @@ export namespace Prisma {
     id?: string
     name: string
     address: string
-    latitude: number
-    longitude: number
     createdAt?: Date | string
     products?: ProductStockCreateNestedManyWithoutStoreInput
   }
@@ -21468,8 +21236,6 @@ export namespace Prisma {
     id?: string
     name: string
     address: string
-    latitude: number
-    longitude: number
     createdAt?: Date | string
     products?: ProductStockUncheckedCreateNestedManyWithoutStoreInput
   }
@@ -21623,8 +21389,6 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
     address?: StringFieldUpdateOperationsInput | string
-    latitude?: FloatFieldUpdateOperationsInput | number
-    longitude?: FloatFieldUpdateOperationsInput | number
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     products?: ProductStockUpdateManyWithoutStoreNestedInput
   }
@@ -21633,8 +21397,6 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
     address?: StringFieldUpdateOperationsInput | string
-    latitude?: FloatFieldUpdateOperationsInput | number
-    longitude?: FloatFieldUpdateOperationsInput | number
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     products?: ProductStockUncheckedUpdateManyWithoutStoreNestedInput
   }
@@ -22201,8 +21963,6 @@ export namespace Prisma {
     province: string
     province_id: string
     postcode?: string | null
-    latitude: number
-    longitude: number
     is_primary?: boolean
     created_at?: Date | string
     updated_at?: Date | string
@@ -22393,8 +22153,6 @@ export namespace Prisma {
     province?: StringFieldUpdateOperationsInput | string
     province_id?: StringFieldUpdateOperationsInput | string
     postcode?: NullableStringFieldUpdateOperationsInput | string | null
-    latitude?: FloatFieldUpdateOperationsInput | number
-    longitude?: FloatFieldUpdateOperationsInput | number
     is_primary?: BoolFieldUpdateOperationsInput | boolean
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -22410,8 +22168,6 @@ export namespace Prisma {
     province?: StringFieldUpdateOperationsInput | string
     province_id?: StringFieldUpdateOperationsInput | string
     postcode?: NullableStringFieldUpdateOperationsInput | string | null
-    latitude?: FloatFieldUpdateOperationsInput | number
-    longitude?: FloatFieldUpdateOperationsInput | number
     is_primary?: BoolFieldUpdateOperationsInput | boolean
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -22427,8 +22183,6 @@ export namespace Prisma {
     province?: StringFieldUpdateOperationsInput | string
     province_id?: StringFieldUpdateOperationsInput | string
     postcode?: NullableStringFieldUpdateOperationsInput | string | null
-    latitude?: FloatFieldUpdateOperationsInput | number
-    longitude?: FloatFieldUpdateOperationsInput | number
     is_primary?: BoolFieldUpdateOperationsInput | boolean
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     updated_at?: DateTimeFieldUpdateOperationsInput | Date | string

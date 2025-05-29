@@ -1,107 +1,116 @@
-// import { Request, Response } from 'express';
-// import bcrypt from 'bcrypt';
-// import prisma from '../prisma';
+import { Request, Response } from 'express';
+import bcrypt from 'bcrypt';
+import { PrismaClient } from '../../prisma/generated/client';
 
-// export const superAdminController = {
-//   async getAll(req: Request, res: Response) {
-//     try {
-//       const superAdmins = await prisma.user.findMany({
-//         where: { roles: 'SUPER_ADMIN' },
-//       });
-//       res.json(superAdmins);
-//     } catch (error) {
-//       res.status(500).json({ error: 'Internal server error' });
-//     }
-//   },
+const prisma = new PrismaClient();
+
+export const SuperAdminController = {
+  // GET all Store Admins
+  async getAllStoreAdmins(req: Request, res: Response) {
+    try {
+      const storeAdmins = await prisma.user.findMany({
+        where: { roles: 'ADMIN' },
+        select: {
+          id: true,
+          name: true,
+          email: true,
+          roles: true,
+          createdAt: true,
+          Address: {
+            select: {
+              address: true,
+              city: true,
+              province: true,
+      
+            },
+          },
+        },
+      });
+
+      res.status(200).json(storeAdmins);
+    } catch (error) {
+      console.error('Error getting store admins:', error);
+      res.status(500).json({ error: 'Internal server error' });
+    }
+  },
+
+  // CREATE new Store Admin + Optional Address
+  async createStoreAdmin(req: Request, res: Response) {
+    try {
+      const {
+        name,
+        email,
+        password = 'storeadmin123',
+        address,
+        city,
+        province,
+  
+      } = req.body;
+
+      if (!name || !email || !address || !city || !province ) {
+   res.status(400).json({ error: 'Missing required fields' });
+}
 
 
-//   async getById(req: Request, res: Response) {
-//     try {
-//       const { id } = req.params;
-//       const superAdmin = await prisma.user.findUnique({ where: { id } });
+      const existingUser = await prisma.user.findUnique({ where: { email } });
+      if (existingUser) {
+         res.status(400).json({ error: 'Email already in use' });
+      }
 
-//       if (!superAdmin || superAdmin.roles !== 'SUPER_ADMIN') {
-//         return res.status(404).json({ error: 'Super Admin not found' });
-//       }
+      const hashedPassword = await bcrypt.hash(password, 10);
 
-//       res.json(superAdmin);
-//     } catch (error) {
-//       res.status(500).json({ error: 'Internal server error' });
-//     }
-//   },
+      const newUser = await prisma.user.create({
+        data: {
+          name,
+          email,
+          password: hashedPassword,
+          roles: 'ADMIN',
+          isVerify: true,
+          isPendingVerification: false,
+          referralCode: crypto.randomUUID(), // sesuai dengan schema wajib
+          Address: {
+            create: {
+              address_name: 'Toko Utama',
+              address,
+              city,
+              province,
+              city_id: 'CITY_ID', // ganti sesuai kebutuhan
+              province_id: 'PROVINCE_ID', // ganti sesuai kebutuhan
+              is_primary: true,
+            },
+          },
+        },
+      });
 
-//   // CREATE new Super Admin
-//   async create(req: Request, res: Response) {
-//     try {
-//       const { name, email, password } = req.body;
+      res.status(201).json({
+        id: newUser.id,
+        name: newUser.name,
+        email: newUser.email,
+        roles: newUser.roles,
+      });
+    } catch (error) {
+      console.error('Error creating store admin:', error);
+      res.status(500).json({ error: 'Internal server error' });
+    }
+  },
 
-//       const existingUser = await prisma.user.findUnique({ where: { email } });
-//       if (existingUser) {
-//         return res.status(400).json({ error: 'Email already in use' });
-//       }
+  // DELETE Store Admin by ID
+  async deleteStoreAdmin(req: Request, res: Response) {
+    try {
+      const { id } = req.params;
 
-//       const hashedPassword = await bcrypt.hash(password, 10);
-//       const referralCode = Math.random().toString(36).substring(2, 8).toUpperCase();
+      const user = await prisma.user.findUnique({ where: { id } });
 
-//       const newSuperAdmin = await prisma.user.create({
-//         data: {
-//           name,
-//           email,
-//           password: hashedPassword,
-//           roles: 'SUPER_ADMIN',
-//           referralCode,
-//           isVerify: true,
-//           isPendingVerification: false
-//         }
-//       });
+      if (!user || user.roles !== 'ADMIN') {
+         res.status(404).json({ error: 'Store Admin not found' });
+      }
 
-//       res.status(201).json(newSuperAdmin);
-//     } catch (error) {
-//       res.status(500).json({ error: 'Internal server error' });
-//     }
-//   },
+      await prisma.user.delete({ where: { id } });
 
-//   // UPDATE Super Admin
-//   async update(req: Request, res: Response) {
-//     try {
-//       const { id } = req.params;
-//       const { name, email, password } = req.body;
-
-//       const user = await prisma.user.findUnique({ where: { id } });
-//       if (!user || user.roles !== 'SUPER_ADMIN') {
-//         return res.status(404).json({ error: 'Super Admin not found' });
-//       }
-
-//       const updatedUser = await prisma.user.update({
-//         where: { id },
-//         data: {
-//           name,
-//           email,
-//           password: password ? await bcrypt.hash(password, 10) : undefined,
-//         }
-//       });
-
-//       res.json(updatedUser);
-//     } catch (error) {
-//       res.status(500).json({ error: 'Internal server error' });
-//     }
-//   },
-
-//   // DELETE Super Admin
-//   async delete(req: Request, res: Response) {
-//     try {
-//       const { id } = req.params;
-
-//       const user = await prisma.user.findUnique({ where: { id } });
-//       if (!user || user.roles !== 'SUPER_ADMIN') {
-//         return res.status(404).json({ error: 'Super Admin not found' });
-//       }
-
-//       await prisma.user.delete({ where: { id } });
-
-//       res.json({ message: 'Super Admin deleted successfully' });
-//     } catch (error) {
-//       res.status(500).json({ error: 'Internal server error' });
-//     }
-//   }
-// };
+      res.status(200).json({ message: 'Store Admin deleted successfully' });
+    } catch (error) {
+      console.error('Error deleting store admin:', error);
+      res.status(500).json({ error: 'Internal server error' });
+    }
+  }
+};

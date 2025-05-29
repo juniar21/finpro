@@ -28,6 +28,24 @@ model User {
   updatedAt             DateTime   @updatedAt
   isVerify              Boolean    @default(false)
   isPendingVerification Boolean    @default(true)
+  Address               Address[]
+}
+
+model Address {
+  address_id   String   @id @default(uuid()) // Change to String
+  id           String // Change to String
+  address_name String   @db.Text
+  address      String   @db.Text
+  subdistrict  String?
+  city         String
+  city_id      String
+  province     String
+  province_id  String
+  postcode     String?
+  is_primary   Boolean  @default(false)
+  created_at   DateTime @default(now())
+  updated_at   DateTime @default(now())
+  user         User     @relation(fields: [id], references: [id], onDelete: Cascade)
 }
 
 enum Role {
@@ -40,8 +58,6 @@ model Store {
   id        String         @id @default(uuid())
   name      String
   address   String
-  latitude  Float
-  longitude Float
   products  ProductStock[]
   orders    Order[]        @relation("StoreOrders")
   createdAt DateTime       @default(now())
