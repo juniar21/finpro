@@ -14,6 +14,8 @@ type User = {
   name: string;
   email: string;
   role: string;
+  storeName?: string;
+  storeLocation?: string;
 };
 
 export default function SuperAdminDashboard() {
@@ -22,14 +24,38 @@ export default function SuperAdminDashboard() {
 
   const [users, setUsers] = useState<User[]>([]);
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
-  const [newUser, setNewUser] = useState({ name: "", email: "" });
+  const [newUser, setNewUser] = useState({
+    name: "",
+    email: "",
+    storeName: "",
+    storeLocation: "",
+  });
 
   // Load dummy data on mount
   useEffect(() => {
     const dummyUsers: User[] = [
-      { id: "1", name: "Evan", email: "evan@example.com", role: "SUPER_ADMIN" },
-      { id: "2", name: "Alice", email: "alice@example.com", role: "STORE_ADMIN" },
-      { id: "3", name: "Charlie", email: "charlie@example.com", role: "STORE_ADMIN" },
+      {
+        id: "1",
+        name: "Evan",
+        email: "evan@example.com",
+        role: "SUPER_ADMIN",
+      },
+      {
+        id: "2",
+        name: "Alice",
+        email: "alice@example.com",
+        role: "STORE_ADMIN",
+        storeName: "Toko Alice",
+        storeLocation: "Padang",
+      },
+      {
+        id: "3",
+        name: "Charlie",
+        email: "charlie@example.com",
+        role: "STORE_ADMIN",
+        storeName: "Toko Charlie",
+        storeLocation: "Solok",
+      },
     ];
     setUsers(dummyUsers);
   }, []);
@@ -63,20 +89,24 @@ export default function SuperAdminDashboard() {
   };
 
   const handleAddUser = () => {
-    if (!newUser.name || !newUser.email) {
-      alert("Nama dan email wajib diisi.");
+    const { name, email, storeName, storeLocation } = newUser;
+
+    if (!name || !email || !storeName || !storeLocation) {
+      alert("Semua field wajib diisi.");
       return;
     }
 
     const newUserObj: User = {
       id: Date.now().toString(),
-      name: newUser.name,
-      email: newUser.email,
+      name,
+      email,
       role: "STORE_ADMIN",
+      storeName,
+      storeLocation,
     };
 
     setUsers([...users, newUserObj]);
-    setNewUser({ name: "", email: "" });
+    setNewUser({ name: "", email: "", storeName: "", storeLocation: "" });
     setIsAddModalOpen(false);
   };
 
@@ -153,6 +183,7 @@ export default function SuperAdminDashboard() {
                     <th className="p-3">Nama</th>
                     <th className="p-3">Email</th>
                     <th className="p-3">Role</th>
+                    <th className="p-3">Toko</th>
                     <th className="p-3">Aksi</th>
                   </tr>
                 </thead>
@@ -163,6 +194,11 @@ export default function SuperAdminDashboard() {
                       <td className="p-3">{user.name}</td>
                       <td className="p-3">{user.email}</td>
                       <td className="p-3">{user.role}</td>
+                      <td className="p-3">
+                        {user.role === "STORE_ADMIN"
+                          ? `${user.storeName} (${user.storeLocation})`
+                          : "-"}
+                      </td>
                       <td className="p-3 space-x-2">
                         {user.role === "STORE_ADMIN" && (
                           <>
@@ -213,6 +249,28 @@ export default function SuperAdminDashboard() {
               onChange={(e) => setNewUser({ ...newUser, email: e.target.value })}
               className="w-full border p-2 rounded mb-4"
               placeholder="Email Store Admin"
+            />
+
+            <label className="block mb-2 font-medium">Nama Toko</label>
+            <input
+              type="text"
+              value={newUser.storeName}
+              onChange={(e) =>
+                setNewUser({ ...newUser, storeName: e.target.value })
+              }
+              className="w-full border p-2 rounded mb-4"
+              placeholder="Contoh: Toko Sumber Rejeki"
+            />
+
+            <label className="block mb-2 font-medium">Lokasi Toko</label>
+            <input
+              type="text"
+              value={newUser.storeLocation}
+              onChange={(e) =>
+                setNewUser({ ...newUser, storeLocation: e.target.value })
+              }
+              className="w-full border p-2 rounded mb-4"
+              placeholder="Contoh: Bukittinggi"
             />
 
             <div className="flex justify-end gap-2">

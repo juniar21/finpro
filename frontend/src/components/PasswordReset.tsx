@@ -5,56 +5,58 @@ import { useState } from "react";
 import * as yup from "yup";
 import { AiFillEye, AiFillEyeInvisible } from "react-icons/ai";
 import Image from "next/image";
-import { signIn } from "next-auth/react";
-import axios from "@/lib/axios";
 import { toast } from "react-toastify";
-import { FcGoogle } from "react-icons/fc";
+import axios from "@/lib/axios";
 
-const LoginSchema = yup.object().shape({
-  email: yup.string().email("Format email salah").required("email wajib diisi"),
-  password: yup.string().min(6, "Minimal 6 karakter").required("password wajib diisi"),
+// Validation schema using Yup
+const ResetPasswordSchema = yup.object().shape({
+  password: yup
+    .string()
+    .min(6, "Password must be at least 6 characters")
+    .required("Password is required"),
+  confirmPassword: yup
+    .string()
+    .oneOf([yup.ref("password"), undefined], "Passwords must match")
+    .required("Confirm password is required"),
 });
 
-interface ILoginForm {
-  email: string;
+interface IResetPasswordForm {
   password: string;
+  confirmPassword: string;
 }
 
-export default function FormLogin() {
+export default function ResetPasswordVerification() {
   const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
-  const initialValues: ILoginForm = {
-    email: "",
+  // Initial values for the form
+  const initialValues: IResetPasswordForm = {
     password: "",
+    confirmPassword: "",
   };
 
-  const onLogin = async (
-    value: ILoginForm,
-    action: FormikHelpers<ILoginForm>
+  // Handle reset password
+  const onResetPassword = async (
+    value: IResetPasswordForm,
+    action: FormikHelpers<IResetPasswordForm>
   ) => {
+    const token = window.location.pathname.split("/")[2]; // Extract token from the URL
+
     try {
-      const { data } = await axios.post("/auth/login", value);
-      const user = data.data;
-
-      console.log("Login data:", user);
-      await signIn("credentials", {
-        redirectTo: "/",
-        id: user.id,
-        email: user.email,
-        password: value.password,
-        name: user.name,
-        avatar: user.avatar ?? "",
-        referralCode: user.referralCode ?? "",
-        referralBy: user.referredBy ?? "",
-        role: user.role,
-        accessToken: data.access_token,
-      });
-
-      toast.success(data.message);
-      action.resetForm();
+      const { data } = await axios.post(
+        "/auth/reset-password-verify",
+        value,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      toast.success(data.message); // Success message
+      action.resetForm(); // Reset the form fields
     } catch (err) {
       console.error(err);
-      toast.error("Terjadi kesalahan saat login.");
+      toast.error("An error occurred while resetting the password.");
     }
   };
 
@@ -62,11 +64,10 @@ export default function FormLogin() {
     <div className="flex flex-col lg:flex-row min-h-screen">
       {/* Left Section */}
       <div className="lg:w-1/2 bg-gradient-to-r from-gray-300 p-10 flex flex-col justify-center items-center text-white">
-        <h1 className="text-4xl text-black font-semibold mb-4">Welcome back</h1>
+        <h1 className="text-4xl text-black font-semibold mb-4">Reset Password</h1>
         <p className="text-lg text-center mb-8 text-black">
-          Temukan berbagai koleksi baju terbaru di toko baju Shop.co, belanja dengan mudah dan aman, dan dapatkan penawaran spesial setiap hari!
+          Please enter your new password and confirm it.
         </p>
-
         <Image src="/main1.png" alt="Logo" width={600} height={200} />
       </div>
 
@@ -74,36 +75,25 @@ export default function FormLogin() {
       <div className="lg:w-1/2 p-10 flex justify-center items-center">
         <Formik
           initialValues={initialValues}
-          validationSchema={LoginSchema}
-          onSubmit={onLogin}
+          validationSchema={ResetPasswordSchema}
+          onSubmit={onResetPassword}
         >
-          {(props: FormikProps<ILoginForm>) => {
+          {(props: FormikProps<IResetPasswordForm>) => {
             const { touched, errors, isSubmitting } = props;
             return (
               <Form className="flex flex-col border px-10 pb-5 pt-5 border-gray-500 w-full max-w-sm">
                 <div className="flex justify-center mb-6">
                   <Image
                     src="/logo.png"
-                    alt="Logo IG"
+                    alt="Logo"
                     width={150}
                     height={75}
                   />
                 </div>
-                {/* Field untuk email */}
-                <Field
-                  placeholder="Email"
-                  name="email"
-                  type="email"
-                  className="mt-2 mb-1 p-2 border border-gray-300 placeholder:text-[14px] rounded-md shadow-md"
-                />
-                {touched.email && errors.email ? (
-                  <div className="text-red-500 text-[12px]">{errors.email}</div>
-                ) : null}
-
-                {/* Field untuk password */}
+                {/* Password Field */}
                 <div className="relative">
                   <Field
-                    placeholder="Password"
+                    placeholder="New Password"
                     name="password"
                     type={showPassword ? "text" : "password"}
                     className="mt-2 mb-1 p-2 pr-10 border border-gray-300 placeholder:text-[14px] rounded-md shadow-md w-full"
@@ -124,13 +114,37 @@ export default function FormLogin() {
                   <div className="text-red-500 text-[12px]">{errors.password}</div>
                 ) : null}
 
+                {/* Confirm Password Field */}
+                <div className="relative">
+                  <Field
+                    placeholder="Confirm Password"
+                    name="confirmPassword"
+                    type={showConfirmPassword ? "text" : "password"}
+                    className="mt-2 mb-1 p-2 pr-10 border border-gray-300 placeholder:text-[14px] rounded-md shadow-md w-full"
+                  />
+                  <button
+                    type="button"
+                    className="absolute right-2 top-1/2 transform -translate-y-1/2 text-gray-600"
+                    onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                  >
+                    {showConfirmPassword ? (
+                      <AiFillEyeInvisible size={20} />
+                    ) : (
+                      <AiFillEye size={20} />
+                    )}
+                  </button>
+                </div>
+                {touched.confirmPassword && errors.confirmPassword ? (
+                  <div className="text-red-500 text-[12px]">{errors.confirmPassword}</div>
+                ) : null}
+
                 {/* Submit Button */}
                 <button
                   className="text-white py-2 px-3 mt-2 rounded-md bg-blue-500 disabled:bg-gray-400 disabled:cursor-none text-sm"
                   type="submit"
                   disabled={isSubmitting}
                 >
-                  {isSubmitting ? "Loading..." : "Sign In"}
+                  {isSubmitting ? "Submitting..." : "Reset Password"}
                 </button>
 
                 {/* Divider */}
@@ -140,28 +154,11 @@ export default function FormLogin() {
                   <div className="flex-grow h-[1px] bg-gray-300" />
                 </div>
 
-                {/* Google Login */}
-                <button
-                  type="button"
-                  onClick={() => signIn("google", { callbackUrl: "/" })}
-                  className="flex items-center justify-center gap-2 py-2 px-3 rounded-md border border-gray-300 text-sm text-gray-700 hover:bg-gray-100"
-                >
-                  <FcGoogle size={20} />
-                  Login with Google
-                </button>
-
                 {/* Register Link */}
                 <div className="text-center mt-4">
-                  <span className="text-sm text-gray-500">Don't have an account? </span>
-                  <a href="/register" className="text-blue-500 hover:underline">
-                    Register here
-                  </a>
-                </div>
-
-                {/* Lupa Pass*/}
-                <div className="text-center mt-4">
-                  <a href="/resetpassreq" className="text-blue-500 hover:underline">
-                    Forget Password
+                  <span className="text-sm text-gray-500">Remembered your password? </span>
+                  <a href="/login" className="text-blue-500 hover:underline">
+                    Login here
                   </a>
                 </div>
               </Form>
