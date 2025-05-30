@@ -1,4 +1,4 @@
-import Image from "next/image";
+
 import FormComp from "./_components";
 
 export default function Page() {

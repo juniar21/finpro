@@ -18,11 +18,7 @@ export class SuperAdminRouter {
     // Menggunakan middleware verifyToken dan verifySuperAdmin
     
 
-    this.router.post(
-      '/',
-      this.authMiddleware.verifyToken,
-      this.superAdminController.createStoreAdmin
-    );
+   this.router.post("/",this.superAdminController.createstoreadmin);
 
     this.router.delete(
       '/:id',

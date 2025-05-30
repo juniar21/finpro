@@ -100,22 +100,30 @@ export default function Navbar() {
               {session ? (
                 <div className="flex items-center space-x-2">
                     <button
-                    type="button"
-                    className="focus:outline-none hover:cursor-pointer"
-                    onClick={() => window.location.href = '/profile'}
+                      type="button"
+                      className="focus:outline-none hover:cursor-pointer"
+                      onClick={() => {
+                      if (session.user.role === "SUPER_ADMIN") {
+                        window.location.href = "/super-admin";
+                      } else if (session.user.role === "ADMIN") {
+                        window.location.href = "/Store";
+                      } else {
+                        window.location.href = "/profile";
+                      }
+                      }}
                     >
-                    <Image
+                      <Image
                       src={
-                      session.user.avatar ||
-                      "https://res.cloudinary.com/dexlqslwj/image/upload/v1744257672/blank-image_yfczs3_ogl5pp.jpg"
+                        session.user.avatar ||
+                        "https://res.cloudinary.com/dexlqslwj/image/upload/v1744257672/blank-image_yfczs3_ogl5pp.jpg"
                       }
                       height={40}
                       width={40}
                       alt="avatar"
                       className="rounded-full"
-                    />
+                      />
                     </button>
-                    <Link href="/profile" className="text-sm font-semibold hover:underline">
+                    <Link href="/" className="text-sm font-semibold hover:underline">
                     {session.user?.name}
                     </Link>
                   <button
