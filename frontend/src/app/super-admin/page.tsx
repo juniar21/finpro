@@ -33,7 +33,7 @@ export default function SuperAdminDashboard() {
     name: "",
     email: "",
     storeName: "",
-    storeLocation: "",
+    storeLocation: "",  
   });
 
   if (loading) {

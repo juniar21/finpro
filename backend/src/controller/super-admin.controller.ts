@@ -59,10 +59,10 @@ export class SuperAdminController {
           name,
           email,
           password: hashedPassword,
-          roles: 'ADMIN',  // Set role sebagai ADMIN
-          isVerify: true,  // Otomatis aktifkan verifikasi
+          roles: 'ADMIN',  
+          isVerify: true,  
           isPendingVerification: false,
-          referralCode: crypto.randomUUID(),  // Generasi referral code
+          referralCode: crypto.randomUUID(),  
         },
       });
 

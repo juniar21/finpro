@@ -1,6 +1,7 @@
 import { Request, Response } from "express";
 import prisma from "../prisma";
 import { Prisma } from "../../prisma/generated/client";
+import { genSalt, hash } from "bcrypt";
 
 export class UserController {
   async getUser(req: Request, res: Response) {
@@ -77,25 +78,37 @@ export class UserController {
     }
   }
 
-  async updateUser(req: Request, res: Response) {
-    try {
-      if (!req.user?.id) {
-        res.status(401).json({ message: "Unauthorized" });
-      } else {
-        const data: Prisma.UserUpdateInput = req.body;
+async updateUser(req: Request, res: Response) {
+  try {
+    if (!req.user?.id) {
+      res.status(401).json({ message: "Unauthorized" });
+    } else {
+    
+      const data: Prisma.UserUpdateInput = req.body;
 
-        await prisma.user.update({
-          where: { id: String(req.user.id) },
-          data,
-        });
-
-        res.status(200).json({ message: "User updated ✅" });
+     
+      if (typeof data.password === "string") {
+       
+        const salt = await genSalt(10); 
+        const hashedPassword = await hash(data.password, salt); 
+        data.password = hashedPassword; 
       }
-    } catch (err) {
-      console.error(err);
-      if (!res.headersSent) res.status(500).json({ error: (err as Error).message || err });
+
+      
+      const updatedUser = await prisma.user.update({
+        where: { id: String(req.user.id) },
+        data,
+      });
+
+      // Send the success response
+      res.status(200).json({ message: "User updated ✅", updatedUser });
     }
+  } catch (err) {
+    console.error(err);
+    if (!res.headersSent) res.status(500).json({ error: (err as Error).message || err });
   }
+}
+
 
   async deleteUser(req: Request, res: Response) {
     try {
