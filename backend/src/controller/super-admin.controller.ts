@@ -5,35 +5,7 @@ import crypto from 'crypto';
 
 export class SuperAdminController {
   // Mendapatkan semua Store Admin hanya untuk super_admin
-  async getAllStoreAdmins(req: Request, res: Response) {
-    try {
-      // Cek apakah user yang mengakses adalah super_admin, jika tidak, akan ditangani oleh middleware
-      const storeAdmins = await prisma.user.findMany({
-        where: { roles: 'ADMIN' },
-        select: {
-          id: true,
-          name: true,
-          email: true,
-          roles: true,
-          createdAt: true,
-          Address: {
-            select: {
-              address: true,
-              city: true,
-              province: true,
-            },
-          },
-        },
-      });
-
-      res.status(200).json(storeAdmins);
-    } catch (error) {
-      console.error('Error getting store admins:', error);
-      res.status(500).json({ error: 'Internal server error' });
-    }
-  }
-
-  // CREATE new Store Admin + Optional Address
+  
   async createStoreAdmin(req: Request, res: Response) {
     try {
       const { name, email, password = 'storeadmin123', address, city, province } = req.body;
@@ -84,7 +56,7 @@ export class SuperAdminController {
     }
   }
 
-  // DELETE Store Admin by ID
+
   async deleteStoreAdmin(req: Request, res: Response) {
     try {
       const { id } = req.params;
