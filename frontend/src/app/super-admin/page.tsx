@@ -24,11 +24,10 @@ export default function SuperAdminDashboard() {
   const loading = status === "loading";
 
   const [users, setUsers] = useState<User[]>([
-    // Sample users, you can replace this with static data
     { id: "1", name: "Admin Store 1", email: "admin1@example.com", role: "STORE_ADMIN", storeName: "Store A", storeLocation: "Location A" },
     { id: "2", name: "Admin Store 2", email: "admin2@example.com", role: "STORE_ADMIN", storeName: "Store B", storeLocation: "Location B" },
   ]);
-  
+
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
   const [newUser, setNewUser] = useState({
     name: "",
@@ -55,6 +54,11 @@ export default function SuperAdminDashboard() {
 
   const totalUsers = users.length;
 
+  const handleAddUser = (userData: User) => {
+    setUsers([...users, { ...userData, id: (users.length + 1).toString() }]);
+    setNewUser({ name: "", email: "", storeName: "", storeLocation: "" });
+  };
+
   const handleEdit = (userId: string) => {
     alert(`Edit user ID: ${userId} (Coming soon)`);
   };
@@ -63,28 +67,6 @@ export default function SuperAdminDashboard() {
     if (confirm("Yakin ingin menghapus user ini?")) {
       setUsers(users.filter((user) => user.id !== userId));
     }
-  };
-
-  const handleAddUser = () => {
-    const { name, email, storeName, storeLocation } = newUser;
-
-    if (!name || !email || !storeName || !storeLocation) {
-      alert("Semua field wajib diisi.");
-      return;
-    }
-
-    const newUserData = {
-      id: (users.length + 1).toString(),
-      name,
-      email,
-      storeName,
-      storeLocation,
-      role: "STORE_ADMIN", // Assign role for new user
-    };
-
-    setUsers([...users, newUserData]);
-    setNewUser({ name: "", email: "", storeName: "", storeLocation: "" });
-    setIsAddModalOpen(false);
   };
 
   return (
@@ -119,38 +101,19 @@ export default function SuperAdminDashboard() {
             </div>
           </div>
 
-          <div className="flex items-center gap-6 bg-white p-6 rounded shadow max-w-xl mb-10">
-            {session.user?.avatar ? (
-              <Image
-                src={session.user.avatar}
-                alt="Avatar"
-                width={100}
-                height={100}
-                className="rounded-full object-cover border-4 border-blue-500"
-              />
-            ) : (
-              <div className="w-24 h-24 bg-gray-300 rounded-full flex items-center justify-center text-gray-600">
-                No Image
-              </div>
-            )}
-            <div>
-              <h3 className="text-xl font-semibold">{session.user?.name}</h3>
-              <p>{session.user?.email}</p>
-            </div>
+          {/* Add User Button */}
+          <div className="flex justify-end mb-4">
+            <button
+              onClick={() => setIsAddModalOpen(true)}
+              className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
+            >
+              + Tambah Store Admin
+            </button>
           </div>
 
-          {/* Daftar Pengguna */}
+          {/* Users Table */}
           <section id="users">
             <h2 className="text-2xl font-bold mb-4">Daftar Pengguna</h2>
-
-            <div className="flex justify-end mb-4">
-              <button
-                onClick={() => setIsAddModalOpen(true)}
-                className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
-              >
-                + Tambah Store Admin
-              </button>
-            </div>
 
             <div className="overflow-x-auto bg-white rounded shadow">
               <table className="min-w-full table-auto border-collapse">
@@ -174,7 +137,7 @@ export default function SuperAdminDashboard() {
                       <td className="p-3">
                         {user.role === "STORE_ADMIN"
                           ? `${user.storeName} (${user.storeLocation})`
-                          : "-" }
+                          : "-"}
                       </td>
                       <td className="p-3 space-x-2">
                         {user.role === "STORE_ADMIN" && (
@@ -202,14 +165,13 @@ export default function SuperAdminDashboard() {
           </section>
         </main>
       </div>
+
       <Footer />
 
-      {/* Modal Tambah Store Admin */}
+      {/* Add Store Admin Modal */}
       <AddStoreAdminModal
         isOpen={isAddModalOpen}
         setIsOpen={setIsAddModalOpen}
-        newUser={newUser}
-        setNewUser={setNewUser}
         handleAddUser={handleAddUser}
       />
     </>

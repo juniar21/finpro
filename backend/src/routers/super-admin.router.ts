@@ -22,11 +22,7 @@ export class SuperAdminRouter {
       this.superAdminController.getAllStoreAdmins
     );
 
-    this.router.post(
-      '/',
-      this.authMiddleware.verifyToken,
-      this.superAdminController.createStoreAdmin
-    );
+   this.router.post("/",this.superAdminController.createstoreadmin);
 
     this.router.delete(
       '/:id',
