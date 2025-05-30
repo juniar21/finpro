@@ -16,11 +16,7 @@ export class SuperAdminRouter {
 
   private initializeRoute() {
     // Menggunakan middleware verifyToken dan verifySuperAdmin
-    this.router.get(
-      '/getadmin',
-      this.authMiddleware.verifyToken,
-      this.superAdminController.getAllStoreAdmins
-    );
+    
 
    this.router.post("/",this.superAdminController.createstoreadmin);
 

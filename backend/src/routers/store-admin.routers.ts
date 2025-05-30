@@ -1,27 +1,33 @@
-// import { Router } from 'express';
-// import { AuthMiddleware } from '../middleware/auth.middleware';
-// import { AdminController } from '../controller/store-admin.controller';
+import { Router } from 'express';
+import { AuthMiddleware } from '../middleware/auth.middleware';
+import { AdminController } from '../controller/store-admin.controller';
 
 
 
-// export class AdminRouter {
-//   private router: Router;
-//   private authMiddleware: AuthMiddleware;
+export class AdminRouter {
+  private router: Router;
+  private adminController: AdminController;
+  private authMiddleware: AuthMiddleware;
 
-//   constructor() {
-//     this.router = Router();
-//     this.authMiddleware = new AuthMiddleware();
-//     this.initializeRoutes();
-//   }
+  constructor() {
+  this.router = Router();
+  this.adminController = new AdminController();
+  this.authMiddleware = new AuthMiddleware();
 
-//   private initializeRoutes() {
+  // Bind method
+  this.adminController.getStoreAdmins = this.adminController.getStoreAdmins.bind(this.adminController);
+
+  this.initializeRoutes();
+}
+
+
+  private initializeRoutes() {
    
-//     this.router.use(this.authMiddleware.verifyToken);
-//     this.router.get('/admin-store', AdminController.getStoreAdmins);
+    this.router.get("/",this.adminController.getStoreAdmins);
    
-//   }
+  }
 
-//   getRouter(): Router {
-//     return this.router;
-//   }
-// }
+  getRouter(): Router {
+    return this.router;
+  }
+}

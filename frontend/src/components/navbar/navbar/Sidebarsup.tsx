@@ -21,7 +21,7 @@ export default function Sidebarsup() {
     },
     {
       name: "Semua Pengguna",
-      href: "/superadmin/users",
+      href: "/super-admin/semuapengguna",
       icon: <FiUsers size={20} />,
     },
     {

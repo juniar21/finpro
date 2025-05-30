@@ -6,6 +6,7 @@ import { AuthRouter } from "./routers/auth.router";
 import path from "path";
 import { RewardRouter } from "./routers/reward.router";
 import { SuperAdminRouter } from "./routers/super-admin.router";
+import { AdminRouter } from "./routers/store-admin.routers";
 //import cron from "node-cron";
 // import { OrderRouter } from "./routers/order.router";
 
@@ -32,6 +33,9 @@ app.use("/api/rewards", rewardRouter.getRouter());
 
 const superAdminRouter = new SuperAdminRouter();
 app.use("/api/super-admin", superAdminRouter.getRouter());
+
+const adminRouter = new AdminRouter();
+app.use("/api/store-admin",adminRouter.getRouter());
 
 
 // scheduler

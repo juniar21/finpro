@@ -1,178 +1,176 @@
-"use client";
+'use client';
 
 import Navbar from "@/components/navbar/navbar/Navbar";
 import Footer from "@/components/navbar/navbar/footer";
 import Sidebarsup from "@/components/navbar/navbar/Sidebarsup";
-import { useSession } from "next-auth/react";
-import { useState } from "react";
-import { VscVerifiedFilled } from "react-icons/vsc";
-import Image from "next/image";
-import Link from "next/link";
+import { useEffect, useState } from "react";
+import axios from "@/lib/axios";
 import AddStoreAdminModal from "@/components/modal/addadminstore";
+import { useSession } from "next-auth/react";
 
-type User = {
+interface StoreAdmin {
   id: string;
   name: string;
   email: string;
-  role: string;
+  roles: string;
   storeName?: string;
   storeLocation?: string;
-};
+}
 
-export default function SuperAdminDashboard() {
+export default function StoreAdminListPage() {
   const { data: session, status } = useSession();
-  const loading = status === "loading";
 
-  const [users, setUsers] = useState<User[]>([
-    { id: "1", name: "Admin Store 1", email: "admin1@example.com", role: "STORE_ADMIN", storeName: "Store A", storeLocation: "Location A" },
-    { id: "2", name: "Admin Store 2", email: "admin2@example.com", role: "STORE_ADMIN", storeName: "Store B", storeLocation: "Location B" },
-  ]);
-
+  const [storeAdmins, setStoreAdmins] = useState<StoreAdmin[]>([]);
+  const [loading, setLoading] = useState(true);
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
-  const [newUser, setNewUser] = useState({
-    name: "",
-    email: "",
-    storeName: "",
-    storeLocation: "",  
-  });
 
-  if (loading) {
+  useEffect(() => {
+    const fetchStoreAdmins = async () => {
+      try {
+        const response = await axios.get('/store-admin');
+        setStoreAdmins(response.data);
+      } catch (error) {
+        console.error('Gagal mengambil data Store Admin:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    if (session?.user?.role === "SUPER_ADMIN") {
+      fetchStoreAdmins();
+    }
+  }, [session]);
+
+  // Fungsi ini dipassing ke modal supaya data baru langsung masuk ke state
+  const handleAddUser = (newUser: StoreAdmin) => {
+    setStoreAdmins((prev) => [...prev, newUser]);
+  };
+
+  if (status === "loading") {
     return (
-      <div className="flex items-center justify-center h-screen">
-        <p>Memuat dashboard...</p>
+      <div className="flex items-center justify-center h-screen bg-gray-50">
+        <p className="text-gray-600 text-lg">Memeriksa sesi pengguna...</p>
       </div>
     );
   }
 
   if (!session || session.user?.role !== "SUPER_ADMIN") {
     return (
-      <div className="flex items-center justify-center h-screen">
-        <p>Anda tidak memiliki akses ke halaman ini.</p>
+      <div className="flex items-center justify-center h-screen bg-gray-50">
+        <p className="text-red-600 text-lg font-semibold">Anda tidak memiliki akses ke halaman ini.</p>
       </div>
     );
   }
 
-  const totalUsers = users.length;
-
-  const handleAddUser = (userData: User) => {
-    setUsers([...users, { ...userData, id: (users.length + 1).toString() }]);
-    setNewUser({ name: "", email: "", storeName: "", storeLocation: "" });
-  };
-
-  const handleEdit = (userId: string) => {
-    alert(`Edit user ID: ${userId} (Coming soon)`);
-  };
-
-  const handleDelete = (userId: string) => {
-    if (confirm("Yakin ingin menghapus user ini?")) {
-      setUsers(users.filter((user) => user.id !== userId));
-    }
-  };
-
   return (
     <>
       <Navbar />
-      <div className="flex h-screen w-full">
-        <aside className="w-64 bg-gray-100 hidden md:block">
+      <div className="flex min-h-screen bg-gray-50">
+        {/* Sidebar */}
+        <aside className="w-64 bg-white border-r border-gray-200 hidden md:block">
           <Sidebarsup />
         </aside>
 
-        <main className="flex-1 p-8 overflow-auto bg-gray-50">
-          <h1 className="text-3xl font-bold mb-6">Dashboard Super Admin</h1>
-
-          <div className="flex flex-col md:flex-row gap-8 mb-8">
-            <div className="bg-white shadow p-6 rounded w-full md:w-1/3">
-              <h2 className="text-xl font-semibold mb-2">Total Pengguna</h2>
-              <p className="text-4xl font-bold text-blue-600">{totalUsers}</p>
-            </div>
-
-            <div className="bg-white shadow p-6 rounded w-full md:w-1/3">
-              <h2 className="text-xl font-semibold mb-2">Peran Anda</h2>
-              <p className="text-lg text-green-700 font-medium flex items-center gap-2">
-                {session.user?.role} <VscVerifiedFilled size={20} />
-              </p>
-            </div>
-
-            <div className="bg-white shadow p-6 rounded w-full md:w-1/3">
-              <h2 className="text-xl font-semibold mb-2">Kelola Pengguna</h2>
-              <Link href="#users" className="text-blue-600 hover:underline">
-                Lihat Daftar
-              </Link>
-            </div>
+        {/* Main Content */}
+        <main className="flex-1 p-8 max-w-full">
+          {/* Header Info Super Admin */}
+          <div className="mb-8 p-6 bg-white rounded-lg shadow-md max-w-md">
+            <p className="text-gray-500 text-sm mb-1">Selamat datang di dashboard Super Admin,</p>
+            <h2 className="text-3xl font-extrabold text-gray-900 tracking-tight mb-1">{session.user?.name ?? "Super Admin"}</h2>
+            <span className="inline-block px-4 py-1 text-xs font-semibold text-white bg-purple-700 rounded-full uppercase tracking-wide select-none">
+              {session.user?.role ?? "SUPER_ADMIN"}
+            </span>
           </div>
 
-          {/* Add User Button */}
-          <div className="flex justify-end mb-4">
+          {/* Header & Action */}
+          <div className="flex flex-col md:flex-row md:items-center md:justify-between mb-6 gap-4">
+            <h1 className="text-4xl font-bold text-gray-900 tracking-tight">Daftar Pengguna</h1>
             <button
               onClick={() => setIsAddModalOpen(true)}
-              className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
+              className="inline-flex items-center gap-2 bg-blue-600 hover:bg-blue-700 focus:ring-4 focus:ring-blue-300 text-white font-semibold px-6 py-3 rounded-lg shadow-md transition duration-300"
+              aria-label="Tambah Store Admin"
             >
-              + Tambah Store Admin
+              <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none"
+                viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M12 4v16m8-8H4" />
+              </svg>
+              Tambah Store Admin
             </button>
           </div>
 
-          {/* Users Table */}
-          <section id="users">
-            <h2 className="text-2xl font-bold mb-4">Daftar Pengguna</h2>
+          {/* Total Store Admin */}
+          {!loading && (
+            <div className="mb-8 inline-block px-6 py-3 bg-blue-100 text-blue-900 rounded-lg shadow-sm font-semibold select-none">
+              Total Store Admin: <span className="text-2xl">{storeAdmins.length}</span>
+            </div>
+          )}
 
-            <div className="overflow-x-auto bg-white rounded shadow">
+          {/* Table List */}
+          {loading ? (
+            <p className="text-gray-600 text-center py-10 text-lg">Memuat data...</p>
+          ) : storeAdmins.length === 0 ? (
+            <p className="text-gray-600 text-center py-10 text-lg">Tidak ada Store Admin yang ditemukan.</p>
+          ) : (
+            <div className="overflow-x-auto rounded-lg shadow-lg bg-white border border-gray-200">
               <table className="min-w-full table-auto border-collapse">
-                <thead>
-                  <tr className="bg-gray-200 text-left">
-                    <th className="p-3">#</th>
-                    <th className="p-3">Nama</th>
-                    <th className="p-3">Email</th>
-                    <th className="p-3">Role</th>
-                    <th className="p-3">Toko</th>
-                    <th className="p-3">Aksi</th>
+                <thead className="bg-gray-100 border-b border-gray-300">
+                  <tr>
+                    <th className="px-7 py-4 text-left text-gray-700 font-semibold tracking-wide">#</th>
+                    <th className="px-7 py-4 text-left text-gray-700 font-semibold tracking-wide">Nama</th>
+                    <th className="px-7 py-4 text-left text-gray-700 font-semibold tracking-wide">Email</th>
+                    <th className="px-7 py-4 text-left text-gray-700 font-semibold tracking-wide">Role</th>
+                    <th className="px-7 py-4 text-left text-gray-700 font-semibold tracking-wide">Toko</th>
+                    <th className="px-7 py-4 text-left text-gray-700 font-semibold tracking-wide">Aksi</th>
                   </tr>
                 </thead>
                 <tbody>
-                  {users.map((user, idx) => (
-                    <tr key={user.id} className="border-t hover:bg-gray-50">
-                      <td className="p-3">{idx + 1}</td>
-                      <td className="p-3">{user.name}</td>
-                      <td className="p-3">{user.email}</td>
-                      <td className="p-3">{user.role}</td>
-                      <td className="p-3">
-                        {user.role === "STORE_ADMIN"
-                          ? `${user.storeName} (${user.storeLocation})`
-                          : "-"}
+                  {storeAdmins.map((admin, index) => (
+                    <tr
+                      key={admin.id}
+                      className="border-b last:border-0 hover:bg-blue-50 transition-colors duration-200"
+                    >
+                      <td className="px-7 py-4 whitespace-nowrap text-gray-800">{index + 1}</td>
+                      <td className="px-7 py-4 whitespace-nowrap text-gray-900 font-semibold">{admin.name}</td>
+                      <td className="px-7 py-4 whitespace-nowrap text-gray-700">{admin.email}</td>
+                      <td className="px-7 py-4 whitespace-nowrap">
+                        <span className="inline-block px-3 py-1 text-xs font-semibold rounded-full bg-green-100 text-green-800 uppercase tracking-wide select-none">
+                          {admin.roles}
+                        </span>
                       </td>
-                      <td className="p-3 space-x-2">
-                        {user.role === "STORE_ADMIN" && (
-                          <>
-                            <button
-                              onClick={() => handleEdit(user.id)}
-                              className="text-blue-600 hover:underline"
-                            >
-                              Edit
-                            </button>
-                            <button
-                              onClick={() => handleDelete(user.id)}
-                              className="text-red-600 hover:underline"
-                            >
-                              Hapus
-                            </button>
-                          </>
-                        )}
+                      <td className="px-7 py-4 whitespace-nowrap text-gray-700">
+                        {admin.storeName
+                          ? `${admin.storeName} (${admin.storeLocation})`
+                          : '-'}
+                      </td>
+                      <td className="px-7 py-4 whitespace-nowrap space-x-5">
+                        <button
+                          className="text-blue-600 hover:text-blue-800 font-semibold transition"
+                          aria-label={`Edit ${admin.name}`}
+                        >
+                          Edit
+                        </button>
+                        <button
+                          className="text-red-600 hover:text-red-800 font-semibold transition"
+                          aria-label={`Hapus ${admin.name}`}
+                        >
+                          Hapus
+                        </button>
                       </td>
                     </tr>
                   ))}
                 </tbody>
               </table>
             </div>
-          </section>
+          )}
         </main>
       </div>
-
       <Footer />
 
-      {/* Add Store Admin Modal */}
+      {/* Modal Tambah Store Admin */}
       <AddStoreAdminModal
         isOpen={isAddModalOpen}
         setIsOpen={setIsAddModalOpen}
-        handleAddUser={handleAddUser}
+        handleAddUser={handleAddUser} 
       />
     </>
   );

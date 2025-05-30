@@ -5,32 +5,32 @@ import crypto from 'crypto';
 
 export class SuperAdminController {
   // Mendapatkan semua Store Admin hanya untuk super_admin
-  async getAllStoreAdmins(req: Request, res: Response) {
-    try {
-      const storeAdmins = await prisma.user.findMany({
-        where: { roles: 'ADMIN' },
-        select: {
-          id: true,
-          name: true,
-          email: true,
-          roles: true,
-          createdAt: true,
-          Address: {
-            select: {
-              address: true,
-              city: true,
-              province: true,
-            },
-          },
-        },
-      });
+ // Tambahkan di SuperAdminController
+async getSuperAdminProfile(req: Request, res: Response) {
+  try {
+    const userId = req.user?.id?.toString(); // pastikan middleware menambahkan user ke req
+    const user = await prisma.user.findUnique({
+      where: { id: userId },
+      select: {
+        id: true,
+        name: true,
+        email: true,
+        roles: true,
+        isVerify: true,
+      },
+    });
 
-      res.status(200).json(storeAdmins);
-    } catch (error) {
-      console.error('Error getting store admins:', error);
-      res.status(500).json({ error: 'Internal server error' });
+    if (!user || user.roles !== 'SUPER_ADMIN') {
+      return res.status(403).json({ error: 'Unauthorized' });
     }
+
+    res.status(200).json(user);
+  } catch (error) {
+    console.error('Error fetching super admin profile:', error);
+    res.status(500).json({ error: 'Internal server error' });
   }
+}
+
 
   // REGISTER Store Admin (Hanya dengan name, email, dan password)
   async createstoreadmin(req: Request, res: Response) {
@@ -79,7 +79,7 @@ export class SuperAdminController {
     }
   }
 
-  // DELETE Store Admin by ID
+
   async deleteStoreAdmin(req: Request, res: Response) {
     try {
       const { id } = req.params;

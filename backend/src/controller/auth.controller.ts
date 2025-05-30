@@ -9,15 +9,15 @@ import handlebars from "handlebars";
 
 export class AuthController {
 
-  // Registration method
+  
   async register(req: Request, res: Response) {
-    let errorMessage = null; // Variable to hold any error message
-    let statusCode = 200; // Default success status code
+    let errorMessage = null; 
+    let statusCode = 200; 
 
     try {
       const { email, password, name, role, referralCode } = req.body;
 
-      // Check if the email already exists in the database
+      
       const existing = await prisma.user.findUnique({ where: { email } });
       if (existing) {
         errorMessage = "Email already registered";
@@ -37,7 +37,7 @@ export class AuthController {
             email,
             password: hashedPass,
             referralCode: newReferralCode,
-            roles: role || "CUSTOMER", // Default to "CUSTOMER" if no role is specified
+            roles: role || "CUSTOMER", 
           },
         });
 
