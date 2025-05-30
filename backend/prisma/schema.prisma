@@ -42,8 +42,6 @@ model Address {
   province     String
   province_id  String
   postcode     String?
-  latitude     Float
-  longitude    Float
   is_primary   Boolean  @default(false)
   created_at   DateTime @default(now())
   updated_at   DateTime @default(now())
@@ -60,8 +58,6 @@ model Store {
   id        String         @id @default(uuid())
   name      String
   address   String
-  latitude  Float
-  longitude Float
   products  ProductStock[]
   orders    Order[]        @relation("StoreOrders")
   createdAt DateTime       @default(now())

@@ -36,7 +36,7 @@ export class UserRouter {
     this.router.delete(
       "/:id",
       this.authMiddleware.verifyToken,
-      this.authMiddleware.verifyAdmin,
+      this.authMiddleware.verifySuperAdmin,
       this.userController.deleteUser
     );
   }

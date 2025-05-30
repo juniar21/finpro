@@ -1,14 +1,14 @@
 "use client";
+
 import Navbar from "@/components/navbar/navbar/Navbar";
 import Footer from "@/components/navbar/navbar/footer";
 import Sidebarsup from "@/components/navbar/navbar/Sidebarsup";
 import { useSession } from "next-auth/react";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { VscVerifiedFilled } from "react-icons/vsc";
 import Image from "next/image";
 import Link from "next/link";
 import AddStoreAdminModal from "@/components/modal/addadminstore";
-
 
 type User = {
   id: string;
@@ -23,7 +23,12 @@ export default function SuperAdminDashboard() {
   const { data: session, status } = useSession();
   const loading = status === "loading";
 
-  const [users, setUsers] = useState<User[]>([]);
+  const [users, setUsers] = useState<User[]>([
+    // Sample users, you can replace this with static data
+    { id: "1", name: "Admin Store 1", email: "admin1@example.com", role: "STORE_ADMIN", storeName: "Store A", storeLocation: "Location A" },
+    { id: "2", name: "Admin Store 2", email: "admin2@example.com", role: "STORE_ADMIN", storeName: "Store B", storeLocation: "Location B" },
+  ]);
+  
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
   const [newUser, setNewUser] = useState({
     name: "",
@@ -31,35 +36,6 @@ export default function SuperAdminDashboard() {
     storeName: "",
     storeLocation: "",
   });
-
-  // Load dummy data on mount
-  useEffect(() => {
-    const dummyUsers: User[] = [
-      {
-        id: "1",
-        name: "Evan",
-        email: "evan@example.com",
-        role: "STORE_ADMIN",
-      },
-      {
-        id: "2",
-        name: "Alice",
-        email: "alice@example.com",
-        role: "STORE_ADMIN",
-        storeName: "Toko Alice",
-        storeLocation: "Padang",
-      },
-      {
-        id: "3",
-        name: "Charlie",
-        email: "charlie@example.com",
-        role: "STORE_ADMIN",
-        storeName: "Toko Charlie",
-        storeLocation: "Solok",
-      },
-    ];
-    setUsers(dummyUsers);
-  }, []);
 
   if (loading) {
     return (
@@ -97,16 +73,16 @@ export default function SuperAdminDashboard() {
       return;
     }
 
-    const newUserObj: User = {
-      id: Date.now().toString(),
+    const newUserData = {
+      id: (users.length + 1).toString(),
       name,
       email,
-      role: "STORE_ADMIN",
       storeName,
       storeLocation,
+      role: "STORE_ADMIN", // Assign role for new user
     };
 
-    setUsers([...users, newUserObj]);
+    setUsers([...users, newUserData]);
     setNewUser({ name: "", email: "", storeName: "", storeLocation: "" });
     setIsAddModalOpen(false);
   };
@@ -198,8 +174,7 @@ export default function SuperAdminDashboard() {
                       <td className="p-3">
                         {user.role === "STORE_ADMIN"
                           ? `${user.storeName} (${user.storeLocation})`
-                          : "-"}
-
+                          : "-" }
                       </td>
                       <td className="p-3 space-x-2">
                         {user.role === "STORE_ADMIN" && (

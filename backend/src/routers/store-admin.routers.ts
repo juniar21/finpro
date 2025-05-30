@@ -1,35 +1,24 @@
-// import { Router } from "express";
-// import { RequestHandler } from "express-serve-static-core";
-// import { StoreAdminController } from "../controller/store-admin.controller";
-// import { AuthMiddleware } from "../middleware/auth.middleware";
+// import { Router } from 'express';
+// import { AuthMiddleware } from '../middleware/auth.middleware';
+// import { AdminController } from '../controller/store-admin.controller';
 
-// export class StoreAdminRouter {
+
+
+// export class AdminRouter {
 //   private router: Router;
-//   private storeAdminController: StoreAdminController;
 //   private authMiddleware: AuthMiddleware;
 
 //   constructor() {
 //     this.router = Router();
-//     this.storeAdminController = new StoreAdminController();
 //     this.authMiddleware = new AuthMiddleware();
 //     this.initializeRoutes();
 //   }
 
 //   private initializeRoutes() {
-//     // View-only Products
-//     this.router.get(
-//       "/products",
-//       this.authMiddleware.verifyToken as unknown as RequestHandler,
-//       this.authMiddleware.checkStrAdmin as unknown as RequestHandler,
-//       this.storeAdminController.getProducts as unknown as RequestHandler
-//     );
-
-//     this.router.get(
-//       "/products/:productId", // disesuaikan dengan parameter di controller
-//       this.authMiddleware.verifyToken as unknown as RequestHandler,
-//       this.authMiddleware.checkStrAdmin as unknown as RequestHandler,
-//       this.storeAdminController.getProductById as unknown as RequestHandler
-//     );
+   
+//     this.router.use(this.authMiddleware.verifyToken);
+//     this.router.get('/admin-store', AdminController.getStoreAdmins);
+   
 //   }
 
 //   getRouter(): Router {

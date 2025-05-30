@@ -16,7 +16,9 @@ export default function ProfilePage() {
   const [name, setName] = useState(session?.user?.name || "");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
-  const [avatarPreview, setAvatarPreview] = useState<string | null>(session?.user?.avatar || null);
+  const [avatarPreview, setAvatarPreview] = useState<string | null>(
+    session?.user?.avatar || null
+  );
   const [avatarFile, setAvatarFile] = useState<File | null>(null);
   const [message, setMessage] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -67,16 +69,13 @@ export default function ProfilePage() {
       if (password) formData.append("password", password);
       if (avatarFile) formData.append("avatar", avatarFile);
 
-
       const token = session.accessToken;
 
       const res = await axios.patch("/users/update-profile", formData, {
-  headers: {
-    Authorization: `Bearer ${token}`,
-    
-  },
-});
-
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
 
       if (res.data.success) {
         setMessage("Profil berhasil diperbarui.");
@@ -89,7 +88,10 @@ export default function ProfilePage() {
       }
     } catch (error: any) {
       console.error(error);
-      setMessage(error.response?.data?.message || "Terjadi kesalahan saat memperbarui profil.");
+      setMessage(
+        error.response?.data?.message ||
+          "Terjadi kesalahan saat memperbarui profil."
+      );
     } finally {
       setIsSubmitting(false);
     }
@@ -164,7 +166,9 @@ export default function ProfilePage() {
               </div>
 
               <div>
-                <label className="block mb-1 font-semibold">Referral Code</label>
+                <label className="block mb-1 font-semibold">
+                  Referral Code
+                </label>
                 <input
                   type="text"
                   value={session.user?.referralCode || ""}
@@ -175,11 +179,17 @@ export default function ProfilePage() {
 
               <div>
                 <label className="block mb-1 font-semibold">Foto Profil</label>
-                <input type="file" accept="image/*" onChange={handleAvatarChange} />
+                <input
+                  type="file"
+                  accept="image/*"
+                  onChange={handleAvatarChange}
+                />
               </div>
 
               <div>
-                <label className="block mb-1 font-semibold">Kata Sandi Baru</label>
+                <label className="block mb-1 font-semibold">
+                  Kata Sandi Baru
+                </label>
                 <input
                   type="password"
                   placeholder="Isi jika ingin ganti password"
@@ -190,7 +200,9 @@ export default function ProfilePage() {
               </div>
 
               <div>
-                <label className="block mb-1 font-semibold">Konfirmasi Kata Sandi</label>
+                <label className="block mb-1 font-semibold">
+                  Konfirmasi Kata Sandi
+                </label>
                 <input
                   type="password"
                   placeholder="Konfirmasi kata sandi baru"
@@ -203,7 +215,9 @@ export default function ProfilePage() {
               {message && (
                 <p
                   className={`text-sm font-medium ${
-                    message.includes("berhasil") ? "text-green-600" : "text-red-600"
+                    message.includes("berhasil")
+                      ? "text-green-600"
+                      : "text-red-600"
                   }`}
                 >
                   {message}

@@ -2,7 +2,7 @@ import "express";
 
 export type UserPayload = {
   id: number;
-  role: "admin" | "user";
+  role: "admin" | "user" | "super_admin";
 };
 
 declare global {

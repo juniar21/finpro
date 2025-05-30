@@ -27,4 +27,15 @@ export class AuthMiddleware {
       res.status(400).send(err);
     }
   }
+
+    verifySuperAdmin(req: Request, res: Response, next: NextFunction) {
+    try {
+      if (req.user?.role !== "super_admin") throw { message: "SUPER_ADMIN only" };
+      next()
+    } catch (err) {
+      console.log(err);
+      res.status(400).send(err);
+    }
+  }
 }
+
