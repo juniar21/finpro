@@ -29,6 +29,13 @@ export class StoreRouter {
       this.storeController.getStores
     );
 
+    // PUT /store/:id -> update store by id (gunakan verifyToken middleware)
+    this.router.patch(
+      '/:id',
+      this.authMiddleware.verifyToken,
+      this.storeController.updateStore
+    );
+
     // DELETE /store/:id  -> hapus store by id (gunakan verifyToken middleware)
     this.router.delete(
       '/:id',
