@@ -142,9 +142,7 @@ exports.Prisma.AddressScalarFieldEnum = {
   address: 'address',
   subdistrict: 'subdistrict',
   city: 'city',
-  city_id: 'city_id',
   province: 'province',
-  province_id: 'province_id',
   postcode: 'postcode',
   is_primary: 'is_primary',
   created_at: 'created_at',
@@ -155,6 +153,7 @@ exports.Prisma.StoreScalarFieldEnum = {
   id: 'id',
   name: 'name',
   address: 'address',
+  adminId: 'adminId',
   createdAt: 'createdAt'
 };
 
