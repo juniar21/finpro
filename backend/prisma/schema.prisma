@@ -24,6 +24,7 @@ model User {
   vouchers              Voucher[]
   cartItems             CartItem[]
   orders                Order[]
+  store                 Store?    
   createdAt             DateTime   @default(now())
   updatedAt             DateTime   @updatedAt
   isVerify              Boolean    @default(false)
@@ -38,9 +39,7 @@ model Address {
   address      String   @db.Text
   subdistrict  String?
   city         String
-  city_id      String
   province     String
-  province_id  String
   postcode     String?
   is_primary   Boolean  @default(false)
   created_at   DateTime @default(now())
@@ -58,6 +57,8 @@ model Store {
   id        String         @id @default(uuid())
   name      String
   address   String
+  admin     User           @relation(fields: [adminId], references: [id])
+  adminId   String         @unique
   products  ProductStock[]
   orders    Order[]        @relation("StoreOrders")
   createdAt DateTime       @default(now())

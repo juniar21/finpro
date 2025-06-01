@@ -2420,6 +2420,7 @@ export namespace Prisma {
     vouchers?: boolean | User$vouchersArgs<ExtArgs>
     cartItems?: boolean | User$cartItemsArgs<ExtArgs>
     orders?: boolean | User$ordersArgs<ExtArgs>
+    store?: boolean | User$storeArgs<ExtArgs>
     Address?: boolean | User$AddressArgs<ExtArgs>
     _count?: boolean | UserCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["user"]>
@@ -2479,6 +2480,7 @@ export namespace Prisma {
     vouchers?: boolean | User$vouchersArgs<ExtArgs>
     cartItems?: boolean | User$cartItemsArgs<ExtArgs>
     orders?: boolean | User$ordersArgs<ExtArgs>
+    store?: boolean | User$storeArgs<ExtArgs>
     Address?: boolean | User$AddressArgs<ExtArgs>
     _count?: boolean | UserCountOutputTypeDefaultArgs<ExtArgs>
   }
@@ -2498,6 +2500,7 @@ export namespace Prisma {
       vouchers: Prisma.$VoucherPayload<ExtArgs>[]
       cartItems: Prisma.$CartItemPayload<ExtArgs>[]
       orders: Prisma.$OrderPayload<ExtArgs>[]
+      store: Prisma.$StorePayload<ExtArgs> | null
       Address: Prisma.$AddressPayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
@@ -2913,6 +2916,7 @@ export namespace Prisma {
     vouchers<T extends User$vouchersArgs<ExtArgs> = {}>(args?: Subset<T, User$vouchersArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$VoucherPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     cartItems<T extends User$cartItemsArgs<ExtArgs> = {}>(args?: Subset<T, User$cartItemsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$CartItemPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     orders<T extends User$ordersArgs<ExtArgs> = {}>(args?: Subset<T, User$ordersArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$OrderPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    store<T extends User$storeArgs<ExtArgs> = {}>(args?: Subset<T, User$storeArgs<ExtArgs>>): Prisma__StoreClient<$Result.GetResult<Prisma.$StorePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
     Address<T extends User$AddressArgs<ExtArgs> = {}>(args?: Subset<T, User$AddressArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$AddressPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
@@ -3490,6 +3494,25 @@ export namespace Prisma {
   }
 
   /**
+   * User.store
+   */
+  export type User$storeArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Store
+     */
+    select?: StoreSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Store
+     */
+    omit?: StoreOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: StoreInclude<ExtArgs> | null
+    where?: StoreWhereInput
+  }
+
+  /**
    * User.Address
    */
   export type User$AddressArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -3549,9 +3572,7 @@ export namespace Prisma {
     address: string | null
     subdistrict: string | null
     city: string | null
-    city_id: string | null
     province: string | null
-    province_id: string | null
     postcode: string | null
     is_primary: boolean | null
     created_at: Date | null
@@ -3565,9 +3586,7 @@ export namespace Prisma {
     address: string | null
     subdistrict: string | null
     city: string | null
-    city_id: string | null
     province: string | null
-    province_id: string | null
     postcode: string | null
     is_primary: boolean | null
     created_at: Date | null
@@ -3581,9 +3600,7 @@ export namespace Prisma {
     address: number
     subdistrict: number
     city: number
-    city_id: number
     province: number
-    province_id: number
     postcode: number
     is_primary: number
     created_at: number
@@ -3599,9 +3616,7 @@ export namespace Prisma {
     address?: true
     subdistrict?: true
     city?: true
-    city_id?: true
     province?: true
-    province_id?: true
     postcode?: true
     is_primary?: true
     created_at?: true
@@ -3615,9 +3630,7 @@ export namespace Prisma {
     address?: true
     subdistrict?: true
     city?: true
-    city_id?: true
     province?: true
-    province_id?: true
     postcode?: true
     is_primary?: true
     created_at?: true
@@ -3631,9 +3644,7 @@ export namespace Prisma {
     address?: true
     subdistrict?: true
     city?: true
-    city_id?: true
     province?: true
-    province_id?: true
     postcode?: true
     is_primary?: true
     created_at?: true
@@ -3720,9 +3731,7 @@ export namespace Prisma {
     address: string
     subdistrict: string | null
     city: string
-    city_id: string
     province: string
-    province_id: string
     postcode: string | null
     is_primary: boolean
     created_at: Date
@@ -3753,9 +3762,7 @@ export namespace Prisma {
     address?: boolean
     subdistrict?: boolean
     city?: boolean
-    city_id?: boolean
     province?: boolean
-    province_id?: boolean
     postcode?: boolean
     is_primary?: boolean
     created_at?: boolean
@@ -3770,9 +3777,7 @@ export namespace Prisma {
     address?: boolean
     subdistrict?: boolean
     city?: boolean
-    city_id?: boolean
     province?: boolean
-    province_id?: boolean
     postcode?: boolean
     is_primary?: boolean
     created_at?: boolean
@@ -3787,9 +3792,7 @@ export namespace Prisma {
     address?: boolean
     subdistrict?: boolean
     city?: boolean
-    city_id?: boolean
     province?: boolean
-    province_id?: boolean
     postcode?: boolean
     is_primary?: boolean
     created_at?: boolean
@@ -3804,16 +3807,14 @@ export namespace Prisma {
     address?: boolean
     subdistrict?: boolean
     city?: boolean
-    city_id?: boolean
     province?: boolean
-    province_id?: boolean
     postcode?: boolean
     is_primary?: boolean
     created_at?: boolean
     updated_at?: boolean
   }
 
-  export type AddressOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"address_id" | "id" | "address_name" | "address" | "subdistrict" | "city" | "city_id" | "province" | "province_id" | "postcode" | "is_primary" | "created_at" | "updated_at", ExtArgs["result"]["address"]>
+  export type AddressOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"address_id" | "id" | "address_name" | "address" | "subdistrict" | "city" | "province" | "postcode" | "is_primary" | "created_at" | "updated_at", ExtArgs["result"]["address"]>
   export type AddressInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     user?: boolean | UserDefaultArgs<ExtArgs>
   }
@@ -3836,9 +3837,7 @@ export namespace Prisma {
       address: string
       subdistrict: string | null
       city: string
-      city_id: string
       province: string
-      province_id: string
       postcode: string | null
       is_primary: boolean
       created_at: Date
@@ -4273,9 +4272,7 @@ export namespace Prisma {
     readonly address: FieldRef<"Address", 'String'>
     readonly subdistrict: FieldRef<"Address", 'String'>
     readonly city: FieldRef<"Address", 'String'>
-    readonly city_id: FieldRef<"Address", 'String'>
     readonly province: FieldRef<"Address", 'String'>
-    readonly province_id: FieldRef<"Address", 'String'>
     readonly postcode: FieldRef<"Address", 'String'>
     readonly is_primary: FieldRef<"Address", 'Boolean'>
     readonly created_at: FieldRef<"Address", 'DateTime'>
@@ -4708,6 +4705,7 @@ export namespace Prisma {
     id: string | null
     name: string | null
     address: string | null
+    adminId: string | null
     createdAt: Date | null
   }
 
@@ -4715,6 +4713,7 @@ export namespace Prisma {
     id: string | null
     name: string | null
     address: string | null
+    adminId: string | null
     createdAt: Date | null
   }
 
@@ -4722,6 +4721,7 @@ export namespace Prisma {
     id: number
     name: number
     address: number
+    adminId: number
     createdAt: number
     _all: number
   }
@@ -4731,6 +4731,7 @@ export namespace Prisma {
     id?: true
     name?: true
     address?: true
+    adminId?: true
     createdAt?: true
   }
 
@@ -4738,6 +4739,7 @@ export namespace Prisma {
     id?: true
     name?: true
     address?: true
+    adminId?: true
     createdAt?: true
   }
 
@@ -4745,6 +4747,7 @@ export namespace Prisma {
     id?: true
     name?: true
     address?: true
+    adminId?: true
     createdAt?: true
     _all?: true
   }
@@ -4825,6 +4828,7 @@ export namespace Prisma {
     id: string
     name: string
     address: string
+    adminId: string
     createdAt: Date
     _count: StoreCountAggregateOutputType | null
     _min: StoreMinAggregateOutputType | null
@@ -4849,7 +4853,9 @@ export namespace Prisma {
     id?: boolean
     name?: boolean
     address?: boolean
+    adminId?: boolean
     createdAt?: boolean
+    admin?: boolean | UserDefaultArgs<ExtArgs>
     products?: boolean | Store$productsArgs<ExtArgs>
     orders?: boolean | Store$ordersArgs<ExtArgs>
     _count?: boolean | StoreCountOutputTypeDefaultArgs<ExtArgs>
@@ -4859,35 +4865,46 @@ export namespace Prisma {
     id?: boolean
     name?: boolean
     address?: boolean
+    adminId?: boolean
     createdAt?: boolean
+    admin?: boolean | UserDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["store"]>
 
   export type StoreSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
     name?: boolean
     address?: boolean
+    adminId?: boolean
     createdAt?: boolean
+    admin?: boolean | UserDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["store"]>
 
   export type StoreSelectScalar = {
     id?: boolean
     name?: boolean
     address?: boolean
+    adminId?: boolean
     createdAt?: boolean
   }
 
-  export type StoreOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "address" | "createdAt", ExtArgs["result"]["store"]>
+  export type StoreOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "address" | "adminId" | "createdAt", ExtArgs["result"]["store"]>
   export type StoreInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    admin?: boolean | UserDefaultArgs<ExtArgs>
     products?: boolean | Store$productsArgs<ExtArgs>
     orders?: boolean | Store$ordersArgs<ExtArgs>
     _count?: boolean | StoreCountOutputTypeDefaultArgs<ExtArgs>
   }
-  export type StoreIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {}
-  export type StoreIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {}
+  export type StoreIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    admin?: boolean | UserDefaultArgs<ExtArgs>
+  }
+  export type StoreIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    admin?: boolean | UserDefaultArgs<ExtArgs>
+  }
 
   export type $StorePayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     name: "Store"
     objects: {
+      admin: Prisma.$UserPayload<ExtArgs>
       products: Prisma.$ProductStockPayload<ExtArgs>[]
       orders: Prisma.$OrderPayload<ExtArgs>[]
     }
@@ -4895,6 +4912,7 @@ export namespace Prisma {
       id: string
       name: string
       address: string
+      adminId: string
       createdAt: Date
     }, ExtArgs["result"]["store"]>
     composites: {}
@@ -5290,6 +5308,7 @@ export namespace Prisma {
    */
   export interface Prisma__StoreClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
     readonly [Symbol.toStringTag]: "PrismaPromise"
+    admin<T extends UserDefaultArgs<ExtArgs> = {}>(args?: Subset<T, UserDefaultArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
     products<T extends Store$productsArgs<ExtArgs> = {}>(args?: Subset<T, Store$productsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ProductStockPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     orders<T extends Store$ordersArgs<ExtArgs> = {}>(args?: Subset<T, Store$ordersArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$OrderPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     /**
@@ -5324,6 +5343,7 @@ export namespace Prisma {
     readonly id: FieldRef<"Store", 'String'>
     readonly name: FieldRef<"Store", 'String'>
     readonly address: FieldRef<"Store", 'String'>
+    readonly adminId: FieldRef<"Store", 'String'>
     readonly createdAt: FieldRef<"Store", 'DateTime'>
   }
     
@@ -5574,6 +5594,10 @@ export namespace Prisma {
      */
     data: StoreCreateManyInput | StoreCreateManyInput[]
     skipDuplicates?: boolean
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: StoreIncludeCreateManyAndReturn<ExtArgs> | null
   }
 
   /**
@@ -5644,6 +5668,10 @@ export namespace Prisma {
      * Limit how many Stores to update.
      */
     limit?: number
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: StoreIncludeUpdateManyAndReturn<ExtArgs> | null
   }
 
   /**
@@ -16042,9 +16070,7 @@ export namespace Prisma {
     address: 'address',
     subdistrict: 'subdistrict',
     city: 'city',
-    city_id: 'city_id',
     province: 'province',
-    province_id: 'province_id',
     postcode: 'postcode',
     is_primary: 'is_primary',
     created_at: 'created_at',
@@ -16058,6 +16084,7 @@ export namespace Prisma {
     id: 'id',
     name: 'name',
     address: 'address',
+    adminId: 'adminId',
     createdAt: 'createdAt'
   };
 
@@ -16319,6 +16346,7 @@ export namespace Prisma {
     vouchers?: VoucherListRelationFilter
     cartItems?: CartItemListRelationFilter
     orders?: OrderListRelationFilter
+    store?: XOR<StoreNullableScalarRelationFilter, StoreWhereInput> | null
     Address?: AddressListRelationFilter
   }
 
@@ -16341,6 +16369,7 @@ export namespace Prisma {
     vouchers?: VoucherOrderByRelationAggregateInput
     cartItems?: CartItemOrderByRelationAggregateInput
     orders?: OrderOrderByRelationAggregateInput
+    store?: StoreOrderByWithRelationInput
     Address?: AddressOrderByRelationAggregateInput
   }
 
@@ -16366,6 +16395,7 @@ export namespace Prisma {
     vouchers?: VoucherListRelationFilter
     cartItems?: CartItemListRelationFilter
     orders?: OrderListRelationFilter
+    store?: XOR<StoreNullableScalarRelationFilter, StoreWhereInput> | null
     Address?: AddressListRelationFilter
   }, "id" | "email" | "referralCode">
 
@@ -16415,9 +16445,7 @@ export namespace Prisma {
     address?: StringFilter<"Address"> | string
     subdistrict?: StringNullableFilter<"Address"> | string | null
     city?: StringFilter<"Address"> | string
-    city_id?: StringFilter<"Address"> | string
     province?: StringFilter<"Address"> | string
-    province_id?: StringFilter<"Address"> | string
     postcode?: StringNullableFilter<"Address"> | string | null
     is_primary?: BoolFilter<"Address"> | boolean
     created_at?: DateTimeFilter<"Address"> | Date | string
@@ -16432,9 +16460,7 @@ export namespace Prisma {
     address?: SortOrder
     subdistrict?: SortOrderInput | SortOrder
     city?: SortOrder
-    city_id?: SortOrder
     province?: SortOrder
-    province_id?: SortOrder
     postcode?: SortOrderInput | SortOrder
     is_primary?: SortOrder
     created_at?: SortOrder
@@ -16452,9 +16478,7 @@ export namespace Prisma {
     address?: StringFilter<"Address"> | string
     subdistrict?: StringNullableFilter<"Address"> | string | null
     city?: StringFilter<"Address"> | string
-    city_id?: StringFilter<"Address"> | string
     province?: StringFilter<"Address"> | string
-    province_id?: StringFilter<"Address"> | string
     postcode?: StringNullableFilter<"Address"> | string | null
     is_primary?: BoolFilter<"Address"> | boolean
     created_at?: DateTimeFilter<"Address"> | Date | string
@@ -16469,9 +16493,7 @@ export namespace Prisma {
     address?: SortOrder
     subdistrict?: SortOrderInput | SortOrder
     city?: SortOrder
-    city_id?: SortOrder
     province?: SortOrder
-    province_id?: SortOrder
     postcode?: SortOrderInput | SortOrder
     is_primary?: SortOrder
     created_at?: SortOrder
@@ -16491,9 +16513,7 @@ export namespace Prisma {
     address?: StringWithAggregatesFilter<"Address"> | string
     subdistrict?: StringNullableWithAggregatesFilter<"Address"> | string | null
     city?: StringWithAggregatesFilter<"Address"> | string
-    city_id?: StringWithAggregatesFilter<"Address"> | string
     province?: StringWithAggregatesFilter<"Address"> | string
-    province_id?: StringWithAggregatesFilter<"Address"> | string
     postcode?: StringNullableWithAggregatesFilter<"Address"> | string | null
     is_primary?: BoolWithAggregatesFilter<"Address"> | boolean
     created_at?: DateTimeWithAggregatesFilter<"Address"> | Date | string
@@ -16507,7 +16527,9 @@ export namespace Prisma {
     id?: StringFilter<"Store"> | string
     name?: StringFilter<"Store"> | string
     address?: StringFilter<"Store"> | string
+    adminId?: StringFilter<"Store"> | string
     createdAt?: DateTimeFilter<"Store"> | Date | string
+    admin?: XOR<UserScalarRelationFilter, UserWhereInput>
     products?: ProductStockListRelationFilter
     orders?: OrderListRelationFilter
   }
@@ -16516,27 +16538,32 @@ export namespace Prisma {
     id?: SortOrder
     name?: SortOrder
     address?: SortOrder
+    adminId?: SortOrder
     createdAt?: SortOrder
+    admin?: UserOrderByWithRelationInput
     products?: ProductStockOrderByRelationAggregateInput
     orders?: OrderOrderByRelationAggregateInput
   }
 
   export type StoreWhereUniqueInput = Prisma.AtLeast<{
     id?: string
+    adminId?: string
     AND?: StoreWhereInput | StoreWhereInput[]
     OR?: StoreWhereInput[]
     NOT?: StoreWhereInput | StoreWhereInput[]
     name?: StringFilter<"Store"> | string
     address?: StringFilter<"Store"> | string
     createdAt?: DateTimeFilter<"Store"> | Date | string
+    admin?: XOR<UserScalarRelationFilter, UserWhereInput>
     products?: ProductStockListRelationFilter
     orders?: OrderListRelationFilter
-  }, "id">
+  }, "id" | "adminId">
 
   export type StoreOrderByWithAggregationInput = {
     id?: SortOrder
     name?: SortOrder
     address?: SortOrder
+    adminId?: SortOrder
     createdAt?: SortOrder
     _count?: StoreCountOrderByAggregateInput
     _max?: StoreMaxOrderByAggregateInput
@@ -16550,6 +16577,7 @@ export namespace Prisma {
     id?: StringWithAggregatesFilter<"Store"> | string
     name?: StringWithAggregatesFilter<"Store"> | string
     address?: StringWithAggregatesFilter<"Store"> | string
+    adminId?: StringWithAggregatesFilter<"Store"> | string
     createdAt?: DateTimeWithAggregatesFilter<"Store"> | Date | string
   }
 
@@ -17171,6 +17199,7 @@ export namespace Prisma {
     vouchers?: VoucherCreateNestedManyWithoutUserInput
     cartItems?: CartItemCreateNestedManyWithoutUserInput
     orders?: OrderCreateNestedManyWithoutUserInput
+    store?: StoreCreateNestedOneWithoutAdminInput
     Address?: AddressCreateNestedManyWithoutUserInput
   }
 
@@ -17192,6 +17221,7 @@ export namespace Prisma {
     vouchers?: VoucherUncheckedCreateNestedManyWithoutUserInput
     cartItems?: CartItemUncheckedCreateNestedManyWithoutUserInput
     orders?: OrderUncheckedCreateNestedManyWithoutUserInput
+    store?: StoreUncheckedCreateNestedOneWithoutAdminInput
     Address?: AddressUncheckedCreateNestedManyWithoutUserInput
   }
 
@@ -17213,6 +17243,7 @@ export namespace Prisma {
     vouchers?: VoucherUpdateManyWithoutUserNestedInput
     cartItems?: CartItemUpdateManyWithoutUserNestedInput
     orders?: OrderUpdateManyWithoutUserNestedInput
+    store?: StoreUpdateOneWithoutAdminNestedInput
     Address?: AddressUpdateManyWithoutUserNestedInput
   }
 
@@ -17234,6 +17265,7 @@ export namespace Prisma {
     vouchers?: VoucherUncheckedUpdateManyWithoutUserNestedInput
     cartItems?: CartItemUncheckedUpdateManyWithoutUserNestedInput
     orders?: OrderUncheckedUpdateManyWithoutUserNestedInput
+    store?: StoreUncheckedUpdateOneWithoutAdminNestedInput
     Address?: AddressUncheckedUpdateManyWithoutUserNestedInput
   }
 
@@ -17287,9 +17319,7 @@ export namespace Prisma {
     address: string
     subdistrict?: string | null
     city: string
-    city_id: string
     province: string
-    province_id: string
     postcode?: string | null
     is_primary?: boolean
     created_at?: Date | string
@@ -17304,9 +17334,7 @@ export namespace Prisma {
     address: string
     subdistrict?: string | null
     city: string
-    city_id: string
     province: string
-    province_id: string
     postcode?: string | null
     is_primary?: boolean
     created_at?: Date | string
@@ -17319,9 +17347,7 @@ export namespace Prisma {
     address?: StringFieldUpdateOperationsInput | string
     subdistrict?: NullableStringFieldUpdateOperationsInput | string | null
     city?: StringFieldUpdateOperationsInput | string
-    city_id?: StringFieldUpdateOperationsInput | string
     province?: StringFieldUpdateOperationsInput | string
-    province_id?: StringFieldUpdateOperationsInput | string
     postcode?: NullableStringFieldUpdateOperationsInput | string | null
     is_primary?: BoolFieldUpdateOperationsInput | boolean
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -17336,9 +17362,7 @@ export namespace Prisma {
     address?: StringFieldUpdateOperationsInput | string
     subdistrict?: NullableStringFieldUpdateOperationsInput | string | null
     city?: StringFieldUpdateOperationsInput | string
-    city_id?: StringFieldUpdateOperationsInput | string
     province?: StringFieldUpdateOperationsInput | string
-    province_id?: StringFieldUpdateOperationsInput | string
     postcode?: NullableStringFieldUpdateOperationsInput | string | null
     is_primary?: BoolFieldUpdateOperationsInput | boolean
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -17352,9 +17376,7 @@ export namespace Prisma {
     address: string
     subdistrict?: string | null
     city: string
-    city_id: string
     province: string
-    province_id: string
     postcode?: string | null
     is_primary?: boolean
     created_at?: Date | string
@@ -17367,9 +17389,7 @@ export namespace Prisma {
     address?: StringFieldUpdateOperationsInput | string
     subdistrict?: NullableStringFieldUpdateOperationsInput | string | null
     city?: StringFieldUpdateOperationsInput | string
-    city_id?: StringFieldUpdateOperationsInput | string
     province?: StringFieldUpdateOperationsInput | string
-    province_id?: StringFieldUpdateOperationsInput | string
     postcode?: NullableStringFieldUpdateOperationsInput | string | null
     is_primary?: BoolFieldUpdateOperationsInput | boolean
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -17383,9 +17403,7 @@ export namespace Prisma {
     address?: StringFieldUpdateOperationsInput | string
     subdistrict?: NullableStringFieldUpdateOperationsInput | string | null
     city?: StringFieldUpdateOperationsInput | string
-    city_id?: StringFieldUpdateOperationsInput | string
     province?: StringFieldUpdateOperationsInput | string
-    province_id?: StringFieldUpdateOperationsInput | string
     postcode?: NullableStringFieldUpdateOperationsInput | string | null
     is_primary?: BoolFieldUpdateOperationsInput | boolean
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -17397,6 +17415,7 @@ export namespace Prisma {
     name: string
     address: string
     createdAt?: Date | string
+    admin: UserCreateNestedOneWithoutStoreInput
     products?: ProductStockCreateNestedManyWithoutStoreInput
     orders?: OrderCreateNestedManyWithoutStoreInput
   }
@@ -17405,6 +17424,7 @@ export namespace Prisma {
     id?: string
     name: string
     address: string
+    adminId: string
     createdAt?: Date | string
     products?: ProductStockUncheckedCreateNestedManyWithoutStoreInput
     orders?: OrderUncheckedCreateNestedManyWithoutStoreInput
@@ -17415,6 +17435,7 @@ export namespace Prisma {
     name?: StringFieldUpdateOperationsInput | string
     address?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    admin?: UserUpdateOneRequiredWithoutStoreNestedInput
     products?: ProductStockUpdateManyWithoutStoreNestedInput
     orders?: OrderUpdateManyWithoutStoreNestedInput
   }
@@ -17423,6 +17444,7 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
     address?: StringFieldUpdateOperationsInput | string
+    adminId?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     products?: ProductStockUncheckedUpdateManyWithoutStoreNestedInput
     orders?: OrderUncheckedUpdateManyWithoutStoreNestedInput
@@ -17432,6 +17454,7 @@ export namespace Prisma {
     id?: string
     name: string
     address: string
+    adminId: string
     createdAt?: Date | string
   }
 
@@ -17446,6 +17469,7 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
     address?: StringFieldUpdateOperationsInput | string
+    adminId?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
@@ -18133,6 +18157,11 @@ export namespace Prisma {
     none?: OrderWhereInput
   }
 
+  export type StoreNullableScalarRelationFilter = {
+    is?: StoreWhereInput | null
+    isNot?: StoreWhereInput | null
+  }
+
   export type AddressListRelationFilter = {
     every?: AddressWhereInput
     some?: AddressWhereInput
@@ -18293,9 +18322,7 @@ export namespace Prisma {
     address?: SortOrder
     subdistrict?: SortOrder
     city?: SortOrder
-    city_id?: SortOrder
     province?: SortOrder
-    province_id?: SortOrder
     postcode?: SortOrder
     is_primary?: SortOrder
     created_at?: SortOrder
@@ -18309,9 +18336,7 @@ export namespace Prisma {
     address?: SortOrder
     subdistrict?: SortOrder
     city?: SortOrder
-    city_id?: SortOrder
     province?: SortOrder
-    province_id?: SortOrder
     postcode?: SortOrder
     is_primary?: SortOrder
     created_at?: SortOrder
@@ -18325,9 +18350,7 @@ export namespace Prisma {
     address?: SortOrder
     subdistrict?: SortOrder
     city?: SortOrder
-    city_id?: SortOrder
     province?: SortOrder
-    province_id?: SortOrder
     postcode?: SortOrder
     is_primary?: SortOrder
     created_at?: SortOrder
@@ -18348,6 +18371,7 @@ export namespace Prisma {
     id?: SortOrder
     name?: SortOrder
     address?: SortOrder
+    adminId?: SortOrder
     createdAt?: SortOrder
   }
 
@@ -18355,6 +18379,7 @@ export namespace Prisma {
     id?: SortOrder
     name?: SortOrder
     address?: SortOrder
+    adminId?: SortOrder
     createdAt?: SortOrder
   }
 
@@ -18362,6 +18387,7 @@ export namespace Prisma {
     id?: SortOrder
     name?: SortOrder
     address?: SortOrder
+    adminId?: SortOrder
     createdAt?: SortOrder
   }
 
@@ -18876,6 +18902,12 @@ export namespace Prisma {
     connect?: OrderWhereUniqueInput | OrderWhereUniqueInput[]
   }
 
+  export type StoreCreateNestedOneWithoutAdminInput = {
+    create?: XOR<StoreCreateWithoutAdminInput, StoreUncheckedCreateWithoutAdminInput>
+    connectOrCreate?: StoreCreateOrConnectWithoutAdminInput
+    connect?: StoreWhereUniqueInput
+  }
+
   export type AddressCreateNestedManyWithoutUserInput = {
     create?: XOR<AddressCreateWithoutUserInput, AddressUncheckedCreateWithoutUserInput> | AddressCreateWithoutUserInput[] | AddressUncheckedCreateWithoutUserInput[]
     connectOrCreate?: AddressCreateOrConnectWithoutUserInput | AddressCreateOrConnectWithoutUserInput[]
@@ -18916,6 +18948,12 @@ export namespace Prisma {
     connectOrCreate?: OrderCreateOrConnectWithoutUserInput | OrderCreateOrConnectWithoutUserInput[]
     createMany?: OrderCreateManyUserInputEnvelope
     connect?: OrderWhereUniqueInput | OrderWhereUniqueInput[]
+  }
+
+  export type StoreUncheckedCreateNestedOneWithoutAdminInput = {
+    create?: XOR<StoreCreateWithoutAdminInput, StoreUncheckedCreateWithoutAdminInput>
+    connectOrCreate?: StoreCreateOrConnectWithoutAdminInput
+    connect?: StoreWhereUniqueInput
   }
 
   export type AddressUncheckedCreateNestedManyWithoutUserInput = {
@@ -19021,6 +19059,16 @@ export namespace Prisma {
     deleteMany?: OrderScalarWhereInput | OrderScalarWhereInput[]
   }
 
+  export type StoreUpdateOneWithoutAdminNestedInput = {
+    create?: XOR<StoreCreateWithoutAdminInput, StoreUncheckedCreateWithoutAdminInput>
+    connectOrCreate?: StoreCreateOrConnectWithoutAdminInput
+    upsert?: StoreUpsertWithoutAdminInput
+    disconnect?: StoreWhereInput | boolean
+    delete?: StoreWhereInput | boolean
+    connect?: StoreWhereUniqueInput
+    update?: XOR<XOR<StoreUpdateToOneWithWhereWithoutAdminInput, StoreUpdateWithoutAdminInput>, StoreUncheckedUpdateWithoutAdminInput>
+  }
+
   export type AddressUpdateManyWithoutUserNestedInput = {
     create?: XOR<AddressCreateWithoutUserInput, AddressUncheckedCreateWithoutUserInput> | AddressCreateWithoutUserInput[] | AddressUncheckedCreateWithoutUserInput[]
     connectOrCreate?: AddressCreateOrConnectWithoutUserInput | AddressCreateOrConnectWithoutUserInput[]
@@ -19109,6 +19157,16 @@ export namespace Prisma {
     deleteMany?: OrderScalarWhereInput | OrderScalarWhereInput[]
   }
 
+  export type StoreUncheckedUpdateOneWithoutAdminNestedInput = {
+    create?: XOR<StoreCreateWithoutAdminInput, StoreUncheckedCreateWithoutAdminInput>
+    connectOrCreate?: StoreCreateOrConnectWithoutAdminInput
+    upsert?: StoreUpsertWithoutAdminInput
+    disconnect?: StoreWhereInput | boolean
+    delete?: StoreWhereInput | boolean
+    connect?: StoreWhereUniqueInput
+    update?: XOR<XOR<StoreUpdateToOneWithWhereWithoutAdminInput, StoreUpdateWithoutAdminInput>, StoreUncheckedUpdateWithoutAdminInput>
+  }
+
   export type AddressUncheckedUpdateManyWithoutUserNestedInput = {
     create?: XOR<AddressCreateWithoutUserInput, AddressUncheckedCreateWithoutUserInput> | AddressCreateWithoutUserInput[] | AddressUncheckedCreateWithoutUserInput[]
     connectOrCreate?: AddressCreateOrConnectWithoutUserInput | AddressCreateOrConnectWithoutUserInput[]
@@ -19137,6 +19195,12 @@ export namespace Prisma {
     update?: XOR<XOR<UserUpdateToOneWithWhereWithoutAddressInput, UserUpdateWithoutAddressInput>, UserUncheckedUpdateWithoutAddressInput>
   }
 
+  export type UserCreateNestedOneWithoutStoreInput = {
+    create?: XOR<UserCreateWithoutStoreInput, UserUncheckedCreateWithoutStoreInput>
+    connectOrCreate?: UserCreateOrConnectWithoutStoreInput
+    connect?: UserWhereUniqueInput
+  }
+
   export type ProductStockCreateNestedManyWithoutStoreInput = {
     create?: XOR<ProductStockCreateWithoutStoreInput, ProductStockUncheckedCreateWithoutStoreInput> | ProductStockCreateWithoutStoreInput[] | ProductStockUncheckedCreateWithoutStoreInput[]
     connectOrCreate?: ProductStockCreateOrConnectWithoutStoreInput | ProductStockCreateOrConnectWithoutStoreInput[]
@@ -19163,6 +19227,14 @@ export namespace Prisma {
     connectOrCreate?: OrderCreateOrConnectWithoutStoreInput | OrderCreateOrConnectWithoutStoreInput[]
     createMany?: OrderCreateManyStoreInputEnvelope
     connect?: OrderWhereUniqueInput | OrderWhereUniqueInput[]
+  }
+
+  export type UserUpdateOneRequiredWithoutStoreNestedInput = {
+    create?: XOR<UserCreateWithoutStoreInput, UserUncheckedCreateWithoutStoreInput>
+    connectOrCreate?: UserCreateOrConnectWithoutStoreInput
+    upsert?: UserUpsertWithoutStoreInput
+    connect?: UserWhereUniqueInput
+    update?: XOR<XOR<UserUpdateToOneWithWhereWithoutStoreInput, UserUpdateWithoutStoreInput>, UserUncheckedUpdateWithoutStoreInput>
   }
 
   export type ProductStockUpdateManyWithoutStoreNestedInput = {
@@ -19968,6 +20040,7 @@ export namespace Prisma {
     vouchers?: VoucherCreateNestedManyWithoutUserInput
     cartItems?: CartItemCreateNestedManyWithoutUserInput
     orders?: OrderCreateNestedManyWithoutUserInput
+    store?: StoreCreateNestedOneWithoutAdminInput
     Address?: AddressCreateNestedManyWithoutUserInput
   }
 
@@ -19988,6 +20061,7 @@ export namespace Prisma {
     vouchers?: VoucherUncheckedCreateNestedManyWithoutUserInput
     cartItems?: CartItemUncheckedCreateNestedManyWithoutUserInput
     orders?: OrderUncheckedCreateNestedManyWithoutUserInput
+    store?: StoreUncheckedCreateNestedOneWithoutAdminInput
     Address?: AddressUncheckedCreateNestedManyWithoutUserInput
   }
 
@@ -20013,6 +20087,7 @@ export namespace Prisma {
     vouchers?: VoucherCreateNestedManyWithoutUserInput
     cartItems?: CartItemCreateNestedManyWithoutUserInput
     orders?: OrderCreateNestedManyWithoutUserInput
+    store?: StoreCreateNestedOneWithoutAdminInput
     Address?: AddressCreateNestedManyWithoutUserInput
   }
 
@@ -20033,6 +20108,7 @@ export namespace Prisma {
     vouchers?: VoucherUncheckedCreateNestedManyWithoutUserInput
     cartItems?: CartItemUncheckedCreateNestedManyWithoutUserInput
     orders?: OrderUncheckedCreateNestedManyWithoutUserInput
+    store?: StoreUncheckedCreateNestedOneWithoutAdminInput
     Address?: AddressUncheckedCreateNestedManyWithoutUserInput
   }
 
@@ -20168,15 +20244,36 @@ export namespace Prisma {
     skipDuplicates?: boolean
   }
 
+  export type StoreCreateWithoutAdminInput = {
+    id?: string
+    name: string
+    address: string
+    createdAt?: Date | string
+    products?: ProductStockCreateNestedManyWithoutStoreInput
+    orders?: OrderCreateNestedManyWithoutStoreInput
+  }
+
+  export type StoreUncheckedCreateWithoutAdminInput = {
+    id?: string
+    name: string
+    address: string
+    createdAt?: Date | string
+    products?: ProductStockUncheckedCreateNestedManyWithoutStoreInput
+    orders?: OrderUncheckedCreateNestedManyWithoutStoreInput
+  }
+
+  export type StoreCreateOrConnectWithoutAdminInput = {
+    where: StoreWhereUniqueInput
+    create: XOR<StoreCreateWithoutAdminInput, StoreUncheckedCreateWithoutAdminInput>
+  }
+
   export type AddressCreateWithoutUserInput = {
     address_id?: string
     address_name: string
     address: string
     subdistrict?: string | null
     city: string
-    city_id: string
     province: string
-    province_id: string
     postcode?: string | null
     is_primary?: boolean
     created_at?: Date | string
@@ -20189,9 +20286,7 @@ export namespace Prisma {
     address: string
     subdistrict?: string | null
     city: string
-    city_id: string
     province: string
-    province_id: string
     postcode?: string | null
     is_primary?: boolean
     created_at?: Date | string
@@ -20236,6 +20331,7 @@ export namespace Prisma {
     vouchers?: VoucherUpdateManyWithoutUserNestedInput
     cartItems?: CartItemUpdateManyWithoutUserNestedInput
     orders?: OrderUpdateManyWithoutUserNestedInput
+    store?: StoreUpdateOneWithoutAdminNestedInput
     Address?: AddressUpdateManyWithoutUserNestedInput
   }
 
@@ -20256,6 +20352,7 @@ export namespace Prisma {
     vouchers?: VoucherUncheckedUpdateManyWithoutUserNestedInput
     cartItems?: CartItemUncheckedUpdateManyWithoutUserNestedInput
     orders?: OrderUncheckedUpdateManyWithoutUserNestedInput
+    store?: StoreUncheckedUpdateOneWithoutAdminNestedInput
     Address?: AddressUncheckedUpdateManyWithoutUserNestedInput
   }
 
@@ -20412,6 +20509,35 @@ export namespace Prisma {
     confirmedAt?: DateTimeNullableFilter<"Order"> | Date | string | null
   }
 
+  export type StoreUpsertWithoutAdminInput = {
+    update: XOR<StoreUpdateWithoutAdminInput, StoreUncheckedUpdateWithoutAdminInput>
+    create: XOR<StoreCreateWithoutAdminInput, StoreUncheckedCreateWithoutAdminInput>
+    where?: StoreWhereInput
+  }
+
+  export type StoreUpdateToOneWithWhereWithoutAdminInput = {
+    where?: StoreWhereInput
+    data: XOR<StoreUpdateWithoutAdminInput, StoreUncheckedUpdateWithoutAdminInput>
+  }
+
+  export type StoreUpdateWithoutAdminInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    address?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    products?: ProductStockUpdateManyWithoutStoreNestedInput
+    orders?: OrderUpdateManyWithoutStoreNestedInput
+  }
+
+  export type StoreUncheckedUpdateWithoutAdminInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    address?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    products?: ProductStockUncheckedUpdateManyWithoutStoreNestedInput
+    orders?: OrderUncheckedUpdateManyWithoutStoreNestedInput
+  }
+
   export type AddressUpsertWithWhereUniqueWithoutUserInput = {
     where: AddressWhereUniqueInput
     update: XOR<AddressUpdateWithoutUserInput, AddressUncheckedUpdateWithoutUserInput>
@@ -20438,9 +20564,7 @@ export namespace Prisma {
     address?: StringFilter<"Address"> | string
     subdistrict?: StringNullableFilter<"Address"> | string | null
     city?: StringFilter<"Address"> | string
-    city_id?: StringFilter<"Address"> | string
     province?: StringFilter<"Address"> | string
-    province_id?: StringFilter<"Address"> | string
     postcode?: StringNullableFilter<"Address"> | string | null
     is_primary?: BoolFilter<"Address"> | boolean
     created_at?: DateTimeFilter<"Address"> | Date | string
@@ -20465,6 +20589,7 @@ export namespace Prisma {
     vouchers?: VoucherCreateNestedManyWithoutUserInput
     cartItems?: CartItemCreateNestedManyWithoutUserInput
     orders?: OrderCreateNestedManyWithoutUserInput
+    store?: StoreCreateNestedOneWithoutAdminInput
   }
 
   export type UserUncheckedCreateWithoutAddressInput = {
@@ -20485,6 +20610,7 @@ export namespace Prisma {
     vouchers?: VoucherUncheckedCreateNestedManyWithoutUserInput
     cartItems?: CartItemUncheckedCreateNestedManyWithoutUserInput
     orders?: OrderUncheckedCreateNestedManyWithoutUserInput
+    store?: StoreUncheckedCreateNestedOneWithoutAdminInput
   }
 
   export type UserCreateOrConnectWithoutAddressInput = {
@@ -20521,6 +20647,7 @@ export namespace Prisma {
     vouchers?: VoucherUpdateManyWithoutUserNestedInput
     cartItems?: CartItemUpdateManyWithoutUserNestedInput
     orders?: OrderUpdateManyWithoutUserNestedInput
+    store?: StoreUpdateOneWithoutAdminNestedInput
   }
 
   export type UserUncheckedUpdateWithoutAddressInput = {
@@ -20541,6 +20668,54 @@ export namespace Prisma {
     vouchers?: VoucherUncheckedUpdateManyWithoutUserNestedInput
     cartItems?: CartItemUncheckedUpdateManyWithoutUserNestedInput
     orders?: OrderUncheckedUpdateManyWithoutUserNestedInput
+    store?: StoreUncheckedUpdateOneWithoutAdminNestedInput
+  }
+
+  export type UserCreateWithoutStoreInput = {
+    id?: string
+    name: string
+    email: string
+    password: string
+    avatar?: string
+    roles?: $Enums.Role
+    referralCode: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    isVerify?: boolean
+    isPendingVerification?: boolean
+    referredBy?: UserCreateNestedOneWithoutReferralsInput
+    referrals?: UserCreateNestedManyWithoutReferredByInput
+    poin?: PoinCreateNestedManyWithoutUserInput
+    vouchers?: VoucherCreateNestedManyWithoutUserInput
+    cartItems?: CartItemCreateNestedManyWithoutUserInput
+    orders?: OrderCreateNestedManyWithoutUserInput
+    Address?: AddressCreateNestedManyWithoutUserInput
+  }
+
+  export type UserUncheckedCreateWithoutStoreInput = {
+    id?: string
+    name: string
+    email: string
+    password: string
+    avatar?: string
+    roles?: $Enums.Role
+    referralCode: string
+    referredById?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    isVerify?: boolean
+    isPendingVerification?: boolean
+    referrals?: UserUncheckedCreateNestedManyWithoutReferredByInput
+    poin?: PoinUncheckedCreateNestedManyWithoutUserInput
+    vouchers?: VoucherUncheckedCreateNestedManyWithoutUserInput
+    cartItems?: CartItemUncheckedCreateNestedManyWithoutUserInput
+    orders?: OrderUncheckedCreateNestedManyWithoutUserInput
+    Address?: AddressUncheckedCreateNestedManyWithoutUserInput
+  }
+
+  export type UserCreateOrConnectWithoutStoreInput = {
+    where: UserWhereUniqueInput
+    create: XOR<UserCreateWithoutStoreInput, UserUncheckedCreateWithoutStoreInput>
   }
 
   export type ProductStockCreateWithoutStoreInput = {
@@ -20607,6 +20782,59 @@ export namespace Prisma {
   export type OrderCreateManyStoreInputEnvelope = {
     data: OrderCreateManyStoreInput | OrderCreateManyStoreInput[]
     skipDuplicates?: boolean
+  }
+
+  export type UserUpsertWithoutStoreInput = {
+    update: XOR<UserUpdateWithoutStoreInput, UserUncheckedUpdateWithoutStoreInput>
+    create: XOR<UserCreateWithoutStoreInput, UserUncheckedCreateWithoutStoreInput>
+    where?: UserWhereInput
+  }
+
+  export type UserUpdateToOneWithWhereWithoutStoreInput = {
+    where?: UserWhereInput
+    data: XOR<UserUpdateWithoutStoreInput, UserUncheckedUpdateWithoutStoreInput>
+  }
+
+  export type UserUpdateWithoutStoreInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    password?: StringFieldUpdateOperationsInput | string
+    avatar?: StringFieldUpdateOperationsInput | string
+    roles?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
+    referralCode?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    isVerify?: BoolFieldUpdateOperationsInput | boolean
+    isPendingVerification?: BoolFieldUpdateOperationsInput | boolean
+    referredBy?: UserUpdateOneWithoutReferralsNestedInput
+    referrals?: UserUpdateManyWithoutReferredByNestedInput
+    poin?: PoinUpdateManyWithoutUserNestedInput
+    vouchers?: VoucherUpdateManyWithoutUserNestedInput
+    cartItems?: CartItemUpdateManyWithoutUserNestedInput
+    orders?: OrderUpdateManyWithoutUserNestedInput
+    Address?: AddressUpdateManyWithoutUserNestedInput
+  }
+
+  export type UserUncheckedUpdateWithoutStoreInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    password?: StringFieldUpdateOperationsInput | string
+    avatar?: StringFieldUpdateOperationsInput | string
+    roles?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
+    referralCode?: StringFieldUpdateOperationsInput | string
+    referredById?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    isVerify?: BoolFieldUpdateOperationsInput | boolean
+    isPendingVerification?: BoolFieldUpdateOperationsInput | boolean
+    referrals?: UserUncheckedUpdateManyWithoutReferredByNestedInput
+    poin?: PoinUncheckedUpdateManyWithoutUserNestedInput
+    vouchers?: VoucherUncheckedUpdateManyWithoutUserNestedInput
+    cartItems?: CartItemUncheckedUpdateManyWithoutUserNestedInput
+    orders?: OrderUncheckedUpdateManyWithoutUserNestedInput
+    Address?: AddressUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type ProductStockUpsertWithWhereUniqueWithoutStoreInput = {
@@ -20889,6 +21117,7 @@ export namespace Prisma {
     name: string
     address: string
     createdAt?: Date | string
+    admin: UserCreateNestedOneWithoutStoreInput
     orders?: OrderCreateNestedManyWithoutStoreInput
   }
 
@@ -20896,6 +21125,7 @@ export namespace Prisma {
     id?: string
     name: string
     address: string
+    adminId: string
     createdAt?: Date | string
     orders?: OrderUncheckedCreateNestedManyWithoutStoreInput
   }
@@ -20950,6 +21180,7 @@ export namespace Prisma {
     name?: StringFieldUpdateOperationsInput | string
     address?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    admin?: UserUpdateOneRequiredWithoutStoreNestedInput
     orders?: OrderUpdateManyWithoutStoreNestedInput
   }
 
@@ -20957,6 +21188,7 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
     address?: StringFieldUpdateOperationsInput | string
+    adminId?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     orders?: OrderUncheckedUpdateManyWithoutStoreNestedInput
   }
@@ -21013,6 +21245,7 @@ export namespace Prisma {
     poin?: PoinCreateNestedManyWithoutUserInput
     vouchers?: VoucherCreateNestedManyWithoutUserInput
     orders?: OrderCreateNestedManyWithoutUserInput
+    store?: StoreCreateNestedOneWithoutAdminInput
     Address?: AddressCreateNestedManyWithoutUserInput
   }
 
@@ -21033,6 +21266,7 @@ export namespace Prisma {
     poin?: PoinUncheckedCreateNestedManyWithoutUserInput
     vouchers?: VoucherUncheckedCreateNestedManyWithoutUserInput
     orders?: OrderUncheckedCreateNestedManyWithoutUserInput
+    store?: StoreUncheckedCreateNestedOneWithoutAdminInput
     Address?: AddressUncheckedCreateNestedManyWithoutUserInput
   }
 
@@ -21098,6 +21332,7 @@ export namespace Prisma {
     poin?: PoinUpdateManyWithoutUserNestedInput
     vouchers?: VoucherUpdateManyWithoutUserNestedInput
     orders?: OrderUpdateManyWithoutUserNestedInput
+    store?: StoreUpdateOneWithoutAdminNestedInput
     Address?: AddressUpdateManyWithoutUserNestedInput
   }
 
@@ -21118,6 +21353,7 @@ export namespace Prisma {
     poin?: PoinUncheckedUpdateManyWithoutUserNestedInput
     vouchers?: VoucherUncheckedUpdateManyWithoutUserNestedInput
     orders?: OrderUncheckedUpdateManyWithoutUserNestedInput
+    store?: StoreUncheckedUpdateOneWithoutAdminNestedInput
     Address?: AddressUncheckedUpdateManyWithoutUserNestedInput
   }
 
@@ -21173,6 +21409,7 @@ export namespace Prisma {
     poin?: PoinCreateNestedManyWithoutUserInput
     vouchers?: VoucherCreateNestedManyWithoutUserInput
     cartItems?: CartItemCreateNestedManyWithoutUserInput
+    store?: StoreCreateNestedOneWithoutAdminInput
     Address?: AddressCreateNestedManyWithoutUserInput
   }
 
@@ -21193,6 +21430,7 @@ export namespace Prisma {
     poin?: PoinUncheckedCreateNestedManyWithoutUserInput
     vouchers?: VoucherUncheckedCreateNestedManyWithoutUserInput
     cartItems?: CartItemUncheckedCreateNestedManyWithoutUserInput
+    store?: StoreUncheckedCreateNestedOneWithoutAdminInput
     Address?: AddressUncheckedCreateNestedManyWithoutUserInput
   }
 
@@ -21229,6 +21467,7 @@ export namespace Prisma {
     name: string
     address: string
     createdAt?: Date | string
+    admin: UserCreateNestedOneWithoutStoreInput
     products?: ProductStockCreateNestedManyWithoutStoreInput
   }
 
@@ -21236,6 +21475,7 @@ export namespace Prisma {
     id?: string
     name: string
     address: string
+    adminId: string
     createdAt?: Date | string
     products?: ProductStockUncheckedCreateNestedManyWithoutStoreInput
   }
@@ -21322,6 +21562,7 @@ export namespace Prisma {
     poin?: PoinUpdateManyWithoutUserNestedInput
     vouchers?: VoucherUpdateManyWithoutUserNestedInput
     cartItems?: CartItemUpdateManyWithoutUserNestedInput
+    store?: StoreUpdateOneWithoutAdminNestedInput
     Address?: AddressUpdateManyWithoutUserNestedInput
   }
 
@@ -21342,6 +21583,7 @@ export namespace Prisma {
     poin?: PoinUncheckedUpdateManyWithoutUserNestedInput
     vouchers?: VoucherUncheckedUpdateManyWithoutUserNestedInput
     cartItems?: CartItemUncheckedUpdateManyWithoutUserNestedInput
+    store?: StoreUncheckedUpdateOneWithoutAdminNestedInput
     Address?: AddressUncheckedUpdateManyWithoutUserNestedInput
   }
 
@@ -21390,6 +21632,7 @@ export namespace Prisma {
     name?: StringFieldUpdateOperationsInput | string
     address?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    admin?: UserUpdateOneRequiredWithoutStoreNestedInput
     products?: ProductStockUpdateManyWithoutStoreNestedInput
   }
 
@@ -21397,6 +21640,7 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
     address?: StringFieldUpdateOperationsInput | string
+    adminId?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     products?: ProductStockUncheckedUpdateManyWithoutStoreNestedInput
   }
@@ -21667,6 +21911,7 @@ export namespace Prisma {
     vouchers?: VoucherCreateNestedManyWithoutUserInput
     cartItems?: CartItemCreateNestedManyWithoutUserInput
     orders?: OrderCreateNestedManyWithoutUserInput
+    store?: StoreCreateNestedOneWithoutAdminInput
     Address?: AddressCreateNestedManyWithoutUserInput
   }
 
@@ -21687,6 +21932,7 @@ export namespace Prisma {
     vouchers?: VoucherUncheckedCreateNestedManyWithoutUserInput
     cartItems?: CartItemUncheckedCreateNestedManyWithoutUserInput
     orders?: OrderUncheckedCreateNestedManyWithoutUserInput
+    store?: StoreUncheckedCreateNestedOneWithoutAdminInput
     Address?: AddressUncheckedCreateNestedManyWithoutUserInput
   }
 
@@ -21723,6 +21969,7 @@ export namespace Prisma {
     vouchers?: VoucherUpdateManyWithoutUserNestedInput
     cartItems?: CartItemUpdateManyWithoutUserNestedInput
     orders?: OrderUpdateManyWithoutUserNestedInput
+    store?: StoreUpdateOneWithoutAdminNestedInput
     Address?: AddressUpdateManyWithoutUserNestedInput
   }
 
@@ -21743,6 +21990,7 @@ export namespace Prisma {
     vouchers?: VoucherUncheckedUpdateManyWithoutUserNestedInput
     cartItems?: CartItemUncheckedUpdateManyWithoutUserNestedInput
     orders?: OrderUncheckedUpdateManyWithoutUserNestedInput
+    store?: StoreUncheckedUpdateOneWithoutAdminNestedInput
     Address?: AddressUncheckedUpdateManyWithoutUserNestedInput
   }
 
@@ -21763,6 +22011,7 @@ export namespace Prisma {
     poin?: PoinCreateNestedManyWithoutUserInput
     cartItems?: CartItemCreateNestedManyWithoutUserInput
     orders?: OrderCreateNestedManyWithoutUserInput
+    store?: StoreCreateNestedOneWithoutAdminInput
     Address?: AddressCreateNestedManyWithoutUserInput
   }
 
@@ -21783,6 +22032,7 @@ export namespace Prisma {
     poin?: PoinUncheckedCreateNestedManyWithoutUserInput
     cartItems?: CartItemUncheckedCreateNestedManyWithoutUserInput
     orders?: OrderUncheckedCreateNestedManyWithoutUserInput
+    store?: StoreUncheckedCreateNestedOneWithoutAdminInput
     Address?: AddressUncheckedCreateNestedManyWithoutUserInput
   }
 
@@ -21861,6 +22111,7 @@ export namespace Prisma {
     poin?: PoinUpdateManyWithoutUserNestedInput
     cartItems?: CartItemUpdateManyWithoutUserNestedInput
     orders?: OrderUpdateManyWithoutUserNestedInput
+    store?: StoreUpdateOneWithoutAdminNestedInput
     Address?: AddressUpdateManyWithoutUserNestedInput
   }
 
@@ -21881,6 +22132,7 @@ export namespace Prisma {
     poin?: PoinUncheckedUpdateManyWithoutUserNestedInput
     cartItems?: CartItemUncheckedUpdateManyWithoutUserNestedInput
     orders?: OrderUncheckedUpdateManyWithoutUserNestedInput
+    store?: StoreUncheckedUpdateOneWithoutAdminNestedInput
     Address?: AddressUncheckedUpdateManyWithoutUserNestedInput
   }
 
@@ -21959,9 +22211,7 @@ export namespace Prisma {
     address: string
     subdistrict?: string | null
     city: string
-    city_id: string
     province: string
-    province_id: string
     postcode?: string | null
     is_primary?: boolean
     created_at?: Date | string
@@ -21985,6 +22235,7 @@ export namespace Prisma {
     vouchers?: VoucherUpdateManyWithoutUserNestedInput
     cartItems?: CartItemUpdateManyWithoutUserNestedInput
     orders?: OrderUpdateManyWithoutUserNestedInput
+    store?: StoreUpdateOneWithoutAdminNestedInput
     Address?: AddressUpdateManyWithoutUserNestedInput
   }
 
@@ -22005,6 +22256,7 @@ export namespace Prisma {
     vouchers?: VoucherUncheckedUpdateManyWithoutUserNestedInput
     cartItems?: CartItemUncheckedUpdateManyWithoutUserNestedInput
     orders?: OrderUncheckedUpdateManyWithoutUserNestedInput
+    store?: StoreUncheckedUpdateOneWithoutAdminNestedInput
     Address?: AddressUncheckedUpdateManyWithoutUserNestedInput
   }
 
@@ -22149,9 +22401,7 @@ export namespace Prisma {
     address?: StringFieldUpdateOperationsInput | string
     subdistrict?: NullableStringFieldUpdateOperationsInput | string | null
     city?: StringFieldUpdateOperationsInput | string
-    city_id?: StringFieldUpdateOperationsInput | string
     province?: StringFieldUpdateOperationsInput | string
-    province_id?: StringFieldUpdateOperationsInput | string
     postcode?: NullableStringFieldUpdateOperationsInput | string | null
     is_primary?: BoolFieldUpdateOperationsInput | boolean
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -22164,9 +22414,7 @@ export namespace Prisma {
     address?: StringFieldUpdateOperationsInput | string
     subdistrict?: NullableStringFieldUpdateOperationsInput | string | null
     city?: StringFieldUpdateOperationsInput | string
-    city_id?: StringFieldUpdateOperationsInput | string
     province?: StringFieldUpdateOperationsInput | string
-    province_id?: StringFieldUpdateOperationsInput | string
     postcode?: NullableStringFieldUpdateOperationsInput | string | null
     is_primary?: BoolFieldUpdateOperationsInput | boolean
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -22179,9 +22427,7 @@ export namespace Prisma {
     address?: StringFieldUpdateOperationsInput | string
     subdistrict?: NullableStringFieldUpdateOperationsInput | string | null
     city?: StringFieldUpdateOperationsInput | string
-    city_id?: StringFieldUpdateOperationsInput | string
     province?: StringFieldUpdateOperationsInput | string
-    province_id?: StringFieldUpdateOperationsInput | string
     postcode?: NullableStringFieldUpdateOperationsInput | string | null
     is_primary?: BoolFieldUpdateOperationsInput | boolean
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
