@@ -7,6 +7,7 @@ import path from "path";
 import { RewardRouter } from "./routers/reward.router";
 import { SuperAdminRouter } from "./routers/super-admin.router";
 import { AdminRouter } from "./routers/store-admin.routers";
+import { AddressRouter } from "./routers/address.router";
 //import cron from "node-cron";
 // import { OrderRouter } from "./routers/order.router";
 
@@ -36,6 +37,9 @@ app.use("/api/super-admin", superAdminRouter.getRouter());
 
 const adminRouter = new AdminRouter();
 app.use("/api/store-admin",adminRouter.getRouter());
+
+const addressRouter = new AddressRouter();
+app.use("/api/address",addressRouter.getRouter());
 
 
 // scheduler

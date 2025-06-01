@@ -43,9 +43,9 @@ export default function Sidebar() {
               <TiTicket className="w-5 h-5" />
                 My Order
               </Link>
-              <Link href={`/profile/payment`} className="flex items-center gap-3 rounded-md p-3 transition duration-300 hover:bg-gray-300">
+              <Link href={`/profile/address`} className="flex items-center gap-3 rounded-md p-3 transition duration-300 hover:bg-gray-300">
               <MdOutlinePayment className="w-5 h-5" />
-                Payment
+                My location
               </Link>
             </div>
           </nav>
