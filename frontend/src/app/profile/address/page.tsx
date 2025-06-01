@@ -1,97 +1,178 @@
 "use client";
-import AddressFormModal from "@/components/modal/addresprofile";
-import Footer from "@/components/navbar/navbar/footer";
+
 import Navbar from "@/components/navbar/navbar/Navbar";
 import Sidebar from "@/components/navbar/navbar/Sidebar";
-import React, { useState } from "react";
-
+import Footer from "@/components/navbar/navbar/footer";
+import { useSession } from "next-auth/react";
+import { useEffect, useState } from "react";
+import axios from "@/lib/axios";
+import EditAddressModal from "./editAddress/page";
 
 type Address = {
-  id: number;
-  name: string;
-  phone: string;
-  street: string;
+  address_id: string;
+  address_name: string;
+  address: string;
+  subdistrict?: string | null;
   city: string;
   province: string;
-  postalCode: string;
+  postcode?: string | null;
+  is_primary: boolean;
+  created_at: string;
+  updated_at: string;
 };
 
 export default function AddressList() {
-  const [addresses, setAddresses] = useState<Address[]>([
-    {
-      id: 1,
-      name: "iqbal m",
-      phone: "081233332222",
-      street: "Jl. Bandengan Selatan No.11, RT.11/RW.5",
-      city: "Bojongsoang, Kabupaten Bandung",
-      province: "Jawa Barat",
-      postalCode: "40287",
-    },
-  ]);
+  const { data: session, status } = useSession();
+  const loadingSession = status === "loading";
 
-  const [modalOpen, setModalOpen] = useState(false);
+  const [addresses, setAddresses] = useState<Address[]>([]);
+  const [loading, setLoading] = useState(false);
+  const [deletingId, setDeletingId] = useState<string | null>(null);
 
-  const handleAddNew = () => {
-    setModalOpen(true);
-  };
+  // Modal edit state
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  const [addressToEdit, setAddressToEdit] = useState<Address | null>(null);
 
-  const handleSave = (address: Omit<Address, "id">) => {
-    const newAddress = {
-      id: Date.now(),
-      ...address,
+  useEffect(() => {
+    if (!session?.accessToken) return;
+
+    const fetchAddresses = async () => {
+      setLoading(true);
+      try {
+        const res = await axios.get("/address", {
+          headers: {
+            Authorization: `Bearer ${session.accessToken}`,
+          },
+        });
+        // Sesuaikan response jika API return langsung array atau dalam objek
+        setAddresses(res.data.addresses ?? res.data);
+      } catch (error) {
+        console.error("Failed to load addresses", error);
+      } finally {
+        setLoading(false);
+      }
     };
-    setAddresses((prev) => [...prev, newAddress]);
+
+    fetchAddresses();
+  }, [session]);
+
+  const handleDelete = async (id: string) => {
+    if (!confirm("Yakin ingin menghapus alamat ini?")) return;
+
+    if (!session?.accessToken) return;
+    setDeletingId(id);
+    try {
+      await axios.delete(`/address/${id}`, {
+        headers: {
+          Authorization: `Bearer ${session.accessToken}`,
+        },
+      });
+      setAddresses((prev) => prev.filter((addr) => addr.address_id !== id));
+    } catch (error) {
+      console.error("Gagal menghapus alamat", error);
+      alert("Gagal menghapus alamat, silakan coba lagi.");
+    } finally {
+      setDeletingId(null);
+    }
   };
+
+  const openEditModal = (address: Address) => {
+    setAddressToEdit(address);
+    setIsEditModalOpen(true);
+  };
+
+  const handleUpdateAddress = (updatedAddress: Address) => {
+    setAddresses((prev) =>
+      prev.map((addr) =>
+        addr.address_id === updatedAddress.address_id ? updatedAddress : addr
+      )
+    );
+  };
+
+  if (loadingSession) {
+    return (
+      <div className="flex flex-col items-center justify-center h-screen">
+        <p>Loading session...</p>
+      </div>
+    );
+  }
+
+  if (!session) {
+    return (
+      <div className="flex flex-col items-center justify-center h-screen">
+        <p>Anda harus login dulu.</p>
+      </div>
+    );
+  }
 
   return (
-    <div className="flex flex-col min-h-screen">
+    <>
       <Navbar />
+      <div className="flex h-screen w-full">
+        <aside className="w-64 bg-gray-100 hidden md:block">
+          <Sidebar />
+        </aside>
 
-      <div className="flex flex-1">
-        <Sidebar />
+        <main className="flex-1 p-8 overflow-auto max-w-5xl mx-auto">
+          <h1 className="text-3xl font-bold mb-8">Daftar alamat</h1>
 
-        <main className="flex-1 p-8 max-w-5xl mx-auto">
-          <div className="flex justify-between items-center mb-8">
-            <h1 className="text-3xl font-bold">Daftar alamat</h1>
-            <button
-              onClick={handleAddNew}
-              className="bg-blue-600 text-white px-5 py-2 rounded-full hover:bg-blue-700 transition"
-            >
-              Tambah alamat baru
-            </button>
-          </div>
+          <a
+            href="/profile/address/addAddress"
+            className="mb-6 inline-block bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition"
+          >
+            Tambah Alamat
+          </a>
 
-          {addresses.map((addr) => (
-            <div key={addr.id} className="mb-8">
-              <h2 className="font-semibold text-lg mb-1">Alamat utama</h2>
-              <p>{addr.name}</p>
-              <p>{addr.phone}</p>
-              <p>{addr.street}</p>
-              <p>
-                {addr.city}, {addr.province}, {addr.postalCode}
-              </p>
-
-              <div className="mt-4 space-x-4">
-                <button className="bg-blue-600 text-white px-6 py-2 rounded-full hover:bg-blue-700 transition">
-                  Edit
-                </button>
-                <button className="bg-blue-600 text-white px-6 py-2 rounded-full hover:bg-blue-700 transition">
-                  Hapus
-                </button>
+          {loading ? (
+            <p>Loading alamat...</p>
+          ) : addresses.length === 0 ? (
+            <p>Belum ada alamat tersimpan.</p>
+          ) : (
+            addresses.map((addr) => (
+              <div
+                key={addr.address_id}
+                className="mb-8 border p-4 rounded shadow flex justify-between items-start"
+              >
+                <div>
+                  <h2 className="font-semibold text-lg mb-1">
+                    {addr.is_primary ? "Alamat Utama" : "Alamat"}
+                  </h2>
+                  <p>{addr.address_name}</p>
+                  <p>{addr.address}</p>
+                  {addr.subdistrict && <p>{addr.subdistrict}</p>}
+                  <p>
+                    {addr.city}, {addr.province} {addr.postcode ?? ""}
+                  </p>
+                </div>
+                <div className="flex space-x-2">
+                  <button
+                    onClick={() => openEditModal(addr)}
+                    className="bg-yellow-500 text-white px-3 py-1 rounded hover:bg-yellow-600 transition"
+                  >
+                    Edit
+                  </button>
+                  <button
+                    onClick={() => handleDelete(addr.address_id)}
+                    disabled={deletingId === addr.address_id}
+                    className="bg-red-600 text-white px-3 py-1 rounded hover:bg-red-700 transition disabled:opacity-50 disabled:cursor-not-allowed"
+                  >
+                    {deletingId === addr.address_id ? "Menghapus..." : "Delete"}
+                  </button>
+                </div>
               </div>
-            </div>
-          ))}
-
-          {modalOpen && (
-            <AddressFormModal
-              onClose={() => setModalOpen(false)}
-              onSave={handleSave}
-            />
+            ))
           )}
+
+          <EditAddressModal
+            open={isEditModalOpen}
+            onClose={() => setIsEditModalOpen(false)}
+            addressToEdit={addressToEdit}
+            token={session?.accessToken ?? ""}
+            onUpdate={handleUpdateAddress}
+          />
         </main>
       </div>
-
       <Footer />
-    </div>
+    </>
   );
 }

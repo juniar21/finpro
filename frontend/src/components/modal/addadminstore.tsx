@@ -5,10 +5,8 @@ import { useState } from "react";
 import * as yup from "yup";
 import { AiFillEye, AiFillEyeInvisible } from "react-icons/ai";
 import { toast } from "react-toastify";
-import axios from "@/lib/axios"; // Ensure axios is correctly imported
-import { useRouter } from "next/navigation"; // For redirecting after success
+import axios from "@/lib/axios";
 
-// Schema for form validation
 const RegisterSchema = yup.object().shape({
   email: yup.string().email("Format email salah").required("Email wajib diisi"),
   password: yup
@@ -26,10 +24,20 @@ interface IRegisterForm {
   referralCode?: string;
 }
 
+// Import tipe StoreAdmin dari halaman induk (atau definisikan juga di sini)
+export interface StoreAdmin {
+  id: string;
+  name: string;
+  email: string;
+  roles: string;
+  storeName?: string;
+  storeLocation?: string;
+}
+
 interface AddStoreAdminModalProps {
   isOpen: boolean;
   setIsOpen: React.Dispatch<React.SetStateAction<boolean>>;
-  handleAddUser: (userData: IRegisterForm) => void; // Function to add user in parent component
+  handleAddUser: (userData: StoreAdmin) => void; // menerima tipe StoreAdmin lengkap
 }
 
 export default function AddStoreAdminModal({
@@ -37,38 +45,37 @@ export default function AddStoreAdminModal({
   setIsOpen,
   handleAddUser,
 }: AddStoreAdminModalProps) {
-  const [showPassword, setShowPassword] = useState(false); // Toggle password visibility
+  const [showPassword, setShowPassword] = useState(false);
   const initialValues: IRegisterForm = {
     name: "",
     email: "",
     password: "",
   };
 
-  const router = useRouter(); // Redirect after success
+  if (!isOpen) return null;
 
-  // Handle form submission
   const onSubmit = async (
     value: IRegisterForm,
     action: FormikHelpers<IRegisterForm>
   ) => {
     try {
-      
-      const response = await axios.post("/super-admin", value); 
+      const response = await axios.post("/super-admin", value);
+
       if (response.status === 201) {
-        handleAddUser(value); 
+        // Asumsi response.data berisi data StoreAdmin lengkap yang baru dibuat
+        const newStoreAdmin: StoreAdmin = response.data;
+        handleAddUser(newStoreAdmin);
         toast.success("Store Admin berhasil ditambahkan!");
         action.resetForm();
-        setIsOpen(false); 
+        setIsOpen(false);
       } else {
         toast.error("Terjadi kesalahan saat mendaftar.");
       }
     } catch (err) {
-      console.log(err);
+      console.error(err);
       toast.error("Terjadi kesalahan saat mendaftar.");
     }
   };
-
-  if (!isOpen) return null; // Don't render if modal is closed
 
   return (
     <div className="fixed inset-0 z-50 bg-black bg-opacity-40 backdrop-blur-sm flex items-center justify-center">
@@ -77,7 +84,7 @@ export default function AddStoreAdminModal({
           <h2 className="text-2xl font-semibold">Tambah Store Admin</h2>
           <button
             className="text-gray-600 text-xl"
-            onClick={() => setIsOpen(false)} // Close modal
+            onClick={() => setIsOpen(false)}
           >
             &times;
           </button>
@@ -142,13 +149,6 @@ export default function AddStoreAdminModal({
                 >
                   {isSubmitting ? "Loading..." : "Daftar"}
                 </button>
-
-                <div className="flex items-center my-4">
-                  <div className="flex-grow h-[1px] bg-gray-300" />
-                  <div className="flex-grow h-[1px] bg-gray-300" />
-                </div>
-
-
               </Form>
             );
           }}

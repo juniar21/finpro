@@ -1,180 +1,229 @@
-// Tambahan pada file komponen SuperAdminDashboard
 "use client";
 
 import Navbar from "@/components/navbar/navbar/Navbar";
 import Footer from "@/components/navbar/navbar/footer";
 import Sidebarsup from "@/components/navbar/navbar/Sidebarsup";
-import { useSession } from "next-auth/react";
 import { useEffect, useState } from "react";
-import { VscVerifiedFilled } from "react-icons/vsc";
-import Image from "next/image";
-import Link from "next/link";
+import axios from "@/lib/axios";
+import { useSession } from "next-auth/react";
+import AddStoreModal from "@/components/modal/addstore";
+import EditStoreModal from "@/components/modal/editstore";
 
-type User = {
-  id: string;
-  name: string;
-  email: string;
-  role: string;
-};
 
-type Store = {
+interface Store {
   id: string;
   name: string;
   address: string;
-  latitude: number;
-  longitude: number;
-  adminId?: string;
-};
+  admin?: {
+    id: string;
+    name: string;
+    email: string;
+  };
+}
 
-export default function SuperAdminDashboard() {
+export default function SuperAdminKelolaToko() {
   const { data: session, status } = useSession();
-  const loading = status === "loading";
-
-  const [users, setUsers] = useState<User[]>([]);
   const [stores, setStores] = useState<Store[]>([]);
-
+  const [loading, setLoading] = useState(true);
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
-  const [newUser, setNewUser] = useState({ name: "", email: "" });
-
-  const [isStoreModalOpen, setIsStoreModalOpen] = useState(false);
-  const [newStore, setNewStore] = useState({ name: "", address: "", latitude: 0, longitude: 0 });
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  const [storeToEdit, setStoreToEdit] = useState<Store | null>(null);
 
   useEffect(() => {
-    const dummyUsers: User[] = [
-      { id: "1", name: "Evan", email: "evan@example.com", role: "SUPER_ADMIN" },
-      { id: "2", name: "Alice", email: "alice@example.com", role: "STORE_ADMIN" },
-      { id: "3", name: "Charlie", email: "charlie@example.com", role: "STORE_ADMIN" },
-    ];
-    setUsers(dummyUsers);
-  }, []);
+    const fetchStores = async () => {
+      if (!session?.accessToken) return;
 
-  if (loading) {
-    return <div className="flex items-center justify-center h-screen"><p>Memuat dashboard...</p></div>;
+      setLoading(true);
+      try {
+        const response = await axios.get("/store", {
+          headers: {
+            Authorization: `Bearer ${session.accessToken}`,
+          },
+        });
+        setStores(response.data);
+      } catch (error) {
+        console.error("Gagal mengambil data toko:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    if (session?.user?.role === "SUPER_ADMIN") {
+      fetchStores();
+    }
+  }, [session]);
+
+  const handleAddStore = (newStore: Store) => {
+    setStores((prev) => [...prev, newStore]);
+  };
+
+  const handleDeleteStore = async (id: string) => {
+    if (!confirm("Apakah Anda yakin ingin menghapus toko ini?")) return;
+
+    try {
+      await axios.delete(`/store/${id}`, {
+        headers: {
+          Authorization: `Bearer ${session?.accessToken}`,
+        },
+      });
+
+      setStores((prev) => prev.filter((store) => store.id !== id));
+    } catch (error) {
+      console.error("Gagal menghapus toko:", error);
+      alert("Terjadi kesalahan saat menghapus toko.");
+    }
+  };
+
+  const handleEditClick = (store: Store) => {
+    setStoreToEdit(store);
+    setIsEditModalOpen(true);
+  };
+
+  const handleUpdateStore = (updatedStore: Store) => {
+    setStores((prev) =>
+      prev.map((store) => (store.id === updatedStore.id ? updatedStore : store))
+    );
+  };
+
+  if (status === "loading") {
+    return (
+      <div className="flex items-center justify-center h-screen bg-gray-50">
+        <p className="text-gray-600 text-lg">Memeriksa sesi pengguna...</p>
+      </div>
+    );
   }
 
   if (!session || session.user?.role !== "SUPER_ADMIN") {
-    return <div className="flex items-center justify-center h-screen"><p>Anda tidak memiliki akses ke halaman ini.</p></div>;
+    return (
+      <div className="flex items-center justify-center h-screen bg-gray-50">
+        <p className="text-red-600 text-lg font-semibold">
+          Anda tidak memiliki akses ke halaman ini.
+        </p>
+      </div>
+    );
   }
-
-  const totalUsers = users.length;
-
-  const handleAddUser = () => {
-    if (!newUser.name || !newUser.email) {
-      alert("Nama dan email wajib diisi.");
-      return;
-    }
-    const newUserObj: User = {
-      id: Date.now().toString(),
-      name: newUser.name,
-      email: newUser.email,
-      role: "STORE_ADMIN",
-    };
-    setUsers([...users, newUserObj]);
-    setNewUser({ name: "", email: "" });
-    setIsAddModalOpen(false);
-  };
 
   return (
     <>
       <Navbar />
-      <div className="flex h-screen w-full">
-        <aside className="w-64 bg-gray-100 hidden md:block">
+      <div className="flex min-h-screen bg-gray-50">
+        <aside className="w-64 bg-white border-r border-gray-200 hidden md:block">
           <Sidebarsup />
         </aside>
 
-        <main className="flex-1 p-8 overflow-auto bg-gray-50">
-          <h1 className="text-3xl font-bold mb-6">Dashboard Super Admin</h1>
+        <main className="flex-1 p-8 max-w-full">
+          <div className="mb-8 p-6 bg-white rounded-lg shadow-md max-w-md">
+            <p className="text-gray-500 text-sm mb-1">Kelola data toko Anda,</p>
+            <h2 className="text-3xl font-extrabold text-gray-900 tracking-tight mb-1">
+              {session.user?.name ?? "Super Admin"}
+            </h2>
+            <span className="inline-block px-4 py-1 text-xs font-semibold text-white bg-purple-700 rounded-full uppercase tracking-wide select-none">
+              {session.user?.role ?? "SUPER_ADMIN"}
+            </span>
+          </div>
 
-          {/* Section Info */}
-          {/* ...Bagian lainnya sama seperti sebelumnya... */}
+          <div className="flex flex-col md:flex-row md:items-center md:justify-between mb-6 gap-4">
+            <h1 className="text-4xl font-bold text-gray-900 tracking-tight">
+              Daftar Toko
+            </h1>
+            <button
+              onClick={() => setIsAddModalOpen(true)}
+              className="inline-flex items-center gap-2 bg-green-600 hover:bg-green-700 focus:ring-4 focus:ring-green-300 text-white font-semibold px-6 py-3 rounded-lg shadow-md transition duration-300"
+              aria-label="Tambah Toko"
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                className="h-6 w-6"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+                strokeWidth={2}
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  d="M12 4v16m8-8H4"
+                />
+              </svg>
+              Tambah Toko
+            </button>
+          </div>
 
-          {/* Modal Tambah Store Admin */}
-          {isAddModalOpen && (
-            <div className="fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center z-50">
-              <div className="bg-white rounded-lg p-6 w-full max-w-md shadow-lg">
-                <h2 className="text-xl font-bold mb-4">Tambah Store Admin</h2>
-                <input type="text" value={newUser.name} onChange={(e) => setNewUser({ ...newUser, name: e.target.value })} className="w-full border p-2 rounded mb-4" placeholder="Nama" />
-                <input type="email" value={newUser.email} onChange={(e) => setNewUser({ ...newUser, email: e.target.value })} className="w-full border p-2 rounded mb-4" placeholder="Email" />
-                <div className="flex justify-end gap-2">
-                  <button onClick={() => setIsAddModalOpen(false)} className="px-4 py-2 bg-gray-200 rounded hover:bg-gray-300">Batal</button>
-                  <button onClick={handleAddUser} className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700">Simpan</button>
-                </div>
-              </div>
+          {!loading && (
+            <div className="mb-8 inline-block px-6 py-3 bg-green-100 text-green-900 rounded-lg shadow-sm font-semibold select-none">
+              Total Toko: <span className="text-2xl">{stores.length}</span>
             </div>
           )}
 
-          {/* Store Management Section */}
-          <section className="mt-12">
-            <h2 className="text-2xl font-bold mb-4">Manajemen Toko</h2>
-            <div className="flex justify-end mb-4">
-              <button onClick={() => setIsStoreModalOpen(true)} className="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700">
-                + Tambah Toko
-              </button>
-            </div>
-            <div className="overflow-x-auto bg-white rounded shadow">
+          {loading ? (
+            <p className="text-gray-600 text-center py-10 text-lg">
+              Memuat data toko...
+            </p>
+          ) : stores.length === 0 ? (
+            <p className="text-gray-600 text-center py-10 text-lg">
+              Tidak ada toko yang ditemukan.
+            </p>
+          ) : (
+            <div className="overflow-x-auto rounded-lg shadow-lg bg-white border border-gray-200">
               <table className="min-w-full table-auto border-collapse">
-                <thead>
-                  <tr className="bg-gray-200 text-left">
-                    <th className="p-3">#</th>
-                    <th className="p-3">Nama Toko</th>
-                    <th className="p-3">Alamat</th>
-                    <th className="p-3">Lokasi</th>
-                    <th className="p-3">Store Admin</th>
-                    <th className="p-3">Aksi</th>
+                <thead className="bg-gray-100 text-gray-700">
+                  <tr>
+                    <th className="px-4 py-2 border">#</th>
+                    <th className="px-4 py-2 border">Nama Toko</th>
+                    <th className="px-4 py-2 border">Nama Admin</th>
+                    <th className="px-4 py-2 border">Alamat</th>
+                    <th className="px-4 py-2 border">Aksi</th>
                   </tr>
                 </thead>
                 <tbody>
                   {stores.map((store, idx) => (
-                    <tr key={store.id} className="border-t hover:bg-gray-50">
-                      <td className="p-3">{idx + 1}</td>
-                      <td className="p-3">{store.name}</td>
-                      <td className="p-3">{store.address}</td>
-                      <td className="p-3">{store.latitude}, {store.longitude}</td>
-                      <td className="p-3">{users.find(u => u.id === store.adminId)?.name || "Belum Ditugaskan"}</td>
-                      <td className="p-3 space-x-2">
-                        <button className="text-blue-600 hover:underline">Edit</button>
-                        <button className="text-red-600 hover:underline">Hapus</button>
-                        <button className="text-purple-600 hover:underline">Assign Admin</button>
+                    <tr key={store.id} className="hover:bg-gray-50">
+                      <td className="px-4 py-2 border text-center">{idx + 1}</td>
+                      <td className="px-4 py-2 border">{store.name}</td>
+                      <td className="px-4 py-2 border">
+                        {store.admin?.name ?? "-"}
+                      </td>
+                      <td className="px-4 py-2 border">{store.address}</td>
+                      <td className="px-4 py-2 border text-center space-x-2">
+                        <button
+                          onClick={() => handleEditClick(store)}
+                          className="text-blue-600 hover:text-blue-800"
+                          aria-label={`Edit toko ${store.name}`}
+                        >
+                          Edit
+                        </button>
+                        <button
+                          onClick={() => handleDeleteStore(store.id)}
+                          className="text-red-600 hover:text-red-800"
+                          aria-label={`Hapus toko ${store.name}`}
+                        >
+                          Hapus
+                        </button>
                       </td>
                     </tr>
                   ))}
                 </tbody>
               </table>
             </div>
-          </section>
-
-          {/* Modal Tambah Toko */}
-          {isStoreModalOpen && (
-            <div className="fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center z-50">
-              <div className="bg-white rounded-lg p-6 w-full max-w-md shadow-lg">
-                <h2 className="text-xl font-bold mb-4">Tambah Toko</h2>
-                <input type="text" placeholder="Nama Toko" className="w-full border p-2 rounded mb-2" value={newStore.name} onChange={(e) => setNewStore({ ...newStore, name: e.target.value })} />
-                <input type="text" placeholder="Alamat" className="w-full border p-2 rounded mb-2" value={newStore.address} onChange={(e) => setNewStore({ ...newStore, address: e.target.value })} />
-                <input type="number" placeholder="Latitude" className="w-full border p-2 rounded mb-2" value={newStore.latitude} onChange={(e) => setNewStore({ ...newStore, latitude: parseFloat(e.target.value) })} />
-                <input type="number" placeholder="Longitude" className="w-full border p-2 rounded mb-4" value={newStore.longitude} onChange={(e) => setNewStore({ ...newStore, longitude: parseFloat(e.target.value) })} />
-                <div className="flex justify-end gap-2">
-                  <button onClick={() => setIsStoreModalOpen(false)} className="px-4 py-2 bg-gray-200 rounded hover:bg-gray-300">Batal</button>
-                  <button
-                    onClick={() => {
-                      const newStoreObj: Store = {
-                        ...newStore,
-                        id: Date.now().toString(),
-                      };
-                      setStores([...stores, newStoreObj]);
-                      setNewStore({ name: "", address: "", latitude: 0, longitude: 0 });
-                      setIsStoreModalOpen(false);
-                    }}
-                    className="px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700"
-                  >
-                    Simpan
-                  </button>
-                </div>
-              </div>
-            </div>
           )}
+
+          <AddStoreModal
+            open={isAddModalOpen}
+            onClose={() => setIsAddModalOpen(false)}
+            onAdd={handleAddStore}
+            token={session?.accessToken ?? ""}
+          />
+
+          <EditStoreModal
+            open={isEditModalOpen}
+            onClose={() => setIsEditModalOpen(false)}
+            onUpdate={handleUpdateStore}
+            token={session?.accessToken ?? ""}
+            storeToEdit={storeToEdit}
+          />
         </main>
       </div>
       <Footer />
     </>
   );
-}
+}  

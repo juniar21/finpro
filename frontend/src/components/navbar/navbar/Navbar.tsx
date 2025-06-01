@@ -126,12 +126,12 @@ export default function Navbar() {
                     <Link href="/" className="text-sm font-semibold hover:underline">
                     {session.user?.name}
                     </Link>
-                  <button
-                    onClick={() => signOut()}
+                    <button
+                    onClick={() => signOut({ callbackUrl: "/login" })}
                     className="text-sm text-gray-600 hover:text-gray-800 hover:underline hover:cursor-pointer"
-                  >
+                    >
                     Logout
-                  </button>
+                    </button>
                 </div>
               ) : (
                 // If user is not logged in, show login button
