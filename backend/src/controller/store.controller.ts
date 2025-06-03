@@ -2,6 +2,7 @@ import { Request, Response } from 'express';
 import prisma from '../prisma';
 
 export class StoreController {
+  // ✅ Create Store
   async createStore(req: Request, res: Response) {
     try {
       const { name, address, adminId } = req.body;
@@ -41,7 +42,7 @@ export class StoreController {
     }
   }
 
-  // Ambil semua store lengkap dengan info adminnya
+  // ✅ GET all stores with admin + product stocks + product + category
   async getStores(req: Request, res: Response) {
     try {
       const stores = await prisma.store.findMany({
@@ -52,6 +53,16 @@ export class StoreController {
               name: true,
               email: true,
               roles: true,
+              avatar: true,
+            },
+          },
+          products: {
+            include: {
+              product: {
+                include: {
+                  category: true,
+                },
+              },
             },
           },
         },
@@ -64,6 +75,7 @@ export class StoreController {
     }
   }
 
+  // ✅ Update Store
   async updateStore(req: Request, res: Response) {
     try {
       const { id } = req.params;
@@ -72,24 +84,25 @@ export class StoreController {
       const store = await prisma.store.findUnique({ where: { id } });
 
       if (!store) {
-        res.status(404).json({ error: 'Store not found' });
-        return;
+         res.status(404).json({ error: 'Store not found' });
       }
 
       if (adminId) {
         const adminUser = await prisma.user.findUnique({ where: { id: adminId } });
+
         if (!adminUser || adminUser.roles !== 'ADMIN') {
-          res.status(400).json({ error: 'adminId invalid atau user bukan ADMIN' });
-          return;
+           res.status(400).json({ error: 'adminId invalid atau user bukan ADMIN' });
         }
 
         const existingStore = await prisma.store.findFirst({
-          where: { adminId, NOT: { id } },
+          where: {
+            adminId,
+            NOT: { id },
+          },
         });
 
         if (existingStore) {
-          res.status(400).json({ error: 'Admin ini sudah memiliki store lain' });
-          return;
+           res.status(400).json({ error: 'Admin ini sudah memiliki store lain' });
         }
       }
 
@@ -109,7 +122,7 @@ export class StoreController {
     }
   }
 
-  // Hapus Store berdasarkan id
+  // ✅ Delete Store
   async deleteStore(req: Request, res: Response) {
     try {
       const { id } = req.params;
