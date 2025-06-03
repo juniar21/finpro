@@ -33,7 +33,7 @@ interface Product {
   imageUrl: string;
   category: Category;
   stocks: Stock[];
-  status?: "active" | "inactive"; // bisa ditambahkan jika ada di DB
+  status?: "active" | "inactive"; // opsional
 }
 
 export default function StoreProductPage() {
@@ -47,8 +47,28 @@ export default function StoreProductPage() {
   useEffect(() => {
     if (loadingSession) return;
 
-    if (!session?.accessToken) {
-      setError("Token tidak ditemukan. Silakan login terlebih dahulu.");
+    if (!session) {
+      setError("Anda harus login terlebih dahulu.");
+      return;
+    }
+
+    // Ambil role dan storeId dari session user
+    const user = session.user as any;
+    const role = user?.role;
+    const storeId = user?.storeId;
+
+    if (!role) {
+      setError("Role user tidak ditemukan.");
+      return;
+    }
+
+    if (role !== "ADMIN") {
+      setError("Anda tidak memiliki akses ke halaman ini.");
+      return;
+    }
+
+    if (!storeId) {
+      setError("Store ID tidak ditemukan pada sesi.");
       return;
     }
 
@@ -60,6 +80,9 @@ export default function StoreProductPage() {
         const response = await axios.get("/product", {
           headers: {
             Authorization: `Bearer ${session.accessToken}`,
+          },
+          params: {
+            storeId,
           },
         });
 
@@ -108,52 +131,55 @@ export default function StoreProductPage() {
               <span>Memuat produk...</span>
             </div>
           )}
+
           {error && <p className="text-red-600 mb-4">{error}</p>}
 
-          <table className="min-w-full bg-white rounded shadow overflow-x-auto">
-            <thead className="bg-gray-100">
-              <tr>
-                <th className="py-2 px-4 border">Nama Produk</th>
-                <th className="py-2 px-4 border">Deskripsi</th>
-                <th className="py-2 px-4 border">Kategori</th>
-                <th className="py-2 px-4 border">Harga (Rp)</th>
-                <th className="py-2 px-4 border">Stok per Toko</th>
-              </tr>
-            </thead>
-            <tbody>
-              {products.length === 0 ? (
+          {!error && !isLoading && (
+            <table className="min-w-full bg-white rounded shadow overflow-x-auto">
+              <thead className="bg-gray-100">
                 <tr>
-                  <td colSpan={5} className="text-center py-4">
-                    Belum ada produk
-                  </td>
+                  <th className="py-2 px-4 border">Nama Produk</th>
+                  <th className="py-2 px-4 border">Deskripsi</th>
+                  <th className="py-2 px-4 border">Kategori</th>
+                  <th className="py-2 px-4 border">Harga (Rp)</th>
+                  <th className="py-2 px-4 border">Stok Toko</th>
                 </tr>
-              ) : (
-                products.map((product) => (
-                  <tr key={product.id} className="hover:bg-gray-50 align-top">
-                    <td className="border px-4 py-2">{product.name}</td>
-                    <td className="border px-4 py-2">{product.description}</td>
-                    <td className="border px-4 py-2">{product.category?.name || "-"}</td>
-                    <td className="border px-4 py-2">
-                      {product.price.toLocaleString("id-ID")}
-                    </td>
-                    <td className="border px-4 py-2">
-                      {product.stocks.length === 0 ? (
-                        "-"
-                      ) : (
-                        <ul className="list-disc list-inside">
-                          {product.stocks.map((stock) => (
-                            <li key={stock.id}>
-                              <strong>{stock.store.name}:</strong> {stock.quantity}
-                            </li>
-                          ))}
-                        </ul>
-                      )}
+              </thead>
+              <tbody>
+                {products.length === 0 ? (
+                  <tr>
+                    <td colSpan={5} className="text-center py-4">
+                      Belum ada produk
                     </td>
                   </tr>
-                ))
-              )}
-            </tbody>
-          </table>
+                ) : (
+                  products.map((product) => (
+                    <tr key={product.id} className="hover:bg-gray-50 align-top">
+                      <td className="border px-4 py-2">{product.name}</td>
+                      <td className="border px-4 py-2">{product.description}</td>
+                      <td className="border px-4 py-2">{product.category?.name || "-"}</td>
+                      <td className="border px-4 py-2">
+                        {product.price.toLocaleString("id-ID")}
+                      </td>
+                      <td className="border px-4 py-2">
+                        {product.stocks.length === 0 ? (
+                          "-"
+                        ) : (
+                          <ul className="list-disc list-inside">
+                            {product.stocks.map((stock) => (
+                              <li key={stock.id}>
+                                <strong>{stock.store.name}:</strong> {stock.quantity}
+                              </li>
+                            ))}
+                          </ul>
+                        )}
+                      </td>
+                    </tr>
+                  ))
+                )}
+              </tbody>
+            </table>
+          )}
         </main>
       </div>
       <Footer />

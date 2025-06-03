@@ -51,12 +51,26 @@ export class ProductController {
     }
   };
 
-  getProducts = async (req: Request, res: Response) => {
+ getProducts = async (req: Request, res: Response) => {
     try {
+      const storeId = req.query.storeId as string;
+
+      if (!storeId) {
+         res.status(400).json({ error: "storeId harus diberikan" });
+      }
+
       const products = await prisma.product.findMany({
+        where: {
+          stocks: {
+            some: {
+              storeId: storeId,
+            },
+          },
+        },
         include: {
           category: true,
           stocks: {
+            where: { storeId: storeId },
             include: {
               store: true,
             },
