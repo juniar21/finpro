@@ -10,7 +10,6 @@ import { useSession } from "next-auth/react";
 
 export default function StoreAdminListPage() {
   const { data: session, status } = useSession();
-
   const [storeAdmins, setStoreAdmins] = useState<StoreAdmin[]>([]);
   const [loading, setLoading] = useState(true);
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);

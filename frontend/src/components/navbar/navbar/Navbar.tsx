@@ -106,7 +106,7 @@ export default function Navbar() {
                       if (session.user.role === "SUPER_ADMIN") {
                         window.location.href = "/super-admin";
                       } else if (session.user.role === "ADMIN") {
-                        window.location.href = "/Store";
+                        window.location.href = "/admin-store";
                       } else {
                         window.location.href = "/profile";
                       }
