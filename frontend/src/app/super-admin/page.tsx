@@ -5,7 +5,7 @@ import Footer from "@/components/navbar/navbar/footer";
 import Sidebarsup from "@/components/navbar/navbar/Sidebarsup";
 import { useEffect, useState } from "react";
 import axios from "@/lib/axios";
-import AddStoreAdminModal, { StoreAdmin } from "@/components/modal/addadminstore"; // Import tipe StoreAdmin
+import AddStoreAdminModal, { StoreAdmin } from "@/components/modal/addadminstore";
 import { useSession } from "next-auth/react";
 
 export default function StoreAdminListPage() {
@@ -31,7 +31,6 @@ export default function StoreAdminListPage() {
     }
   }, [session]);
 
-  // Menerima data StoreAdmin lengkap dari modal
   const handleAddUser = (newUser: StoreAdmin) => {
     setStoreAdmins((prev) => [...prev, newUser]);
   };
@@ -57,14 +56,14 @@ export default function StoreAdminListPage() {
   return (
     <>
       <Navbar />
-      <div className="flex min-h-screen bg-gray-50">
+      <div className="flex flex-col md:flex-row min-h-screen bg-gray-50">
         {/* Sidebar */}
-        <aside className="w-64 bg-white border-r border-gray-200 hidden md:block">
+        <aside className="w-full md:w-64 bg-white border-r border-gray-200 hidden md:block">
           <Sidebarsup />
         </aside>
 
         {/* Main Content */}
-        <main className="flex-1 p-8 max-w-full">
+        <main className="flex-1 px-4 sm:px-6 md:px-8 py-6 max-w-full">
           {/* Header Info Super Admin */}
           <div className="mb-8 p-6 bg-white rounded-lg shadow-md max-w-md">
             <p className="text-gray-500 text-sm mb-1">
@@ -80,7 +79,7 @@ export default function StoreAdminListPage() {
 
           {/* Header & Action */}
           <div className="flex flex-col md:flex-row md:items-center md:justify-between mb-6 gap-4">
-            <h1 className="text-4xl font-bold text-gray-900 tracking-tight">
+            <h1 className="text-3xl sm:text-4xl font-bold text-gray-900 tracking-tight">
               Daftar Pengguna
             </h1>
             <button
@@ -118,28 +117,16 @@ export default function StoreAdminListPage() {
               Tidak ada Store Admin yang ditemukan.
             </p>
           ) : (
-            <div className="overflow-x-auto rounded-lg shadow-lg bg-white border border-gray-200">
-              <table className="min-w-full table-auto border-collapse">
+            <div className="w-full overflow-x-auto rounded-lg shadow-lg bg-white border border-gray-200">
+              <table className="min-w-[700px] w-full table-auto border-collapse">
                 <thead className="bg-gray-100 border-b border-gray-300">
                   <tr>
-                    <th className="px-7 py-4 text-left text-gray-700 font-semibold tracking-wide">
-                      #
-                    </th>
-                    <th className="px-7 py-4 text-left text-gray-700 font-semibold tracking-wide">
-                      Nama
-                    </th>
-                    <th className="px-7 py-4 text-left text-gray-700 font-semibold tracking-wide">
-                      Email
-                    </th>
-                    <th className="px-7 py-4 text-left text-gray-700 font-semibold tracking-wide">
-                      Role
-                    </th>
-                    <th className="px-7 py-4 text-left text-gray-700 font-semibold tracking-wide">
-                      Toko
-                    </th>
-                    <th className="px-7 py-4 text-left text-gray-700 font-semibold tracking-wide">
-                      Aksi
-                    </th>
+                    <th className="px-4 py-3 text-left text-gray-700 font-semibold text-sm">#</th>
+                    <th className="px-4 py-3 text-left text-gray-700 font-semibold text-sm">Nama</th>
+                    <th className="px-4 py-3 text-left text-gray-700 font-semibold text-sm">Email</th>
+                    <th className="px-4 py-3 text-left text-gray-700 font-semibold text-sm">Role</th>
+                    <th className="px-4 py-3 text-left text-gray-700 font-semibold text-sm hidden sm:table-cell">Toko</th>
+                    <th className="px-4 py-3 text-left text-gray-700 font-semibold text-sm">Aksi</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -148,36 +135,28 @@ export default function StoreAdminListPage() {
                       key={admin.id}
                       className="border-b last:border-0 hover:bg-blue-50 transition-colors duration-200"
                     >
-                      <td className="px-7 py-4 whitespace-nowrap text-gray-800">
+                      <td className="px-4 py-3 whitespace-nowrap text-gray-800 text-sm">
                         {index + 1}
                       </td>
-                      <td className="px-7 py-4 whitespace-nowrap text-gray-900 font-semibold">
+                      <td className="px-4 py-3 whitespace-nowrap text-gray-900 font-semibold text-sm">
                         {admin.name}
                       </td>
-                      <td className="px-7 py-4 whitespace-nowrap text-gray-700">
+                      <td className="px-4 py-3 whitespace-nowrap text-gray-700 text-sm">
                         {admin.email}
                       </td>
-                      <td className="px-7 py-4 whitespace-nowrap">
-                        <span className="inline-block px-3 py-1 text-xs font-semibold rounded-full bg-green-100 text-green-800 uppercase tracking-wide select-none">
+                      <td className="px-4 py-3 whitespace-nowrap">
+                        <span className="inline-block px-3 py-1 text-xs font-semibold rounded-full bg-green-100 text-green-800 uppercase tracking-wide">
                           {admin.roles}
                         </span>
                       </td>
-                      <td className="px-7 py-4 whitespace-nowrap text-gray-700">
-                        {admin.storeName
-                          ? `${admin.storeName} (${admin.storeLocation})`
-                          : "-"}
+                      <td className="px-4 py-3 whitespace-nowrap text-gray-700 text-sm hidden sm:table-cell">
+                        {admin.store ? admin.store.name : "-"}
                       </td>
-                      <td className="px-7 py-4 whitespace-nowrap space-x-5">
-                        <button
-                          className="text-blue-600 hover:text-blue-800 font-semibold transition"
-                          aria-label={`Edit ${admin.name}`}
-                        >
+                      <td className="px-4 py-3 whitespace-nowrap space-x-4 text-sm">
+                        <button className="text-blue-600 hover:text-blue-800 font-semibold">
                           Edit
                         </button>
-                        <button
-                          className="text-red-600 hover:text-red-800 font-semibold transition"
-                          aria-label={`Hapus ${admin.name}`}
-                        >
+                        <button className="text-red-600 hover:text-red-800 font-semibold">
                           Hapus
                         </button>
                       </td>

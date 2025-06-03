@@ -9,6 +9,8 @@ import { SuperAdminRouter } from "./routers/super-admin.router";
 import { AdminRouter } from "./routers/store-admin.routers";
 import { StoreRouter } from "./routers/store.router";
 import { AddressRouter } from "./routers/address.router";
+import { CategoryRouter } from "./routers/category.router";
+import { ProductRouter } from "./routers/product.router";
 import { AdminsRouter } from "./routers/store-admins.routers";
 //import cron from "node-cron";
 // import { OrderRouter } from "./routers/order.router";
@@ -48,6 +50,12 @@ app.use("/api/address",addressRouter.getRouter());
 
 const storeRouter = new StoreRouter();
 app.use("/api/store",storeRouter.getRouter());
+
+const productRouter = new ProductRouter();
+app.use("/api/product",productRouter.getRouter());
+
+const categoryRouter = new CategoryRouter();
+app.use("/api/category", categoryRouter.getRouter());
 
 
 // scheduler

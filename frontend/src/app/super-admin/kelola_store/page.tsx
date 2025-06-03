@@ -190,14 +190,14 @@ export default function SuperAdminKelolaToko() {
                           className="text-blue-600 hover:text-blue-800"
                           aria-label={`Edit toko ${store.name}`}
                         >
-                          Edit
+                         ✏️ Edit
                         </button>
                         <button
                           onClick={() => handleDeleteStore(store.id)}
                           className="text-red-600 hover:text-red-800"
                           aria-label={`Hapus toko ${store.name}`}
                         >
-                          Hapus
+                         🗑️ Hapus
                         </button>
                       </td>
                     </tr>
