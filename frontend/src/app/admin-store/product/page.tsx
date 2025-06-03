@@ -5,39 +5,32 @@ import Navbar from "@/components/navbar/navbar/Navbar";
 import Sidebarstore from "@/components/navbar/navbar/SidebarAdminStore";
 import Footer from "@/components/navbar/navbar/footer";
 import { useSession } from "next-auth/react";
-import axios from "@/lib/axios"; // Make sure this path is correct
+import axios from "@/lib/axios"; // sesuaikan path sesuai struktur project
 import Image from "next/image";
 
-interface ProductCategory {
+interface Store {
   id: string;
   name: string;
-}
-
-interface ProductDetails {
-  id: string;
-  name: string;
-  description: string;
-  price: number;
-  imageUrl: string;
-  category: ProductCategory;
+  address: string;
 }
 
 interface Product {
   id: string;
-  storeId: string;
-  productId: string;
-  quantity: number;
-  updatedAt: string;
-  product: ProductDetails;
+  name: string;
+  price: number;
+  stock: number;
+  image: string;
+  description: string;
+  category: string;
 }
 
-export default function ProductsPage() {
+export default function AdminStorePage() {
   const { data: session, status } = useSession();
   const loading = status === "loading";
 
-  const [products, setProducts] = useState<Product[]>([]);  // Initialize as an empty array
-  const [loadingData, setLoading] = useState<boolean>(false);
+  const [products, setProducts] = useState<Product[]>([]);
   const [error, setError] = useState<string | null>(null);
+  const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
     if (loading) return;
@@ -48,88 +41,98 @@ export default function ProductsPage() {
     }
 
     const fetchProducts = async () => {
-      setLoading(true);
+      setIsLoading(true);
       setError(null);
 
       try {
-        const res = await axios.get("/store", {
+        const res = await axios.get("/product", {
           headers: {
-            Authorization: `Bearer ${session.accessToken}`, // Include Bearer Token
+            Authorization: `Bearer ${session.accessToken}`,
           },
         });
 
-        // Check if the response has products data
-        if (Array.isArray(res.data.products)) {
-          setProducts(res.data.products); // Assuming the response contains the product list
-        } else {
-          setError("Produk tidak ditemukan.");
-        }
+        setProducts(res.data.products); // Assuming the response contains products data
       } catch (err: any) {
-        setError(err.response?.data?.message || "Error fetching products.");
-        console.error("Error fetching products:", err);
+        setError(
+          err.response?.data?.message || err.message || "Terjadi kesalahan saat mengambil data produk."
+        );
       } finally {
-        setLoading(false);
+        setIsLoading(false);
       }
     };
 
     fetchProducts();
   }, [session, loading]);
 
+  if (loading) {
+    return (
+      <div className="flex flex-col items-center justify-center h-screen">
+        <p>Loading session...</p>
+      </div>
+    );
+  }
+
+  if (!session) {
+    return (
+      <div className="flex flex-col items-center justify-center h-screen">
+        <p>Anda harus login dulu.</p>
+      </div>
+    );
+  }
+
   return (
     <>
       <Navbar />
-      <div className="flex min-h-screen bg-gray-50">
-        {/* Sidebar */}
-        <aside className="w-64 bg-white border-r border-gray-200 hidden md:block">
+      <div className="flex h-screen w-full">
+        <div className="w-64 bg-gray-100 hidden md:block">
           <Sidebarstore />
-        </aside>
+        </div>
+        <main className="flex-1 p-6 overflow-auto bg-gray-50">
+          <h1 className="text-3xl font-bold mb-6">Kelola Produk Toko</h1>
 
-        <main className="flex-1 p-6 bg-gray-50 min-h-screen">
-          <h1 className="text-3xl font-bold mb-6">Daftar Produk</h1>
-
-          {/* Loading and Error States */}
-          {loadingData && <p>Loading data produk...</p>}
+          {isLoading && <p>Loading data produk...</p>}
           {error && <p className="text-red-600 mb-4">{error}</p>}
 
-          {/* Show "No products available" if no products */}
-          {products.length === 0 && !loadingData && !error && (
-            <p className="text-center">Tidak ada produk tersedia.</p>
-          )}
-
-          <div className="overflow-x-auto bg-white rounded shadow">
-            <table className="min-w-full">
-              <thead className="bg-gray-100">
+          <table className="min-w-full bg-white rounded shadow overflow-x-auto">
+            <thead className="bg-gray-100">
+              <tr>
+                <th className="py-2 px-4 border">Nama Produk</th>
+                <th className="py-2 px-4 border">Deskripsi</th>
+                <th className="py-2 px-4 border">Harga</th>
+                <th className="py-2 px-4 border">Kategori</th>
+                <th className="py-2 px-4 border">Gambar</th>
+                <th className="py-2 px-4 border">Stok</th>
+              </tr>
+            </thead>
+            <tbody>
+              {products.length === 0 ? (
                 <tr>
-                  <th className="py-2 px-4 border">Nama Produk</th>
-                  <th className="py-2 px-4 border">Deskripsi</th>
-                  <th className="py-2 px-4 border">Harga (Rp)</th>
-                  <th className="py-2 px-4 border">Stok</th>
-                  <th className="py-2 px-4 border">Kategori</th>
-                  <th className="py-2 px-4 border">Gambar</th>
+                  <td colSpan={6} className="text-center py-4">
+                    Belum ada produk
+                  </td>
                 </tr>
-              </thead>
-              <tbody>
-                {products.map((p) => (
-                  <tr key={p.id} className="hover:bg-gray-50">
-                    <td className="border px-4 py-2">{p.product.name}</td>
-                    <td className="border px-4 py-2">{p.product.description}</td>
-                    <td className="border px-4 py-2">{p.product.price.toLocaleString()}</td>
-                    <td className="border px-4 py-2">{p.quantity}</td>
-                    <td className="border px-4 py-2">{p.product.category.name}</td>
+              ) : (
+                products.map((product) => (
+                  <tr key={product.id} className="hover:bg-gray-50">
+                    <td className="border px-4 py-2">{product.name}</td>
+                    <td className="border px-4 py-2">{product.description}</td>
+                    <td className="border px-4 py-2">{product.price}</td>
+                    <td className="border px-4 py-2">{product.category}</td>
                     <td className="border px-4 py-2">
                       <Image
-                        src={p.product.imageUrl}
-                        alt={`Image for ${p.product.name}`}
+                        src={product.image}
+                        alt={`Image ${product.name}`}
                         width={40}
                         height={40}
                         className="rounded-full object-cover"
                       />
                     </td>
+                    <td className="border px-4 py-2">{product.stock}</td>
                   </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
+                ))
+              )}
+            </tbody>
+          </table>
         </main>
       </div>
       <Footer />

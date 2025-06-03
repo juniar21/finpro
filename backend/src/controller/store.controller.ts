@@ -75,6 +75,42 @@ export class StoreController {
     }
   }
 
+  // ✅ Get All Products (optionally by storeId)
+async getProducts(req: Request, res: Response) {
+  try {
+    const { storeId } = req.query;
+
+    if (storeId && typeof storeId !== 'string') {
+     res.status(400).json({ error: 'Invalid storeId' });
+    }
+
+    const productStocks = await prisma.productStock.findMany({
+      where: storeId ? { storeId: storeId as string } : undefined,
+      include: {
+        product: {
+          include: {
+            category: true,
+          },
+        },
+        store: {
+          select: {
+            id: true,
+            name: true,
+            address: true,
+          },
+        },
+      },
+    });
+
+    res.status(200).json(productStocks);
+  } catch (error) {
+    console.error('Error fetching products:', error);
+    res.status(500).json({ error: 'Internal server error' });
+  }
+}
+
+
+
   // ✅ Update Store
   async updateStore(req: Request, res: Response) {
     try {
