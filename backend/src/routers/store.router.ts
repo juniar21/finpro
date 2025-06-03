@@ -29,6 +29,12 @@ export class StoreRouter {
       this.storeController.getStores
     );
 
+    this.router.get(
+      '/product',
+      this.authMiddleware.verifyToken,
+      this.storeController.getProducts
+    );
+
     // PUT /store/:id -> update store by id (gunakan verifyToken middleware)
     this.router.patch(
       '/:id',
