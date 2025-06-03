@@ -53,35 +53,51 @@ export class ProductController {
 
  getProducts = async (req: Request, res: Response) => {
     try {
-      const storeId = req.query.storeId as string;
+      const userId = req.user?.id;
 
-      if (!storeId) {
-         res.status(400).json({ error: "storeId harus diberikan" });
+      if (!userId) {
+        res.status(401).json({ message: "Unauthorized" });
+      }
+
+      // Cari store milik user ini
+      const store = await prisma.store.findUnique({
+        where: { adminId: String(userId) },
+      });
+
+      if (!store) {
+        res.status(403).json({ message: "Anda belum memiliki toko" });
+        return;
       }
 
       const products = await prisma.product.findMany({
         where: {
           stocks: {
             some: {
-              storeId: storeId,
+              storeId: store.id,
             },
           },
         },
         include: {
           category: true,
           stocks: {
-            where: { storeId: storeId },
+            where: {
+              storeId: store.id,
+            },
             include: {
-              store: true,
+              store: {
+                include: {
+                  admin: true, // ini untuk mendapatkan data user pemilik toko
+                },
+              },
             },
           },
         },
       });
 
-      res.status(200).json(products);
+      res.json(products);
     } catch (error) {
-      console.error("Error fetching products:", error);
-      res.status(500).json({ error: "Internal server error" });
+      console.error("Error saat mengambil produk:", error);
+      res.status(500).json({ message: "Gagal mengambil produk", error });
     }
   };
 }
