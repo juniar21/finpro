@@ -24,14 +24,22 @@ interface IRegisterForm {
   referralCode?: string;
 }
 
+
+export interface Store {
+  id: string;
+  name: string;
+  location: string;
+}
 // Import tipe StoreAdmin dari halaman induk (atau definisikan juga di sini)
 export interface StoreAdmin {
   id: string;
   name: string;
   email: string;
   roles: string;
-  storeName?: string;
-  storeLocation?: string;
+  store?: {
+    name: string;
+    location: string;
+  } | null;
 }
 
 interface AddStoreAdminModalProps {
