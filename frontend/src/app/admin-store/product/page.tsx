@@ -1,12 +1,12 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import Navbar from "@/components/navbar/navbar/Navbar";
 import Sidebarstore from "@/components/navbar/navbar/SidebarAdminStore";
 import Footer from "@/components/navbar/navbar/footer";
 import { useSession } from "next-auth/react";
-import axios from "@/lib/axios"; // sesuaikan path sesuai struktur project
-import Image from "next/image";
+import axios from "@/lib/axios";
+import { Loader2 } from "lucide-react";
 
 interface Store {
   id: string;
@@ -14,26 +14,38 @@ interface Store {
   address: string;
 }
 
+interface Stock {
+  id: string;
+  quantity: number;
+  store: Store;
+}
+
+interface Category {
+  id: string;
+  name: string;
+}
+
 interface Product {
   id: string;
   name: string;
-  price: number;
-  stock: number;
-  image: string;
   description: string;
-  category: string;
+  price: number;
+  imageUrl: string;
+  category: Category;
+  stocks: Stock[];
+  status?: "active" | "inactive"; // bisa ditambahkan jika ada di DB
 }
 
-export default function AdminStorePage() {
+export default function StoreProductPage() {
   const { data: session, status } = useSession();
-  const loading = status === "loading";
+  const loadingSession = status === "loading";
 
   const [products, setProducts] = useState<Product[]>([]);
   const [error, setError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
-    if (loading) return;
+    if (loadingSession) return;
 
     if (!session?.accessToken) {
       setError("Token tidak ditemukan. Silakan login terlebih dahulu.");
@@ -45,16 +57,16 @@ export default function AdminStorePage() {
       setError(null);
 
       try {
-        const res = await axios.get("/product", {
+        const response = await axios.get("/product", {
           headers: {
             Authorization: `Bearer ${session.accessToken}`,
           },
         });
 
-        setProducts(res.data.products); // Assuming the response contains products data
+        setProducts(response.data);
       } catch (err: any) {
         setError(
-          err.response?.data?.message || err.message || "Terjadi kesalahan saat mengambil data produk."
+          err.response?.data?.message || err.message || "Gagal mengambil data produk."
         );
       } finally {
         setIsLoading(false);
@@ -62,9 +74,9 @@ export default function AdminStorePage() {
     };
 
     fetchProducts();
-  }, [session, loading]);
+  }, [session, loadingSession]);
 
-  if (loading) {
+  if (loadingSession) {
     return (
       <div className="flex flex-col items-center justify-center h-screen">
         <p>Loading session...</p>
@@ -88,9 +100,14 @@ export default function AdminStorePage() {
           <Sidebarstore />
         </div>
         <main className="flex-1 p-6 overflow-auto bg-gray-50">
-          <h1 className="text-3xl font-bold mb-6">Kelola Produk Toko</h1>
+          <h1 className="text-3xl font-bold mb-6">Produk Toko Anda</h1>
 
-          {isLoading && <p>Loading data produk...</p>}
+          {isLoading && (
+            <div className="flex items-center gap-2 mb-4 text-gray-700">
+              <Loader2 className="animate-spin h-5 w-5" />
+              <span>Memuat produk...</span>
+            </div>
+          )}
           {error && <p className="text-red-600 mb-4">{error}</p>}
 
           <table className="min-w-full bg-white rounded shadow overflow-x-auto">
@@ -98,36 +115,40 @@ export default function AdminStorePage() {
               <tr>
                 <th className="py-2 px-4 border">Nama Produk</th>
                 <th className="py-2 px-4 border">Deskripsi</th>
-                <th className="py-2 px-4 border">Harga</th>
                 <th className="py-2 px-4 border">Kategori</th>
-                <th className="py-2 px-4 border">Gambar</th>
-                <th className="py-2 px-4 border">Stok</th>
+                <th className="py-2 px-4 border">Harga (Rp)</th>
+                <th className="py-2 px-4 border">Stok per Toko</th>
               </tr>
             </thead>
             <tbody>
               {products.length === 0 ? (
                 <tr>
-                  <td colSpan={6} className="text-center py-4">
+                  <td colSpan={5} className="text-center py-4">
                     Belum ada produk
                   </td>
                 </tr>
               ) : (
                 products.map((product) => (
-                  <tr key={product.id} className="hover:bg-gray-50">
+                  <tr key={product.id} className="hover:bg-gray-50 align-top">
                     <td className="border px-4 py-2">{product.name}</td>
                     <td className="border px-4 py-2">{product.description}</td>
-                    <td className="border px-4 py-2">{product.price}</td>
-                    <td className="border px-4 py-2">{product.category}</td>
+                    <td className="border px-4 py-2">{product.category?.name || "-"}</td>
                     <td className="border px-4 py-2">
-                      <Image
-                        src={product.image}
-                        alt={`Image ${product.name}`}
-                        width={40}
-                        height={40}
-                        className="rounded-full object-cover"
-                      />
+                      {product.price.toLocaleString("id-ID")}
                     </td>
-                    <td className="border px-4 py-2">{product.stock}</td>
+                    <td className="border px-4 py-2">
+                      {product.stocks.length === 0 ? (
+                        "-"
+                      ) : (
+                        <ul className="list-disc list-inside">
+                          {product.stocks.map((stock) => (
+                            <li key={stock.id}>
+                              <strong>{stock.store.name}:</strong> {stock.quantity}
+                            </li>
+                          ))}
+                        </ul>
+                      )}
+                    </td>
                   </tr>
                 ))
               )}
