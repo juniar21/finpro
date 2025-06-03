@@ -9,6 +9,7 @@ import { SuperAdminRouter } from "./routers/super-admin.router";
 import { AdminRouter } from "./routers/store-admin.routers";
 import { StoreRouter } from "./routers/store.router";
 import { AddressRouter } from "./routers/address.router";
+import { AdminsRouter } from "./routers/store-admins.routers";
 //import cron from "node-cron";
 // import { OrderRouter } from "./routers/order.router";
 
@@ -38,6 +39,9 @@ app.use("/api/super-admin", superAdminRouter.getRouter());
 
 const adminRouter = new AdminRouter();
 app.use("/api/store-admin",adminRouter.getRouter());
+
+const adminsRouter = new AdminsRouter();
+app.use("/api/store-admins",adminsRouter.getRouter());
 
 const addressRouter = new AddressRouter();
 app.use("/api/address",addressRouter.getRouter());
