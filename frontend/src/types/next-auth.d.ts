@@ -11,11 +11,6 @@ declare module "next-auth" {
       referralCode?: string;
       referredById?: string;
     };
-    store:{
-      storeId?: string; 
-      name?: string; 
-      address?: string; 
-    }
     accessToken?: string;
   }
 
