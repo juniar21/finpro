@@ -1,6 +1,7 @@
 import { Router } from "express";
 import { AuthMiddleware } from "../middleware/auth.middleware";
 import { UserController } from "../controller/user.controller";
+import { uploader } from "../helpers/uploader";  // import uploader
 
 export class UserRouter {
   private router: Router;
@@ -25,9 +26,12 @@ export class UserRouter {
       this.authMiddleware.verifyToken,
       this.userController.getUser
     );
+    
+    // PATCH /update-profile dengan upload avatar
     this.router.patch(
       "/update-profile",
       this.authMiddleware.verifyToken,
+      uploader("memoryStorage", "AVATAR_").single("avatar"),  // <-- multer middleware
       this.userController.updateUser
     );
 
