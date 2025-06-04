@@ -1,88 +1,82 @@
-// components/TopSellingSection.tsx
+"use client";
 
+import React, { useState, useEffect } from "react";
 import Link from "next/link";
+import axios from "@/lib/axios"; // Adjust according to your project structure
+import { Loader2 } from "lucide-react";
 
 export default function TopSellingSection() {
+  const [products, setProducts] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    const fetchProducts = async () => {
+      try {
+        const response = await axios.get("/product/all"); // Your API endpoint here
+        setProducts(response.data); // Assuming response.data contains the product array
+      } catch (err: any) {
+        setError("Failed to load products");
+        console.error(err);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchProducts();
+  }, []);
+
+  if (isLoading) {
     return (
-      <section className="w-full bg-white py-12 px-6">
-        {/* Top Selling */}
-        <div className="max-w-7xl mx-auto mt-16">
-          <h2 className="text-3xl font-extrabold text-gray-900">TOP SELLING</h2>
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-8 mt-8">
-            {/* Product 1 */}
-            <div className="border rounded-lg p-4">
-                <Link href="/detail">
-              <img
-                src="/kemeja.png"
-                alt="Product Image"
-                className="w-full h-auto rounded-lg"
-              />
-                </Link>
-              <div className="mt-4">
-                <h3 className="font-semibold text-lg">Vertical Striped Shirt</h3>
-                <div className="flex items-center mt-1">
-                  <span className="text-yellow-500">⭐⭐⭐⭐⭐</span>
-                  <span className="ml-2 text-gray-500">(4.5)</span>
-                </div>
-                <p className="mt-2 text-xl font-semibold text-gray-800">$212 <span className="line-through text-red-500">$232</span></p>
-              </div>
-            </div>
-            {/* Product 2 */}
-            <div className="border rounded-lg p-4">
-              <img
-                src="/path-to-your-image.jpg"
-                alt="Product Image"
-                className="w-full h-auto rounded-lg"
-              />
-              <div className="mt-4">
-                <h3 className="font-semibold text-lg">Courage Graphic T-shirt</h3>
-                <div className="flex items-center mt-1">
-                  <span className="text-yellow-500">⭐⭐⭐⭐⭐</span>
-                  <span className="ml-2 text-gray-500">(4.5)</span>
-                </div>
-                <p className="mt-2 text-xl font-semibold text-gray-800">$145</p>
-              </div>
-            </div>
-            {/* Product 3 */}
-            <div className="border rounded-lg p-4">
-              <img
-                src="/path-to-your-image.jpg"
-                alt="Product Image"
-                className="w-full h-auto rounded-lg"
-              />
-              <div className="mt-4">
-                <h3 className="font-semibold text-lg">Loose Fit Bermuda Shorts</h3>
-                <div className="flex items-center mt-1">
-                  <span className="text-yellow-500">⭐⭐⭐⭐⭐</span>
-                  <span className="ml-2 text-gray-500">(4.5)</span>
-                </div>
-                <p className="mt-2 text-xl font-semibold text-gray-800">$80</p>
-              </div>
-            </div>
-            {/* Product 4 */}
-            <div className="border rounded-lg p-4">
-              <img
-                src="/path-to-your-image.jpg"
-                alt="Product Image"
-                className="w-full h-auto rounded-lg"
-              />
-              <div className="mt-4">
-                <h3 className="font-semibold text-lg">Faded Skinny Jeans</h3>
-                <div className="flex items-center mt-1">
-                  <span className="text-yellow-500">⭐⭐⭐⭐⭐</span>
-                  <span className="ml-2 text-gray-500">(4.5)</span>
-                </div>
-                <p className="mt-2 text-xl font-semibold text-gray-800">$210</p>
-              </div>
-            </div>
-          </div>
-          <div className="mt-8 text-center">
-            <button className="px-6 py-3 bg-black text-white rounded-full hover:bg-gray-800 transition-colors duration-300">
-              View All
-            </button>
-          </div>
-        </div>
-      </section>
+      <div className="flex flex-col items-center justify-center h-screen">
+        <Loader2 className="animate-spin h-10 w-10" />
+        <span>Loading products...</span>
+      </div>
     );
   }
-  
+
+  if (error) {
+    return (
+      <div className="flex flex-col items-center justify-center h-screen">
+        <p className="text-red-500">{error}</p>
+      </div>
+    );
+  }
+
+  return (
+    <section className="w-full bg-white py-12 px-6">
+      {/* Top Selling */}
+      <div className="max-w-7xl mx-auto mt-16">
+        <h2 className="text-3xl font-extrabold text-gray-900">TOP SELLING</h2>
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-8 mt-8">
+          {products.map((product: any) => (
+            <div key={product.id} className="border rounded-lg p-4">
+              <Link href={`/detail/${product.id}`}>
+                <img
+                  src={product.imageUrl || "/default-product-image.png"} // Default image if none exists
+                  alt={product.name}
+                  className="w-full h-auto rounded-lg"
+                />
+              </Link>
+              <div className="mt-4">
+                <h3 className="font-semibold text-lg">{product.name}</h3>
+                <div className="flex items-center mt-1">
+                  <span className="text-yellow-500">⭐⭐⭐⭐⭐</span>
+                  <span className="ml-2 text-gray-500">({product.rating || 0})</span>
+                </div>
+                <p className="mt-2 text-xl font-semibold text-gray-800">
+                  ${product.price} <span className="line-through text-red-500">${product.oldPrice}</span>
+                </p>
+              </div>
+            </div>
+          ))}
+        </div>
+        <div className="mt-8 text-center">
+          <button className="px-6 py-3 bg-black text-white rounded-full hover:bg-gray-800 transition-colors duration-300">
+            View All
+          </button>
+        </div>
+      </div>
+    </section>
+  );
+}

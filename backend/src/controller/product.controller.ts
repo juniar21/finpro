@@ -100,4 +100,26 @@ export class ProductController {
       res.status(500).json({ message: "Gagal mengambil produk", error });
     }
   };
+
+   getAllProducts = async (req: Request, res: Response) => {
+    try {
+      // Fetch all products with their categories and stock information
+      const products = await prisma.product.findMany({
+        include: {
+          category: true,
+          stocks: {
+            include: {
+              store: true, // to include store information for each product stock
+            },
+          },
+        },
+      });
+
+      res.json(products);
+    } catch (error) {
+      console.error("Error while fetching all products:", error);
+      res.status(500).json({ message: "Failed to fetch all products", error });
+    }
+  };
 }
+

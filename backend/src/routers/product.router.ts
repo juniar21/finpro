@@ -28,6 +28,8 @@ export class ProductRouter {
       this.authMiddleware.verifyToken,
       this.productController.getProducts
     );
+
+    this.router.get("/all",this.productController.getAllProducts);
   }
 
   getRouter() {

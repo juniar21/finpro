@@ -30,6 +30,12 @@ export class UserRouter {
       this.authMiddleware.verifyToken,
       this.userController.updateUser
     );
+    //     this.router.patch(
+    //   "/update-avatar",
+    //   this.authMiddleware.verifyToken,
+    //   this.userController.updateAvatar
+    // );
+
 
     this.router.get("/:id", this.userController.getUserId);
 

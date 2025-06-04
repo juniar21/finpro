@@ -144,6 +144,7 @@ export class AuthController {
               name: user.name,
               email: user.email,
               role: user.roles,
+              avatar: user.avatar || "",
               referralCode: user.referralCode, 
             },
             access_token,
