@@ -2,6 +2,7 @@ import { Request, Response } from "express";
 import prisma from "../prisma";
 import { Prisma } from "../../prisma/generated/client";
 import { genSalt, hash } from "bcrypt";
+import { cloudinaryRemove, cloudinaryUpload } from "../helpers/cloudinary";
 
 export class UserController {
   async getUser(req: Request, res: Response) {
@@ -79,35 +80,50 @@ export class UserController {
   }
 
 async updateUser(req: Request, res: Response) {
-  try {
-    if (!req.user?.id) {
-      res.status(401).json({ message: "Unauthorized" });
-    } else {
-    
-      const data: Prisma.UserUpdateInput = req.body;
-
-     
-      if (typeof data.password === "string") {
-       
-        const salt = await genSalt(10); 
-        const hashedPassword = await hash(data.password, salt); 
-        data.password = hashedPassword; 
+    try {
+      if (!req.user?.id) {
+         res.status(401).json({ message: "Unauthorized" });
+         return;
       }
 
-      
+      const userId = String(req.user.id);
+      const existingUser = await prisma.user.findUnique({ where: { id: userId } });
+      if (!existingUser) {
+         res.status(404).json({ message: "User not found" });
+         return;
+      }
+
+      const data: Prisma.UserUpdateInput = req.body;
+
+      // ✅ Handle password update
+      if (typeof data.password === "string") {
+        const salt = await genSalt(10);
+        data.password = await hash(data.password, salt);
+      }
+
+      // ✅ Handle avatar upload
+      if (req.file) {
+        // Hapus avatar lama jika ada
+        if (existingUser.avatar) {
+          await cloudinaryRemove(existingUser.avatar);
+        }
+
+        // Upload avatar baru
+        const uploadResult = await cloudinaryUpload(req.file, "ig");
+        data.avatar = uploadResult.secure_url;
+      }
+
       const updatedUser = await prisma.user.update({
-        where: { id: String(req.user.id) },
+        where: { id: userId },
         data,
       });
 
-      // Send the success response
-      res.status(200).json({ message: "User updated ✅", updatedUser });
+       res.status(200).json({ message: "User updated ✅", updatedUser });
+    } catch (err) {
+      console.error(err);
+      if (!res.headersSent) res.status(500).json({ error: (err as Error).message || err });
     }
-  } catch (err) {
-    console.error(err);
-    if (!res.headersSent) res.status(500).json({ error: (err as Error).message || err });
   }
-}
 
 
   async deleteUser(req: Request, res: Response) {

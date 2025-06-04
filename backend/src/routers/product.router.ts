@@ -1,6 +1,7 @@
 import { Router } from "express";
 import { AuthMiddleware } from "../middleware/auth.middleware";
 import { ProductController } from "../controller/product.controller";
+import { uploader } from "../helpers/uploader"; // pastikan path ini benar
 
 export class ProductRouter {
   private router: Router;
@@ -15,14 +16,23 @@ export class ProductRouter {
   }
 
   private initializeRoutes() {
-    // POST /product - buat produk, pakai verifyToken middleware
+    // POST /product - Buat produk baru dan upload gambar ke Cloudinary
     this.router.post(
       "/",
       this.authMiddleware.verifyToken,
+      uploader("memoryStorage", "PRODUCT_").single("image"), // ⬅️ pakai memoryStorage
       this.productController.createProduct
     );
 
-    // GET /product - ambil semua produk, pakai verifyToken middleware
+    // PUT /product/:id - Update produk dan upload gambar baru jika ada
+    this.router.put(
+      "/:id",
+      this.authMiddleware.verifyToken,
+      uploader("memoryStorage", "PRODUCT_").single("image"),
+      this.productController.updateProduct
+    );
+
+    // GET /product - Ambil semua produk milik toko
     this.router.get(
       "/",
       this.authMiddleware.verifyToken,
