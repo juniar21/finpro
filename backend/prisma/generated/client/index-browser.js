@@ -142,8 +142,12 @@ exports.Prisma.AddressScalarFieldEnum = {
   address: 'address',
   subdistrict: 'subdistrict',
   city: 'city',
+  city_id: 'city_id',
   province: 'province',
+  province_id: 'province_id',
   postcode: 'postcode',
+  latitude: 'latitude',
+  longitude: 'longitude',
   is_primary: 'is_primary',
   created_at: 'created_at',
   updated_at: 'updated_at'
@@ -240,6 +244,17 @@ exports.Prisma.VoucherScalarFieldEnum = {
   used: 'used'
 };
 
+exports.Prisma.ProvinceScalarFieldEnum = {
+  id: 'id',
+  name: 'name'
+};
+
+exports.Prisma.CityScalarFieldEnum = {
+  id: 'id',
+  name: 'name',
+  province_id: 'province_id'
+};
+
 exports.Prisma.SortOrder = {
   asc: 'asc',
   desc: 'desc'
@@ -283,7 +298,9 @@ exports.Prisma.ModelName = {
   Warehouse: 'Warehouse',
   OrderItem: 'OrderItem',
   Poin: 'Poin',
-  Voucher: 'Voucher'
+  Voucher: 'Voucher',
+  Province: 'Province',
+  City: 'City'
 };
 
 /**

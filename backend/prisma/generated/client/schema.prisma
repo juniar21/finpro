@@ -24,6 +24,7 @@ model User {
   vouchers              Voucher[]
   cartItems             CartItem[]
   orders                Order[]
+  store                 Store?
   createdAt             DateTime   @default(now())
   updatedAt             DateTime   @updatedAt
   isVerify              Boolean    @default(false)
@@ -38,10 +39,12 @@ model Address {
   address      String   @db.Text
   subdistrict  String?
   city         String
-  city_id      String
+  city_id      String?
   province     String
-  province_id  String
+  province_id  String?
   postcode     String?
+  latitude     Float?
+  longitude    Float?
   is_primary   Boolean  @default(false)
   created_at   DateTime @default(now())
   updated_at   DateTime @default(now())
@@ -58,6 +61,8 @@ model Store {
   id        String         @id @default(uuid())
   name      String
   address   String
+  admin     User           @relation(fields: [adminId], references: [id])
+  adminId   String         @unique
   products  ProductStock[]
   orders    Order[]        @relation("StoreOrders")
   createdAt DateTime       @default(now())
@@ -177,4 +182,17 @@ model Voucher {
   expiredAt   DateTime
   used        Boolean  @default(false)
   orders      Order[]  @relation("VoucherOrders")
+}
+
+model Province {
+  id   Int    @id
+  name String
+  City City[]
+}
+
+model City {
+  id          Int      @id
+  name        String
+  province_id Int
+  province    Province @relation(fields: [province_id], references: [id])
 }
