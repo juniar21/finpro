@@ -2,9 +2,9 @@ import React from 'react';
 
 const Brands: React.FC = () => {
   return (
-    <section className="bg-black py-8">
+    <section className="bg-black py-2">
       {/* Brands Section */}
-      <div className="mt-12 text-white flex justify-center space-x-12">
+      <div className="mt-4 text-white flex justify-center space-x-8">
         <p className="font-bold ">VERSACE</p>
         <p className="font-bold ">ZARA</p>
         <p className="font-bold ">GUCCI</p>

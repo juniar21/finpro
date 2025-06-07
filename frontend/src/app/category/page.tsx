@@ -16,7 +16,7 @@ const Home = () => {
 
           {/* Product Listing */}
           <div className="flex-1 p-6">
-              <ProductList />
+              < ProductList/>
           </div>
       </div>
           <Footer />

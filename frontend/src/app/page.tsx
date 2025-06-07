@@ -6,6 +6,7 @@ import Footer from "@/components/navbar/navbar/footer";
 import Navbar from "@/components/navbar/navbar/Navbar";
 import Banner from "@/components/landingpage/Banner";
 import TopSellingSection from "@/components/landingpage/topselling";
+import StoreList from "@/components/landingpage/storelist";
 
 
 export default function Home() {
@@ -16,6 +17,7 @@ export default function Home() {
     <Brands />
     <ProductGrid/>
     <TopSellingSection/>
+    <StoreList/>
     <BrowseByDressStyle/>
     <OurHappyCustomers/>
     <Footer />

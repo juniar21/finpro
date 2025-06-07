@@ -39,7 +39,10 @@ export class ProductRouter {
       this.productController.getProducts
     );
 
+    
     this.router.get("/all",this.productController.getAllProducts);
+    this.router.get("/:id",this.productController.getProductById);
+
   }
 
   getRouter() {

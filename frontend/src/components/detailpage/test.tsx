@@ -1,68 +1,69 @@
-// // pages/detailpage/[id].tsx
 // "use client";
-// import Image from "next/image";
 // import { useState, useEffect } from "react";
-// import { useRouter } from "next/router";
+// import { useParams } from "next/navigation"; // To access the product ID from the URL
+// import axios from "@/lib/axios";
+// import Image from "next/image";
 // import { FaStar } from "react-icons/fa";
+// import { AxiosError } from "axios";
+// import NewArrivalsSection from "../landingpage/ProductGrid";
+// import TopSellingSection from "../landingpage/topselling";
 
-// const products = [
-//   {
-//     id: 1,
-//     name: "ONE LIFE GRAPHIC T-SHIRT",
-//     price: 260,
-//     originalPrice: 300,
-//     rating: 4.5,
-//     reviews: 124,
-//     colors: ["#3D3B37", "#3C4F52", "#CFCFCF"],
-//     sizes: ["S", "M", "L", "XL"],
-//     images: ["/kaos.png", "/kaos.png", "/kaos.png", "/kaos.png"],
-//     description:
-//       "This graphic t-shirt is crafted from soft, breathable cotton for all-day comfort.",
-//   },
-//   {
-//     id: 2,
-//     name: "SKINNY FIT JEANS",
-//     price: 240,
-//     originalPrice: 280,
-//     rating: 4.0,
-//     reviews: 58,
-//     colors: ["#000000", "#4B0082", "#C0C0C0"],
-//     sizes: ["S", "M", "L", "XL"],
-//     images: ["/jeans.png", "/jeans.png", "/jeans.png"],
-//     description: "A stylish pair of jeans with a comfortable fit for daily wear.",
-//   },
-//   // Add other products as needed
-// ];
-
-// export default function ProductDetail() {
-//   const [selectedColor, setSelectedColor] = useState<string>("");
-//   const [selectedSize, setSelectedSize] = useState<string>("");
-//   const [selectedImage, setSelectedImage] = useState<string>("");
-//   const [product, setProduct] = useState<any>(null);  // State to hold the current product
-//   const router = useRouter();
-//   const { id } = router.query;  // Extract the product id from the URL
+// export default function ProductDetailPage() {
+//   const [product, setProduct] = useState<any | null>(null);
+//   const [isLoading, setIsLoading] = useState(true);
+//   const [error, setError] = useState<string | null>(null);
+//   const [showSection, setShowSection] = useState<string>("newArrivals");
+//   const params = useParams();
+//   const id = params?.id; // Get the product ID from the URL
 
 //   useEffect(() => {
 //     if (id) {
-//       const foundProduct = products.find((product) => product.id === parseInt(id as string));
-//       if (foundProduct) {
-//         setProduct(foundProduct);
-//         setSelectedColor(foundProduct.colors[0]);
-//         setSelectedSize(foundProduct.sizes[2]);
-//         setSelectedImage(foundProduct.images[0]);
-//       }
+//       const fetchProduct = async () => {
+//         try {
+//           setIsLoading(true);
+//           const response = await axios.get(`/product/${id}`); 
+//           setProduct(response.data); 
+//         } catch (err) {
+//           setError("Failed to load product details");
+//           console.error(err);
+//         } finally {
+//           setIsLoading(false);
+//         }
+//       };
+
+//       fetchProduct();
 //     }
 //   }, [id]);
 
-//   if (!product) return <div>Loading...</div>;
+//   // If the product is still loading
+//   if (isLoading) {
+//     return (
+//       <div className="flex flex-col items-center justify-center h-screen">
+//         <div className="animate-spin h-10 w-10 border-4 border-t-4 border-gray-500 rounded-full"></div>
+//         <span>Loading product details...</span>
+//       </div>
+//     );
+//   }
+
+//   // If there's an error in loading the product
+//   if (error) {
+//     return (
+//       <div className="flex flex-col items-center justify-center h-screen">
+//         <p className="text-red-500">{error}</p>
+//       </div>
+//     );
+//   }
+
+//   if (!product) return null; // If no product data is fetched
 
 //   return (
 //     <div className="bg-white">
+//       {/* Main Section */}
 //       <div className="max-w-7xl mx-auto px-6 py-10 grid grid-cols-1 lg:grid-cols-2 gap-10">
 //         {/* Left Images */}
 //         <div>
 //           <div className="grid grid-cols-4 gap-3 mb-4">
-//             {product.images.map((img: string, i: number) => (
+//             {product.images?.map((img: string, i: number) => (
 //               <Image
 //                 key={i}
 //                 src={img}
@@ -70,14 +71,14 @@
 //                 width={80}
 //                 height={80}
 //                 className={`rounded cursor-pointer border ${
-//                   selectedImage === img ? "border-black" : "border-gray-200"
+//                   product.selectedImage === img ? "border-black" : "border-gray-200"
 //                 }`}
-//                 onClick={() => setSelectedImage(img)}
+//                 onClick={() => setProduct({ ...product, selectedImage: img })}
 //               />
 //             ))}
 //           </div>
 //           <Image
-//             src={selectedImage}
+//             src={product.selectedImage || (product.images && product.images[0]) || "/placeholder.png"}
 //             alt="Product"
 //             width={500}
 //             height={500}
@@ -128,12 +129,12 @@
 //           <div className="mb-4">
 //             <h3 className="font-semibold mb-1">Choose Color:</h3>
 //             <div className="flex space-x-2">
-//               {product.colors.map((color: string, idx: number) => (
+//               {product.colors?.map((color: string, idx: number) => (
 //                 <div
 //                   key={idx}
-//                   onClick={() => setSelectedColor(color)}
+//                   onClick={() => setProduct({ ...product, selectedColor: color })}
 //                   className={`w-6 h-6 rounded-full cursor-pointer border-2 ${
-//                     selectedColor === color ? "border-black" : "border-gray-300"
+//                     product.selectedColor === color ? "border-black" : "border-gray-300"
 //                   }`}
 //                   style={{ backgroundColor: color }}
 //                 />
@@ -145,12 +146,12 @@
 //           <div className="mb-4">
 //             <h3 className="font-semibold mb-1">Choose Size:</h3>
 //             <div className="flex space-x-2">
-//               {product.sizes.map((size: string, idx: number) => (
+//               {product.sizes?.map((size: string, idx: number) => (
 //                 <button
 //                   key={idx}
-//                   onClick={() => setSelectedSize(size)}
+//                   onClick={() => setProduct({ ...product, selectedSize: size })}
 //                   className={`px-4 py-1 border rounded ${
-//                     selectedSize === size ? "bg-black text-white" : "bg-white"
+//                     product.selectedSize === size ? "bg-black text-white" : "bg-white"
 //                   }`}
 //                 >
 //                   {size}
@@ -169,6 +170,26 @@
 //           </div>
 //         </div>
 //       </div>
+
+//       {/* Section Toggle Buttons */}
+//       <div className="text-center mb-6">
+//         <button
+//           onClick={() => setShowSection("newArrivals")}
+//           className={`px-6 py-3 ${showSection === "newArrivals" ? "bg-black text-white" : "bg-gray-300 text-black"} rounded-full hover:bg-gray-800 transition-colors duration-300`}
+//         >
+//           New Arrivals
+//         </button>
+//         <button
+//           onClick={() => setShowSection("topSelling")}
+//           className={`ml-4 px-6 py-3 ${showSection === "topSelling" ? "bg-black text-white" : "bg-gray-300 text-black"} rounded-full hover:bg-gray-800 transition-colors duration-300`}
+//         >
+//           Top Selling
+//         </button>
+//       </div>
+
+//       {/* Conditional Rendering Based on Selected Section */}
+//       {showSection === "newArrivals" && <NewArrivalsSection />}
+//       {showSection === "topSelling" && <TopSellingSection />}
 //     </div>
 //   );
 // }

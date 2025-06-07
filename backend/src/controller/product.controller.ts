@@ -176,5 +176,35 @@ export class ProductController {
       res.status(500).json({ message: "Failed to fetch all products", error });
     }
   };
-}
 
+  
+  getProductById = async (req: Request, res: Response) => {
+    try {
+      const { id } = req.params;
+      if (!id) {
+        res.status(400).json({ message: "Missing id parameter" });
+      }
+
+      const product = await prisma.product.findUnique({
+        where: { id },
+        include: {
+          category: true,
+          stocks: {
+            include: {
+              store: true, // to include store information for each product stock
+            },
+          },
+        },
+      });
+
+      if (!product) {
+        res.status(404).json({ message: "Product not found" });
+      }
+
+      res.json(product);
+    } catch (error) {
+      console.error("Error while fetching product by id:", error);
+      res.status(500).json({ message: "Failed to fetch product by id", error });
+    }
+  };
+}
