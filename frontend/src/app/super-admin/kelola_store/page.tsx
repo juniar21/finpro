@@ -9,7 +9,6 @@ import { useSession } from "next-auth/react";
 import AddStoreModal from "@/components/modal/addstore";
 import EditStoreModal from "@/components/modal/editstore";
 
-
 interface Store {
   id: string;
   name: string;
@@ -178,7 +177,9 @@ export default function SuperAdminKelolaToko() {
                 <tbody>
                   {stores.map((store, idx) => (
                     <tr key={store.id} className="hover:bg-gray-50">
-                      <td className="px-4 py-2 border text-center">{idx + 1}</td>
+                      <td className="px-4 py-2 border text-center">
+                        {idx + 1}
+                      </td>
                       <td className="px-4 py-2 border">{store.name}</td>
                       <td className="px-4 py-2 border">
                         {store.admin?.name ?? "-"}
@@ -190,14 +191,14 @@ export default function SuperAdminKelolaToko() {
                           className="text-blue-600 hover:text-blue-800"
                           aria-label={`Edit toko ${store.name}`}
                         >
-                         ✏️ Edit
+                          ✏️ Edit
                         </button>
                         <button
                           onClick={() => handleDeleteStore(store.id)}
                           className="text-red-600 hover:text-red-800"
                           aria-label={`Hapus toko ${store.name}`}
                         >
-                         🗑️ Hapus
+                          🗑️ Hapus
                         </button>
                       </td>
                     </tr>
@@ -226,4 +227,4 @@ export default function SuperAdminKelolaToko() {
       <Footer />
     </>
   );
-}  
+}

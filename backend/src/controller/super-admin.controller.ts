@@ -79,23 +79,85 @@ async getSuperAdminProfile(req: Request, res: Response) {
     }
   }
 
+  async editStoreAdmin(req: Request, res: Response) {
+  try {
+    const superAdminId = req.user?.id?.toString();
+    const { id } = req.params; // ID store admin yang akan diedit
+    const { name, email } = req.body;
 
-  async deleteStoreAdmin(req: Request, res: Response) {
-    try {
-      const { id } = req.params;
+    // Cek apakah user yang melakukan permintaan adalah SUPER_ADMIN
+    const superAdmin = await prisma.user.findUnique({
+      where: { id: superAdminId },
+    });
 
-      const user = await prisma.user.findUnique({ where: { id } });
-
-      if (!user || user.roles !== 'ADMIN') {
-        res.status(404).json({ error: 'Store Admin not found' });
-        return;
-      }
-
-      await prisma.user.delete({ where: { id } });
-      res.status(200).json({ message: 'Store Admin deleted successfully' });
-    } catch (error) {
-      console.error('Error deleting store admin:', error);
-      res.status(500).json({ error: 'Internal server error' });
+    if (!superAdmin || superAdmin.roles !== 'SUPER_ADMIN') {
+       res.status(403).json({ error: 'Unauthorized' });
     }
+
+    // Cek apakah user yang ingin diedit ada dan merupakan ADMIN
+    const userToUpdate = await prisma.user.findUnique({
+      where: { id },
+    });
+
+    if (!userToUpdate || userToUpdate.roles !== 'ADMIN') {
+       res.status(404).json({ error: 'Store admin not found' });
+    }
+
+    // Siapkan data update
+    const updateData: any = {};
+    if (name) updateData.name = name;
+    if (email) updateData.email = email;
+
+    const updatedUser = await prisma.user.update({
+      where: { id },
+      data: updateData,
+    });
+
+    res.status(200).json({
+      message: 'Store admin updated successfully',
+      user: {
+        name: updatedUser.name,
+        email: updatedUser.email,
+      },
+    });
+  } catch (error) {
+    console.error('Error editing store admin:', error);
+    res.status(500).json({ error: 'Internal server error' });
   }
+}
+
+async deleteStoreAdmin(req: Request, res: Response) {
+  try {
+    const superAdminId = req.user?.id?.toString();
+    const { id } = req.params;
+
+    // Validasi bahwa request berasal dari SUPER_ADMIN
+    const superAdmin = await prisma.user.findUnique({
+      where: { id: superAdminId },
+    });
+
+    if (!superAdmin || superAdmin.roles !== 'SUPER_ADMIN') {
+       res.status(403).json({ error: 'Unauthorized' });
+    }
+
+    // Pastikan user yang akan dihapus adalah ADMIN
+    const userToDelete = await prisma.user.findUnique({
+      where: { id },
+    });
+
+    if (!userToDelete || userToDelete.roles !== 'ADMIN') {
+       res.status(404).json({ error: 'Store admin not found or not an ADMIN' });
+    }
+
+    // Hapus user
+    await prisma.user.delete({
+      where: { id },
+    });
+
+    res.status(200).json({ message: 'Store admin deleted successfully' });
+  } catch (error) {
+    console.error('Error deleting store admin:', error);
+    res.status(500).json({ error: 'Internal server error' });
+  }
+}
 }
