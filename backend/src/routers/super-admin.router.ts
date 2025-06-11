@@ -1,6 +1,6 @@
-import { Router } from 'express';
-import { AuthMiddleware } from '../middleware/auth.middleware';
-import { SuperAdminController } from '../controller/super-admin.controller';
+import { Router } from "express";
+import { AuthMiddleware } from "../middleware/auth.middleware";
+import { SuperAdminController } from "../controller/super-admin.controller";
 
 export class SuperAdminRouter {
   private router: Router;
@@ -16,15 +16,17 @@ export class SuperAdminRouter {
 
   private initializeRoute() {
     // Menggunakan middleware verifyToken dan verifySuperAdmin
-    
 
-   this.router.post("/",this.superAdminController.createstoreadmin);
+    this.router.post("/", this.superAdminController.createstoreadmin);
 
+    this.router.patch(
+      "/:id",
+       this.authMiddleware.verifyToken,
+       this.superAdminController.editStoreAdmin);
     this.router.delete(
       '/:id',
       this.authMiddleware.verifyToken,
-      this.superAdminController.deleteStoreAdmin
-    );
+      this.superAdminController.deleteStoreAdmin);
   }
 
   getRouter(): Router {

@@ -2,7 +2,10 @@ import { Request, Response } from "express";
 import prisma from "../prisma";
 
 export class AdminController {
-  
+  static getStoreAdmins(arg0: string, getStoreAdmins: any) {
+    throw new Error("Method not implemented.");
+  }
+
   async getAllStoreAdmins(req: Request, res: Response) {
     try {
       // Cek apakah user yang mengakses adalah super_admin, jika tidak, akan ditangani oleh middleware
