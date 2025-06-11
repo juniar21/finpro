@@ -1,20 +1,37 @@
 "use client";
+
 import React, { useState, useEffect } from "react";
 import Link from "next/link";
-import axios from "@/lib/axios"; // Assuming axios is configured in your lib/axios file.
+import axios from "@/lib/axios";
+
+type Product = {
+  id: string;
+  name: string;
+  description?: string;
+  imageUrl?: string;
+  price: number;
+  oldPrice?: number;
+  rating?: number;
+  category?: { name: string };
+  store: {
+    id: string;
+    name: string;
+    address: string;
+  };
+};
 
 export default function NewArrivalsSection() {
-  const [products, setProducts] = useState<any[]>([]);
+  const [products, setProducts] = useState<Product[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [showAll, setShowAll] = useState(false); // State to toggle between showing all products or just a few
+  const [showAll, setShowAll] = useState(false);
 
   useEffect(() => {
     const fetchProducts = async () => {
       try {
-        const response = await axios.get("/product/all"); // Your API endpoint for new arrivals
-        setProducts(response.data); // Assuming response.data contains the product array
-      } catch (err: any) {
+        const response = await axios.get("/product/all"); // Adjust API if needed
+        setProducts(response.data);
+      } catch (err) {
         setError("Failed to load new arrivals");
         console.error(err);
       } finally {
@@ -42,34 +59,42 @@ export default function NewArrivalsSection() {
     );
   }
 
-  const productsToShow = showAll ? products : products.slice(0, 4); // Show only 4 products initially
+  const productsToShow = showAll ? products : products.slice(0, 4);
 
   return (
     <section className="w-full bg-white py-12 px-6">
-      {/* New Arrivals */}
-      <div className="max-w-7xl mx-auto">
+      <div className="max-w-7xl mx-auto mt-16">
         <h2 className="text-3xl font-extrabold text-gray-900">NEW ARRIVALS</h2>
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-8 mt-8">
           {productsToShow.map((product) => (
-            <div key={product.id} className="border rounded-lg p-4">
+            <div
+              key={product.id}
+              className="border rounded-lg p-4 shadow-sm hover:shadow-md transition"
+            >
               <Link href={`/detail/${product.id}`}>
                 <img
-                  src={product.imageUrl || "/default-product-image.png"} // Default image if none exists
+                  src={product.imageUrl || "/default-product-image.png"}
                   alt={product.name}
-                  className="w-full h-auto rounded-lg"
+                  className="w-full h-48 object-cover rounded-lg"
                 />
               </Link>
               <div className="mt-4">
                 <h3 className="font-semibold text-lg">{product.name}</h3>
-                <div className="flex items-center mt-1">
-                  <span className="text-yellow-500">⭐⭐⭐⭐⭐</span>
-                  <span className="ml-2 text-gray-500">({product.rating || 0})</span>
-                </div>
+                <p className="text-sm text-gray-600 truncate">
+                  {product.description || "No description available"}
+                </p>
+            
                 <p className="mt-2 text-xl font-semibold text-gray-800">
-                  ${product.price}{" "}
-                  {product.oldPrice && (
-                    <span className="line-through text-red-500">${product.oldPrice}</span>
-                  )}
+                  ${product.price}
+                </p>
+                {product.oldPrice && (
+                  <p className="text-sm text-red-500 line-through">
+                    ${product.oldPrice}
+                  </p>
+                )}
+                <p className="text-sm text-gray-500 mt-1 italic">
+                  {product.category?.name || "Uncategorized"} •{" "}
+                  {product.store?.name ?? "No Store"}
                 </p>
               </div>
             </div>
@@ -77,7 +102,7 @@ export default function NewArrivalsSection() {
         </div>
         <div className="mt-8 text-center">
           <button
-            onClick={() => setShowAll((prev) => !prev)} // Toggle between showing all products or just a few
+            onClick={() => setShowAll((prev) => !prev)}
             className="px-6 py-3 bg-black text-white rounded-full hover:bg-gray-800 transition-colors duration-300"
           >
             {showAll ? "View Less" : "View More"}

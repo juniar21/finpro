@@ -156,28 +156,39 @@ export class ProductController {
     }
   };
 
-   getAllProducts = async (req: Request, res: Response) => {
-    try {
-      // Fetch all products with their categories and stock information
-      const products = await prisma.product.findMany({
-        include: {
-          category: true,
-          stocks: {
-            include: {
-              store: true, // to include store information for each product stock
-            },
+  // src/controllers/ProductController.ts
+getAllProducts = async (req: Request, res: Response) => {
+  try {
+    const products = await prisma.product.findMany({
+      include: {
+        category: true,
+        stocks: {
+          include: {
+            store: true,
           },
         },
-      });
+      },
+    });
 
-      res.json(products);
-    } catch (error) {
-      console.error("Error while fetching all products:", error);
-      res.status(500).json({ message: "Failed to fetch all products", error });
-    }
-  };
+    // Tambahkan totalStock ke masing-masing produk
+    const productsWithDetails = products.map((product) => {
+      const totalStock = product.stocks.reduce((sum, stock) => sum + stock.quantity, 0);
+      const firstStock = product.stocks[0];
 
-  
+      return {
+        ...product,
+        totalStock,
+        store: firstStock?.store || null,
+      };
+    });
+
+    res.json(productsWithDetails);
+  } catch (error) {
+    console.error("Error while fetching all products:", error);
+    res.status(500).json({ message: "Failed to fetch all products", error });
+  }
+};
+
   getProductById = async (req: Request, res: Response) => {
     try {
       const { id } = req.params;
@@ -207,4 +218,48 @@ export class ProductController {
       res.status(500).json({ message: "Failed to fetch product by id", error });
     }
   };
+  getProductsByStoreId = async (req: Request, res: Response) => {
+  try {
+    const { storeId } = req.params;
+
+    if (!storeId) {
+      res.status(400).json({ error: "storeId is required" });
+    }
+
+    const products = await prisma.product.findMany({
+      where: {
+        stocks: {
+          some: {
+            storeId,
+          },
+        },
+      },
+      include: {
+        stocks: {
+          where: {
+            storeId,
+          },
+        },
+      },
+    });
+
+    const result = products.map((product) => {
+      const stock = product.stocks[0]; // asumsi 1 stock per store
+      return {
+        id: product.id,
+        name: product.name,
+        imageUrl: product.imageUrl,
+        price: product.price,
+        quantity: stock?.quantity ?? 0,
+      };
+    });
+
+    res.json(result);
+  } catch (error) {
+    console.error("Error fetching products by storeId:", error);
+    res.status(500).json({ error: "Internal server error" });
+  }
+};
 }
+
+

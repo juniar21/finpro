@@ -10,15 +10,9 @@ const Home = () => {
   return (
     <div>
         <Navbar />
-        <div className="flex">
-          {/* Filter Sidebar */}
-          <Filter />
-
-          {/* Product Listing */}
-          <div className="flex-1 p-6">
+        
               < ProductList/>
-          </div>
-      </div>
+      
           <Footer />
           </div>
   );

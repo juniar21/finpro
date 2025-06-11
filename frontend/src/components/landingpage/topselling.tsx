@@ -2,11 +2,27 @@
 
 import React, { useState, useEffect } from "react";
 import Link from "next/link";
-import axios from "@/lib/axios"; // Adjust according to your project structure
+import axios from "@/lib/axios";
 import { Loader2 } from "lucide-react";
 
+type Product = {
+  id: string;
+  name: string;
+  description?: string;
+  imageUrl?: string;
+  price: number;
+  oldPrice?: number;
+  rating?: number;
+  category?: { name: string };
+  store: {
+    id: string;
+    name: string;
+    address: string;
+  };
+};
+
 export default function TopSellingSection() {
-  const [products, setProducts] = useState([]); 
+  const [products, setProducts] = useState<Product[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [showAll, setShowAll] = useState(false);
@@ -14,10 +30,10 @@ export default function TopSellingSection() {
   useEffect(() => {
     const fetchProducts = async () => {
       try {
-        const response = await axios.get("/product/all"); // Your API endpoint here
-        setProducts(response.data); // Assuming response.data contains the product array
-      } catch (err: any) {
-        setError("Failed to load products");
+        const response = await axios.get("/product/all");
+        setProducts(response.data);
+      } catch (err) {
+        setError("Failed to load top selling products");
         console.error(err);
       } finally {
         setIsLoading(false);
@@ -44,31 +60,42 @@ export default function TopSellingSection() {
     );
   }
 
-  const productsToShow = showAll ? products : products.slice(0, 4); // Show first 4 products or all if 'showAll' is true
+  const productsToShow = showAll ? products : products.slice(0, 4);
 
   return (
     <section className="w-full bg-white py-12 px-6">
-      {/* Top Selling */}
       <div className="max-w-7xl mx-auto mt-16">
         <h2 className="text-3xl font-extrabold text-gray-900">TOP SELLING</h2>
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-8 mt-8">
-          {productsToShow.map((product: any) => (
-            <div key={product.id} className="border rounded-lg p-4">
+          {productsToShow.map((product) => (
+            <div
+              key={product.id}
+              className="border rounded-lg p-4 shadow-sm hover:shadow-md transition"
+            >
               <Link href={`/detail/${product.id}`}>
                 <img
-                  src={product.imageUrl || "/default-product-image.png"} // Default image if none exists
+                  src={product.imageUrl || "/default-product-image.png"}
                   alt={product.name}
-                  className="w-full h-auto rounded-lg"
+                  className="w-full h-48 object-cover rounded-lg"
                 />
               </Link>
               <div className="mt-4">
                 <h3 className="font-semibold text-lg">{product.name}</h3>
-                <div className="flex items-center mt-1">
-                  <span className="text-yellow-500">⭐⭐⭐⭐⭐</span>
-                  <span className="ml-2 text-gray-500">({product.rating || 0})</span>
-                </div>
+                <p className="text-sm text-gray-600 truncate">
+                  {product.description || "No description available"}
+                </p>
+        
                 <p className="mt-2 text-xl font-semibold text-gray-800">
-                  ${product.price} <span className="line-through text-red-500">${product.oldPrice}</span>
+                  ${product.price}
+                </p>
+                {product.oldPrice && (
+                  <p className="text-sm text-red-500 line-through">
+                    ${product.oldPrice}
+                  </p>
+                )}
+                <p className="text-sm text-gray-500 mt-1 italic">
+                  {product.category?.name || "Uncategorized"} •{" "}
+                  {product.store?.name ?? "No Store"}
                 </p>
               </div>
             </div>
@@ -76,7 +103,7 @@ export default function TopSellingSection() {
         </div>
         <div className="mt-8 text-center">
           <button
-            onClick={() => setShowAll((prev) => !prev)} // Toggle view all products
+            onClick={() => setShowAll((prev) => !prev)}
             className="px-6 py-3 bg-black text-white rounded-full hover:bg-gray-800 transition-colors duration-300"
           >
             {showAll ? "View Less" : "View More"}
