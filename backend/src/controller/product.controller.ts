@@ -8,7 +8,6 @@ export class ProductController {
     try {
       const { name, description, price, categoryId, storeId, quantity } = req.body;
 
-      // Validasi field wajib
       if (!name || !description || !price || !categoryId || !storeId) {
          res.status(400).json({
           error: "Missing required fields: name, description, price, categoryId, storeId",
@@ -26,14 +25,12 @@ export class ProductController {
          res.status(400).json({ error: "Quantity must be a valid non-negative integer" });
       }
 
-      // Upload image jika tersedia
       let imageUrl = "";
       if (req.file) {
         const result = await cloudinaryUpload(req.file, "products");
         imageUrl = result.secure_url;
       }
 
-      // Buat produk
       const newProduct = await prisma.product.create({
         data: {
           name,
@@ -44,7 +41,6 @@ export class ProductController {
         },
       });
 
-      // Tambahkan stok awal untuk produk ini di toko terkait
       await prisma.productStock.create({
         data: {
           productId: newProduct.id,
@@ -65,7 +61,6 @@ export class ProductController {
       const { id } = req.params;
       const { name, description, price, categoryId } = req.body;
 
-      // Cari produk
       const product = await prisma.product.findUnique({
         where: { id },
       });
@@ -74,8 +69,6 @@ export class ProductController {
          res.status(404).json({ message: "Produk tidak ditemukan" });
          return;
       }
-
-      // Upload gambar baru jika ada
       let imageUrl = product.imageUrl;
       if (req.file) {
         if (product.imageUrl) {
@@ -84,13 +77,11 @@ export class ProductController {
         const result = await cloudinaryUpload(req.file, "products");
         imageUrl = result.secure_url;
       }
-
       const priceInt = parseInt(price);
       if (isNaN(priceInt) || priceInt < 0) {
          res.status(400).json({ error: "Price must be a valid positive integer" });
       }
 
-      // Update produk
       const updatedProduct = await prisma.product.update({
         where: { id },
         data: {
@@ -158,13 +149,12 @@ export class ProductController {
 
    getAllProducts = async (req: Request, res: Response) => {
     try {
-      // Fetch all products with their categories and stock information
       const products = await prisma.product.findMany({
         include: {
           category: true,
           stocks: {
             include: {
-              store: true, // to include store information for each product stock
+              store: true, 
             },
           },
         },
@@ -176,5 +166,34 @@ export class ProductController {
       res.status(500).json({ message: "Failed to fetch all products", error });
     }
   };
-}
+  
+  getProductById = async (req: Request, res: Response) => {
+    try {
+      const { id } = req.params;
+      if (!id) {
+        res.status(400).json({ message: "Missing id parameter" });
+      }
 
+      const product = await prisma.product.findUnique({
+        where: { id },
+        include: {
+          category: true,
+          stocks: {
+            include: {
+              store: true, 
+            },
+          },
+        },
+      });
+
+      if (!product) {
+        res.status(404).json({ message: "Product not found" });
+      }
+
+      res.json(product);
+    } catch (error) {
+      console.error("Error while fetching product by id:", error);
+      res.status(500).json({ message: "Failed to fetch product by id", error });
+    }
+  };
+}

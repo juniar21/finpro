@@ -158,6 +158,8 @@ exports.Prisma.StoreScalarFieldEnum = {
   name: 'name',
   address: 'address',
   adminId: 'adminId',
+  latitude: 'latitude',
+  longitude: 'longitude',
   createdAt: 'createdAt'
 };
 
@@ -244,6 +246,24 @@ exports.Prisma.VoucherScalarFieldEnum = {
   used: 'used'
 };
 
+exports.Prisma.DiscountScalarFieldEnum = {
+  id: 'id',
+  name: 'name',
+  type: 'type',
+  amount: 'amount',
+  isPercentage: 'isPercentage',
+  minPurchase: 'minPurchase',
+  maxDiscount: 'maxDiscount',
+  buyQuantity: 'buyQuantity',
+  getQuantity: 'getQuantity',
+  productId: 'productId',
+  storeId: 'storeId',
+  startDate: 'startDate',
+  endDate: 'endDate',
+  isActive: 'isActive',
+  createdAt: 'createdAt'
+};
+
 exports.Prisma.ProvinceScalarFieldEnum = {
   id: 'id',
   name: 'name'
@@ -286,6 +306,12 @@ exports.OrderStatus = exports.$Enums.OrderStatus = {
   EXPIRED: 'EXPIRED'
 };
 
+exports.DiscountType = exports.$Enums.DiscountType = {
+  MANUAL: 'MANUAL',
+  MIN_PURCHASE: 'MIN_PURCHASE',
+  BUY_ONE_GET_ONE: 'BUY_ONE_GET_ONE'
+};
+
 exports.Prisma.ModelName = {
   User: 'User',
   Address: 'Address',
@@ -299,6 +325,7 @@ exports.Prisma.ModelName = {
   OrderItem: 'OrderItem',
   Poin: 'Poin',
   Voucher: 'Voucher',
+  Discount: 'Discount',
   Province: 'Province',
   City: 'City'
 };

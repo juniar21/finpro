@@ -12,6 +12,8 @@ import { AddressRouter } from "./routers/address.router";
 import { CategoryRouter } from "./routers/category.router";
 import { ProductRouter } from "./routers/product.router";
 import { AdminsRouter } from "./routers/store-admins.routers";
+import { DiscountRouter } from "./routers/discount.router";
+// import { RajaOngkirRouter } from "./routers/rajaongkir.router";
 //import cron from "node-cron";
 // import { OrderRouter } from "./routers/order.router";
 
@@ -56,6 +58,12 @@ app.use("/api/product",productRouter.getRouter());
 
 const categoryRouter = new CategoryRouter();
 app.use("/api/category", categoryRouter.getRouter());
+
+const discountRouter = new DiscountRouter();
+app.use("/api/discounts", discountRouter.getRouter());
+
+// const rajaongkirRouter = new RajaOngkirRouter();
+// app.use("/rajaongkir", rajaongkirRouter.getRouter());
 
 
 // scheduler

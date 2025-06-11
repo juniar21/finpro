@@ -24,7 +24,7 @@ model User {
   vouchers              Voucher[]
   cartItems             CartItem[]
   orders                Order[]
-  store                 Store?    
+  store                 Store?
   createdAt             DateTime   @default(now())
   updatedAt             DateTime   @updatedAt
   isVerify              Boolean    @default(false)
@@ -65,8 +65,10 @@ model Store {
   adminId   String         @unique
   products  ProductStock[]
   orders    Order[]        @relation("StoreOrders")
+  latitude  Float?
+  longitude Float?
+  discount  Discount[]     @relation("StoreDiscounts")
   createdAt DateTime       @default(now())
-  
 }
 
 model Category {
@@ -86,6 +88,7 @@ model Product {
   stocks      ProductStock[]
   cartItems   CartItem[]
   orderItems  OrderItem[]
+  discount    Discount[]     @relation("ProductDiscounts")
   createdAt   DateTime       @default(now())
 }
 
@@ -183,6 +186,38 @@ model Voucher {
   expiredAt   DateTime
   used        Boolean  @default(false)
   orders      Order[]  @relation("VoucherOrders")
+}
+
+model Discount {
+  id           String       @id @default(uuid())
+  name         String
+  type         DiscountType
+  amount       Int
+  isPercentage Boolean      @default(false)
+  minPurchase  Int?
+  maxDiscount  Int?
+  buyQuantity  Int?
+  getQuantity  Int?
+  productId    String?
+  product      Product?     @relation("ProductDiscounts", fields: [productId], references: [id])
+  storeId      String
+  store        Store        @relation("StoreDiscounts", fields: [storeId], references: [id])
+  startDate    DateTime
+  endDate      DateTime
+  isActive     Boolean      @default(true)
+  createdAt    DateTime     @default(now())
+}
+
+enum DiscountType {
+  MANUAL
+  MIN_PURCHASE
+  BUY_ONE_GET_ONE
+}
+
+enum DiscountStatus {
+  ACTIVE
+  EXPIRED
+  SCHEDULED
 }
 
 model Province {

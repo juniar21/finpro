@@ -1,33 +1,76 @@
+"use client";
+import React, { useState, useEffect } from "react";
+import Link from "next/link";
+import axios from "@/lib/axios";
+import { Loader2 } from "lucide-react";
 
-import React from 'react';
-import ProductCard from './productcard';
+export default function ProductList() {
+  const [products, setProducts] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
+  useEffect(() => {
+    const fetchProducts = async () => {
+      try {
+        const response = await axios.get("/product/all");
+        setProducts(response.data);
+      } catch (err: any) {
+        setError("Failed to load products");
+        console.error(err);
+      } finally {
+        setIsLoading(false);
+      }
+    };
 
-const ProductList = () => {
-  const products = [
-    {
-      name: 'Gradient Graphic T-shirt',
-      price: 145,
-      discount: 20,
-      rating: 3.5,
-      imgSrc: '/kaos.png',
-    },
-    {
-      name: 'Polo with Tipping Details',
-      price: 180,
-      rating: 4.5,
-      imgSrc: '/kaos.png',
-    },
-    // Add more products here
-  ];
+    fetchProducts();
+  }, []);
+
+  if (isLoading) {
+    return (
+      <div className="flex flex-col items-center justify-center h-screen">
+        <Loader2 className="animate-spin h-10 w-10" />
+        <span>Loading products...</span>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="flex flex-col items-center justify-center h-screen">
+        <p className="text-red-500">{error}</p>
+      </div>
+    );
+  }
 
   return (
-    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
-      {products.map((product) => (
-        <ProductCard key={product.name} {...product} />
-      ))}
-    </div>
+    <section className="w-full bg-white py-12 px-6">
+      <div className="max-w-7xl mx-auto">
+        <h2 className="text-3xl font-extrabold text-gray-900">ALL PRODUCTS</h2>
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-8 mt-8">
+          {products.map((product: any) => (
+            <div
+              key={product.id}
+              className="border rounded-lg p-4 cursor-pointer"
+            >
+              <Link href={`/detail/${product.id}`}>
+                <img
+                  src={product.imageUrl || "/default-product-image.png"}
+                  alt={product.name}
+                  className="w-full h-auto rounded-lg"
+                />
+              </Link>
+              <div className="mt-4">
+                <h3 className="font-semibold text-lg">{product.name}</h3>
+                <h3 className="text-sm">description : {product.description}</h3>
+                <div className="flex items-center mt-1">
+                  <span className="text-yellow-500">⭐⭐⭐⭐⭐</span>
+                </div>
+                <p className="mt-2 text-xl font-semibold text-gray-800">${product.price}</p>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
   );
-};
-
-export default ProductList;
+}

@@ -62,7 +62,7 @@ export default function Navbar() {
               <Link href="/category" className="hover:text-gray-700">New Arrivals</Link>
             </li>
             <li>
-              <Link href="/category" className="hover:text-gray-700">Brands</Link>
+              <Link href="/category" className="hover:text-gray-700">All Brands</Link>
             </li>
           </ul>
 

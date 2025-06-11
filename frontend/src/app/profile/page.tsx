@@ -1,12 +1,13 @@
 "use client";
+
 import Navbar from "@/components/navbar/navbar/Navbar";
 import Sidebar from "@/components/navbar/navbar/Sidebar";
 import Footer from "@/components/navbar/navbar/footer";
-import { useSession, signOut } from "next-auth/react";
+import { useSession } from "next-auth/react";
 import { useState, ChangeEvent, FormEvent } from "react";
-import axios from "@/lib/axios"; // Pastikan path sesuai
-import EditProfilePicture from "./foto/page";
-
+import Image from "next/image";
+import { VscVerifiedFilled } from "react-icons/vsc";
+import axios from "@/lib/axios";
 
 export default function ProfilePage() {
   const { data: session, status } = useSession();
@@ -71,7 +72,7 @@ export default function ProfilePage() {
       const res = await axios.patch("/users/update-profile", formData, {
         headers: {
           Authorization: `Bearer ${token}`,
-          "Content-Type": "application/json",
+          // No need to set Content-Type, the browser handles it
         },
       });
 
@@ -103,8 +104,26 @@ export default function ProfilePage() {
           <h1 className="text-3xl font-bold mb-6">Profil Saya</h1>
 
           <div className="flex flex-col md:flex-row gap-8">
-            {/* Use the EditProfilePicture component here */}
-            <EditProfilePicture avatarPreview={avatarPreview} onAvatarChange={handleAvatarChange} />
+            <div className="flex flex-col items-center gap-4">
+              {avatarPreview ? (
+                <Image
+                  src={avatarPreview}
+                  alt="Foto Profil"
+                  width={150}
+                  height={150}
+                  className="rounded-full object-cover border-4 border-blue-500"
+                  priority
+                />
+              ) : (
+                <div className="w-36 h-36 bg-gray-300 rounded-full flex items-center justify-center text-gray-600">
+                  No Image
+                </div>
+              )}
+              <div className="flex items-center gap-2 text-green-600 font-semibold">
+                <p>Verified</p>
+                <VscVerifiedFilled size={24} />
+              </div>
+            </div>
 
             <form
               onSubmit={handleSubmit}
@@ -149,6 +168,11 @@ export default function ProfilePage() {
                   readOnly
                   className="w-full border rounded px-3 py-2 bg-gray-100 cursor-not-allowed"
                 />
+              </div>
+
+              <div>
+                <label className="block mb-1 font-semibold">Foto Profil</label>
+                <input type="file" accept="image/*" onChange={handleAvatarChange} />
               </div>
 
               <div>

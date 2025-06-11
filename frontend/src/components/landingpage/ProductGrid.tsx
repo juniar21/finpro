@@ -7,6 +7,7 @@ export default function NewArrivalsSection() {
   const [products, setProducts] = useState<any[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [showAll, setShowAll] = useState(false); // State to toggle between showing all products or just a few
 
   useEffect(() => {
     const fetchProducts = async () => {
@@ -41,13 +42,15 @@ export default function NewArrivalsSection() {
     );
   }
 
+  const productsToShow = showAll ? products : products.slice(0, 4); // Show only 4 products initially
+
   return (
     <section className="w-full bg-white py-12 px-6">
       {/* New Arrivals */}
       <div className="max-w-7xl mx-auto">
         <h2 className="text-3xl font-extrabold text-gray-900">NEW ARRIVALS</h2>
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-8 mt-8">
-          {products.map((product) => (
+          {productsToShow.map((product) => (
             <div key={product.id} className="border rounded-lg p-4">
               <Link href={`/detail/${product.id}`}>
                 <img
@@ -73,8 +76,11 @@ export default function NewArrivalsSection() {
           ))}
         </div>
         <div className="mt-8 text-center">
-          <button className="px-6 py-3 bg-black text-white rounded-full hover:bg-gray-800 transition-colors duration-300">
-            View All
+          <button
+            onClick={() => setShowAll((prev) => !prev)} // Toggle between showing all products or just a few
+            className="px-6 py-3 bg-black text-white rounded-full hover:bg-gray-800 transition-colors duration-300"
+          >
+            {showAll ? "View Less" : "View More"}
           </button>
         </div>
       </div>
