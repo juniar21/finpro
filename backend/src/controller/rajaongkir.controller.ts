@@ -1,72 +1,77 @@
-import { Request, Response } from "express";
-import axios from "axios";
-import dotenv from "dotenv";
+// import { Request, Response } from "express";
+// import axios from "axios";
 
-dotenv.config();
+// const RAJAONGKIR_API_KEY = process.env.RAJAONGKIR_API_KEY!;
+// const BASE_URL = "https://api.rajaongkir.com/starter";
 
-const API_KEY = process.env.RAJAONGKIR_API_KEY;
-const BASE_URL = process.env.RAJAONGKIR_BASE_URL;
+// export class RajaOngkirController {
+//  getProvinces = async (req: Request, res: Response) => {
+//   try {
+//     console.log("RAJAONGKIR_API_KEY:", RAJAONGKIR_API_KEY); // Pastikan key terisi
 
-export class RajaOngkirController {
-  // Ambil daftar provinsi
-  async getProvinces(req: Request, res: Response) {
-    try {
-      const response = await axios.get(`${BASE_URL}/province`, {
-        headers: {
-          "x-api-key": API_KEY!,
-          "Content-Type": "application/x-www-form-urlencoded",
-        },
-      });
-      res.json(response.data);
-    } catch (error) {
-      console.error(error);
-      res.status(500).json({ error: "Failed to fetch provinces" });
-    }
-  }
+//     const response = await axios.get(`${BASE_URL}/province`, {
+//       headers: { key: RAJAONGKIR_API_KEY },
+//     });
 
-  // Ambil daftar kota berdasarkan ID provinsi
-  async getCities(req: Request, res: Response) {
-    const { provinceId } = req.params;
-    try {
-      const response = await axios.get(`${BASE_URL}/city?province=${provinceId}`, {
-        headers: { key: API_KEY!, "Accept": "application/json" },
-      });
-      console.log(response)
-      res.json(response.data);
-    } catch (error) {
-      //   console.error(error);
-      res.status(500).json({ error: error });
-    }
-  }
+//     console.log("RAJAONGKIR API response:", response.data); // Debug respons dari RajaOngkir
 
-  async getLocationId(req: Request, res: Response) {
-    try {
-      const response = await axios.get(`${BASE_URL}/tariff/api/v1/destination/search?keyword=${req.query.keyword}`, {
-        headers: { "x-api-key": API_KEY, 'Accept': 'application/json' },
-      });
-      console.log(response)
-      res.json(response.data);
-    } catch (error) {
-      console.error(error);
-      res.status(500).json({ error: error });
-    }
-  }
+//     res.status(200).json(response.data.rajaongkir.results);
+//   } catch (error: any) {
+//     console.error("Error fetching provinces:", error.response?.data || error.message);
+//     res.status(500).json({ error: "Failed to fetch provinces" });
+//   }
+// };
 
-  // Hitung ongkir
-  async calculateShippingCost(req: Request, res: Response) {
-    const { origin, destination, weight, price } = req.body;
 
-    try {
-      const response = await axios.get(
-        `${BASE_URL}/tariff/api/v1/calculate?shipper_destination_id=${origin}&receiver_destination_id=${destination}&weight=${weight}&item_value=${price}&cod=no`,
-        {
-          headers: { "x-api-key": API_KEY, 'Accept': 'application/json' },
-        }
-      );
-      res.json(response.data);
-    } catch (error) {
-      console.error(error);
-      res.status(500).json({ error: "Failed to calculate shipping cost" });
-    }
-  }
-}
+
+//   getCities = async (req: Request, res: Response) => {
+//     try {
+//       const { provinceId } = req.query;
+//       const url = provinceId
+//         ? `${BASE_URL}/city?province=${provinceId}`
+//         : `${BASE_URL}/city`;
+
+//       const response = await axios.get(url, {
+//         headers: { key: RAJAONGKIR_API_KEY },
+//       });
+
+//       res.status(200).json(response.data.rajaongkir.results);
+//     } catch (error: any) {
+//       console.error("Error fetching cities:", error.message);
+//       res.status(500).json({ error: "Failed to fetch cities" });
+//     }
+//   };
+
+//   calculateShippingCost = async (req: Request, res: Response) => {
+//     try {
+//       const { origin, destination, weight, courier } = req.body;
+
+//       if (!origin || !destination || !weight || !courier) {
+//          res.status(400).json({
+//           error: "Missing required fields: origin, destination, weight, courier",
+//         });
+//       }
+
+//       const response = await axios.post(
+//         `${BASE_URL}/cost`,
+//         new URLSearchParams({
+//           origin,
+//           destination,
+//           weight: weight.toString(),
+//           courier,
+//         }),
+//         {
+//           headers: {
+//             key: RAJAONGKIR_API_KEY,
+//             "content-type": "application/x-www-form-urlencoded",
+//           },
+//         }
+//       );
+
+//       res.status(200).json(response.data.rajaongkir.results);
+//     } catch (error: any) {
+//       console.error("Error calculating shipping cost:", error.message);
+//       res.status(500).json({ error: "Failed to calculate shipping cost" });
+//     }
+//   };
+// }

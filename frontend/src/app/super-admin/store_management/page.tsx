@@ -37,12 +37,15 @@ export default function TopSellingSection() {
 
   const [products, setProducts] = useState<Product[]>([]);
   const [categories, setCategories] = useState<Category[]>([]);
-  const [stores, setStores] = useState<Store[]>([]); // Tambahan stores
+  const [stores, setStores] = useState<Store[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
   const [isAddCategoryOpen, setIsAddCategoryOpen] = useState(false);
   const [isAddProductOpen, setIsAddProductOpen] = useState(false);
+
+  // State untuk filter kategori
+  const [selectedCategoryId, setSelectedCategoryId] = useState<string | null>(null);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -99,6 +102,11 @@ export default function TopSellingSection() {
     );
   }
 
+  // Filter produk berdasarkan kategori jika ada yang dipilih
+  const filteredProducts = selectedCategoryId
+    ? products.filter((p) => p.categoryId === selectedCategoryId)
+    : products;
+
   return (
     <>
       <Navbar />
@@ -126,33 +134,67 @@ export default function TopSellingSection() {
               </div>
             </div>
 
+            {/* Filter Kategori */}
+            <div className="mb-6">
+              <h3 className="font-semibold mb-2">Filter by Category</h3>
+              <div className="flex flex-wrap gap-3">
+                <button
+                  onClick={() => setSelectedCategoryId(null)}
+                  className={`px-4 py-2 rounded ${
+                    selectedCategoryId === null
+                      ? "bg-blue-600 text-white"
+                      : "bg-gray-200 text-gray-700 hover:bg-gray-300"
+                  }`}
+                >
+                  All
+                </button>
+                {categories.map((category) => (
+                  <button
+                    key={category.id}
+                    onClick={() => setSelectedCategoryId(category.id)}
+                    className={`px-4 py-2 rounded ${
+                      selectedCategoryId === category.id
+                        ? "bg-blue-600 text-white"
+                        : "bg-gray-200 text-gray-700 hover:bg-gray-300"
+                    }`}
+                  >
+                    {category.name}
+                  </button>
+                ))}
+              </div>
+            </div>
+
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-8 mt-8">
-              {products.map((product) => (
-                <div key={product.id} className="border rounded-lg p-4">
-                  <Link href={`/detail/${product.id}`}>
-                    <img
-                      src={product.imageUrl || "/default-product-image.png"}
-                      alt={product.name}
-                      className="w-full h-auto rounded-lg cursor-pointer"
-                    />
-                  </Link>
-                  <div className="mt-4">
-                    <h3 className="font-semibold text-lg">{product.name}</h3>
-                    <div className="flex items-center mt-1">
-                      <span className="text-yellow-500">⭐⭐⭐⭐⭐</span>
-                      <span className="ml-2 text-gray-500">({product.rating || 0})</span>
+              {filteredProducts.length === 0 ? (
+                <p className="text-center col-span-full">Tidak ada produk untuk kategori ini.</p>
+              ) : (
+                filteredProducts.map((product) => (
+                  <div key={product.id} className="border rounded-lg p-4">
+                    <Link href={`/detail/${product.id}`}>
+                      <img
+                        src={product.imageUrl || "/default-product-image.png"}
+                        alt={product.name}
+                        className="w-full h-auto rounded-lg cursor-pointer"
+                      />
+                    </Link>
+                    <div className="mt-4">
+                      <h3 className="font-semibold text-lg">{product.name}</h3>
+                      <div className="flex items-center mt-1">
+                        <span className="text-yellow-500">⭐⭐⭐⭐⭐</span>
+                        <span className="ml-2 text-gray-500">({product.rating || 0})</span>
+                      </div>
+                      <p className="mt-2 text-xl font-semibold text-gray-800">
+                        ${product.price.toLocaleString()}
+                        {product.oldPrice && (
+                          <span className="line-through text-red-500 ml-2">
+                            ${product.oldPrice.toLocaleString()}
+                          </span>
+                        )}
+                      </p>
                     </div>
-                    <p className="mt-2 text-xl font-semibold text-gray-800">
-                      ${product.price.toLocaleString()}
-                      {product.oldPrice && (
-                        <span className="line-through text-red-500 ml-2">
-                          ${product.oldPrice.toLocaleString()}
-                        </span>
-                      )}
-                    </p>
                   </div>
-                </div>
-              ))}
+                ))
+              )}
             </div>
 
             <div className="mt-8 text-center">
@@ -177,7 +219,7 @@ export default function TopSellingSection() {
         onClose={() => setIsAddProductOpen(false)}
         onAdd={handleAddProduct}
         categories={categories}
-        stores={stores} 
+        stores={stores}
         token={token}
       />
     </>

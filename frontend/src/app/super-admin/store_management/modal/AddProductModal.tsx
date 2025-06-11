@@ -1,8 +1,6 @@
 "use client";
-
 import { useState, ChangeEvent, FormEvent } from "react";
 import axios from "@/lib/axios";
-
 interface Category {
   id: string;
   name: string;

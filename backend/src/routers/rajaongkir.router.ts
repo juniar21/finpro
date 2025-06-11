@@ -1,51 +1,43 @@
-import { Router } from "express";
+// import { Router } from "express";
+// import { AuthMiddleware } from "../middleware/auth.middleware";
+// import { RajaOngkirController } from "../controller/rajaongkir.controller";
 
-import { RequestHandler } from "express-serve-static-core";
-import { RajaOngkirController } from "../controller/rajaongkir.controller";
-import { AuthMiddleware } from "../middleware/auth.middleware";
+// export class RajaOngkirRouter {
+//   private router: Router;
+//   private rajaOngkirController: RajaOngkirController;
+//   private authMiddleware: AuthMiddleware;
 
-export class RajaOngkirRouter {
-  private router: Router;
-  private rajaOngkirController: RajaOngkirController;
-  private authMiddleware: AuthMiddleware;
+//   constructor() {
+//     this.router = Router();
+//     this.rajaOngkirController = new RajaOngkirController();
+//     this.authMiddleware = new AuthMiddleware();
+//     this.initializeRoutes();
+//   }
 
-  constructor() {
-    this.router = Router();
-    this.rajaOngkirController = new RajaOngkirController();
-    this.authMiddleware = new AuthMiddleware();
-    this.initializeRoutes();
-  }
+//   private initializeRoutes() {
+//     // GET /rajaongkir/provinces - Get all provinces
+//     this.router.get(
+//       "/provinces",
+//       this.authMiddleware.verifyToken,
+//       this.rajaOngkirController.getProvinces
+//     );
 
-  private initializeRoutes() {
-    // Ambil daftar provinsi
-    this.router.get(
-      "/provinces",
-      // this.authMiddleware.verifyToken as unknown as RequestHandler,
-      this.rajaOngkirController.getProvinces as unknown as RequestHandler
-    );
+//     // GET /rajaongkir/cities?provinceId= - Get cities by province
+//     this.router.get(
+//       "/cities",
+//       this.authMiddleware.verifyToken,
+//       this.rajaOngkirController.getCities
+//     );
 
-    // Ambil daftar kota berdasarkan ID provinsi
-    this.router.get(
-      "/cities/:provinceId",
-      // this.authMiddleware.verifyToken as unknown as RequestHandler,
-      this.rajaOngkirController.getCities as unknown as RequestHandler
-    );
+//     // POST /rajaongkir/cost - Calculate shipping cost
+//     this.router.post(
+//       "/cost",
+//       this.authMiddleware.verifyToken,
+//       this.rajaOngkirController.calculateShippingCost
+//     );
+//   }
 
-    this.router.get(
-      "/location",
-      // this.authMiddleware.verifyToken as unknown as RequestHandler,
-      this.rajaOngkirController.getLocationId as unknown as RequestHandler
-    );
-
-    // Hitung ongkir
-    this.router.post(
-      "/cost",
-      this.authMiddleware.verifyToken as unknown as RequestHandler,
-      this.rajaOngkirController.calculateShippingCost as unknown as RequestHandler
-    );
-  }
-
-  getRouter(): Router {
-    return this.router;
-  }
-}
+//   public getRouter(): Router {
+//     return this.router;
+//   }
+// }
