@@ -15,6 +15,7 @@
     "axios": "^1.9.0",
     "formik": "^2.4.6",
     "handlers": "^1.0.3",
+    "haversine-distance": "^1.2.3",
     "icons": "^1.0.0",
     "leaflet": "^1.9.4",
     "lucide-react": "^0.511.0",

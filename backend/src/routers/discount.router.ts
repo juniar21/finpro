@@ -22,14 +22,20 @@ export class DiscountRouter {
       this.discountController.createDiscount
     );
 
+    this.router.get(
+      "/",
+      this.authMiddleware.verifyToken, // optional auth
+      this.discountController.getDiscounts
+    )
+
     // ✅ READ ALL by storeId
     this.router.get(
-      "/store/:storeId",
+      "/store/:Id",
       this.authMiddleware.verifyToken, // optional auth
       this.discountController.getAllDiscountsByStore
     );
 
-    // ✅ READ ONE by id
+  
     this.router.get(
       "/:id",
       this.authMiddleware.verifyToken, // optional auth
@@ -37,18 +43,18 @@ export class DiscountRouter {
     );
 
     // ✅ UPDATE - hanya STORE_ADMIN
-    this.router.put(
-      "/:id",
-      this.authMiddleware.verifyToken,
-      this.discountController.updateDiscount
-    );
+    // this.router.put(
+    //   "/:id",
+    //   this.authMiddleware.verifyToken,
+    //   this.discountController.updateDiscount
+    // );
 
     // ✅ DELETE - hanya STORE_ADMIN
-    this.router.delete(
-      "/:id",
-      this.authMiddleware.verifyToken,
-      this.discountController.deleteDiscount
-    );
+    // this.router.delete(
+    //   "/:id",
+    //   this.authMiddleware.verifyToken,
+    //   this.discountController.deleteDiscount
+    // );
   }
 
   public getRouter() {

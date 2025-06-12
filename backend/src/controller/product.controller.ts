@@ -196,4 +196,28 @@ export class ProductController {
       res.status(500).json({ message: "Failed to fetch product by id", error });
     }
   };
+
+  getProductsByStoreId = async (req: Request, res: Response) => {
+  const { id } = req.params; // ini storeId
+  try {
+    const products = await prisma.product.findMany({
+      where: {
+        stocks: {
+          some: {
+            storeId: id,
+          },
+        },
+      },
+      select: {
+        id: true,
+        name: true,
+      },
+    });
+
+    res.status(200).json(products);
+  } catch (err) {
+    console.error("Gagal mengambil produk:", err);
+    res.status(500).json({ error: "Gagal mengambil produk." });
+  }
+};
 }

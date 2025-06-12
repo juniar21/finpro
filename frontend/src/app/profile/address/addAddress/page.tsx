@@ -4,20 +4,15 @@ import Navbar from "@/components/navbar/navbar/Navbar";
 import Sidebar from "@/components/navbar/navbar/Sidebar";
 import Footer from "@/components/navbar/navbar/footer";
 import { useSession } from "next-auth/react";
-import { useState, useEffect, ChangeEvent, FormEvent } from "react";
+import { useState, ChangeEvent, FormEvent } from "react";
 import axios from "@/lib/axios";
-
-interface Option {
-  id: string;
-  name: string;
-}
 
 interface AddressFormData {
   address_name: string;
   address: string;
-  province: string;
-  city: string;
   subdistrict: string;
+  city: string;
+  province: string;
   postcode: string;
   is_primary: boolean;
 }
@@ -29,56 +24,15 @@ export default function CreateAddressPage() {
   const [formData, setFormData] = useState<AddressFormData>({
     address_name: "",
     address: "",
-    province: "",
-    city: "",
     subdistrict: "",
+    city: "",
+    province: "",
     postcode: "",
     is_primary: false,
   });
 
-  const [provinces, setProvinces] = useState<Option[]>([]);
-  const [cities, setCities] = useState<Option[]>([]);
-  const [subdistricts, setSubdistricts] = useState<Option[]>([]);
-
   const [message, setMessage] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
-
-  // Fetch provinsi on mount
-  useEffect(() => {
-    const fetchProvinces = async () => {
-      const res = await axios.get("/rajaongkir/provinces");
-      setProvinces(res.data);
-    };
-    fetchProvinces();
-  }, []);
-
-  // Fetch kota berdasarkan provinsi
-  useEffect(() => {
-    if (formData.province) {
-      const fetchCities = async () => {
-        const res = await axios.get(`/rajaongkir/cities?province_id=${formData.province}`);
-        setCities(res.data);
-      };
-      fetchCities();
-    } else {
-      setCities([]);
-      setFormData((prev) => ({ ...prev, city: "", subdistrict: "" }));
-    }
-  }, [formData.province]);
-
-  // Fetch kecamatan berdasarkan kota
-  useEffect(() => {
-    if (formData.city) {
-      const fetchSubdistricts = async () => {
-        const res = await axios.get(`/rajaongkir/subdistricts?city_id=${formData.city}`);
-        setSubdistricts(res.data);
-      };
-      fetchSubdistricts();
-    } else {
-      setSubdistricts([]);
-      setFormData((prev) => ({ ...prev, subdistrict: "" }));
-    }
-  }, [formData.city]);
 
   if (loading) {
     return (
@@ -97,7 +51,7 @@ export default function CreateAddressPage() {
   }
 
   const handleChange = (
-    e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
+    e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => {
     const target = e.target;
     const { name, value, type } = target;
@@ -133,14 +87,12 @@ export default function CreateAddressPage() {
         setFormData({
           address_name: "",
           address: "",
-          province: "",
-          city: "",
           subdistrict: "",
+          city: "",
+          province: "",
           postcode: "",
           is_primary: false,
         });
-        setCities([]);
-        setSubdistricts([]);
       } else {
         setMessage("Gagal membuat alamat.");
       }
@@ -180,62 +132,142 @@ export default function CreateAddressPage() {
 
             <form onSubmit={handleSubmit} className="space-y-4 text-left">
               <div>
-                <label htmlFor="address_name" className="block mb-1 font-semibold text-gray-700">Nama Alamat</label>
-                <input type="text" id="address_name" name="address_name" value={formData.address_name} onChange={handleChange} required className="w-full border border-gray-300 rounded px-3 py-2" />
+                <label
+                  htmlFor="address_name"
+                  className="block mb-1 font-semibold text-gray-700"
+                >
+                  Nama Alamat
+                </label>
+                <input
+                  type="text"
+                  id="address_name"
+                  name="address_name"
+                  value={formData.address_name}
+                  onChange={handleChange}
+                  required
+                  className="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                />
               </div>
 
               <div>
-                <label htmlFor="address" className="block mb-1 font-semibold text-gray-700">Alamat</label>
-                <textarea id="address" name="address" value={formData.address} onChange={handleChange} rows={3} required className="w-full border border-gray-300 rounded px-3 py-2" />
+                <label
+                  htmlFor="address"
+                  className="block mb-1 font-semibold text-gray-700"
+                >
+                  Alamat
+                </label>
+                <textarea
+                  id="address"
+                  name="address"
+                  rows={3}
+                  value={formData.address}
+                  onChange={handleChange}
+                  required
+                  className="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                />
               </div>
 
               <div>
-                <label htmlFor="province" className="block mb-1 font-semibold text-gray-700">Provinsi</label>
-                <select id="province" name="province" value={formData.province} onChange={handleChange} required className="w-full border border-gray-300 rounded px-3 py-2">
-                  <option value="">Pilih Provinsi</option>
-                  {provinces.map((prov) => (
-                    <option key={prov.id} value={prov.id}>{prov.name}</option>
-                  ))}
-                </select>
+                <label
+                  htmlFor="subdistrict"
+                  className="block mb-1 font-semibold text-gray-700"
+                >
+                  Kecamatan
+                </label>
+                <input
+                  type="text"
+                  id="subdistrict"
+                  name="subdistrict"
+                  value={formData.subdistrict}
+                  onChange={handleChange}
+                  required
+                  className="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                />
               </div>
 
               <div>
-                <label htmlFor="city" className="block mb-1 font-semibold text-gray-700">Kota/Kabupaten</label>
-                <select id="city" name="city" value={formData.city} onChange={handleChange} required className="w-full border border-gray-300 rounded px-3 py-2">
-                  <option value="">Pilih Kota</option>
-                  {cities.map((city) => (
-                    <option key={city.id} value={city.id}>{city.name}</option>
-                  ))}
-                </select>
+                <label
+                  htmlFor="city"
+                  className="block mb-1 font-semibold text-gray-700"
+                >
+                  Kota
+                </label>
+                <input
+                  type="text"
+                  id="city"
+                  name="city"
+                  value={formData.city}
+                  onChange={handleChange}
+                  required
+                  className="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                />
               </div>
 
               <div>
-                <label htmlFor="subdistrict" className="block mb-1 font-semibold text-gray-700">Kecamatan</label>
-                <select id="subdistrict" name="subdistrict" value={formData.subdistrict} onChange={handleChange} required className="w-full border border-gray-300 rounded px-3 py-2">
-                  <option value="">Pilih Kecamatan</option>
-                  {subdistricts.map((sub) => (
-                    <option key={sub.id} value={sub.name}>{sub.name}</option>
-                  ))}
-                </select>
+                <label
+                  htmlFor="province"
+                  className="block mb-1 font-semibold text-gray-700"
+                >
+                  Provinsi
+                </label>
+                <input
+                  type="text"
+                  id="province"
+                  name="province"
+                  value={formData.province}
+                  onChange={handleChange}
+                  required
+                  className="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                />
               </div>
 
               <div>
-                <label htmlFor="postcode" className="block mb-1 font-semibold text-gray-700">Kode Pos</label>
-                <input type="text" id="postcode" name="postcode" value={formData.postcode} onChange={handleChange} required className="w-full border border-gray-300 rounded px-3 py-2" />
+                <label
+                  htmlFor="postcode"
+                  className="block mb-1 font-semibold text-gray-700"
+                >
+                  Kode Pos
+                </label>
+                <input
+                  type="text"
+                  id="postcode"
+                  name="postcode"
+                  value={formData.postcode}
+                  onChange={handleChange}
+                  required
+                  className="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                />
               </div>
 
               <div className="flex items-center">
-                <input type="checkbox" id="is_primary" name="is_primary" checked={formData.is_primary} onChange={handleChange} className="h-4 w-4 border-gray-300" />
-                <label htmlFor="is_primary" className="ml-2 text-sm text-gray-700">Jadikan alamat utama</label>
+                <input
+                  type="checkbox"
+                  id="is_primary"
+                  name="is_primary"
+                  checked={formData.is_primary}
+                  onChange={handleChange}
+                  className="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500"
+                />
+                <label
+                  htmlFor="is_primary"
+                  className="ml-2 block text-sm text-gray-700 select-none"
+                >
+                  Jadikan alamat utama
+                </label>
               </div>
 
-              <button type="submit" disabled={isSubmitting} className="w-full bg-indigo-600 text-white font-semibold py-3 px-4 rounded hover:bg-indigo-700 disabled:opacity-50">
+              <button
+                type="submit"
+                disabled={isSubmitting}
+                className="w-full rounded bg-indigo-600 py-3 px-4 text-white font-semibold hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 disabled:opacity-50"
+              >
                 {isSubmitting ? "Menyimpan..." : "Buat Alamat"}
               </button>
             </form>
           </div>
         </main>
       </div>
+
       <Footer />
     </>
   );
