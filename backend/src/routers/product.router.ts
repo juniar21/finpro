@@ -41,7 +41,7 @@ export class ProductRouter {
 
     
     this.router.get("/all",this.productController.getAllProducts);
-    // this.router.get("/:id",this.productController.getProductById);
+    this.router.get("/:id",this.productController.getProductById);
     this.router.get("/store/:storeId",this.productController.getProductsByStoreId);
     this.router.post("/nearest",this.productController.getNearestProducts);
 

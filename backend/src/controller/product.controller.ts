@@ -192,35 +192,37 @@ getAllProducts = async (req: Request, res: Response) => {
   }
 };
 
-  // getProductById = async (req: Request, res: Response) => {
-  //   try {
-  //     const { id } = req.params;
-  //     if (!id) {
-  //       res.status(400).json({ message: "Missing id parameter" });
-  //     }
+  getProductById = async (req: Request, res: Response) => {
+    try {
+      const { id } = req.params;
+      if (!id) {
+        res.status(400).json({ message: "Missing id parameter" });
+      }
 
-  //     const product = await prisma.product.findUnique({
-  //       where: { id },
-  //       include: {
-  //         category: true,
-  //         stocks: {
-  //           include: {
-  //             store: true, 
-  //           },
-  //         },
-  //       },
-  //     });
+      const product = await prisma.product.findUnique({
+        where: { id },
+        include: {
+          category: true,
+          stocks: {
+            include: {
+              store: true, 
+            },
+          },
+        },
+      });
 
-  //     if (!product) {
-  //       res.status(404).json({ message: "Product not found" });
-  //     }
+      if (!product) {
+        res.status(404).json({ message: "Product not found" });
+      }
 
-  //     res.json(product);
-  //   } catch (error) {
-  //     console.error("Error while fetching product by id:", error);
-  //     res.status(500).json({ message: "Failed to fetch product by id", error });
-  //   }
-  // };
+      res.json(product);
+    } catch (error) {
+      console.error("Error while fetching product by id:", error);
+      res.status(500).json({ message: "Failed to fetch product by id", error });
+    }
+  };
+
+  
   getProductsByStoreId = async (req: Request, res: Response) => {
   try {
     const { storeId } = req.params;

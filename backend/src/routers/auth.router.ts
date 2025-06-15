@@ -34,6 +34,7 @@ export class AuthRouter {
       this.authMiddleware.verifyToken,
       this.authController.verifyPasswordReset
     );
+    this.router.post("/google", this.authController.loginOrRegisterWithGoogle);
     
   }
 

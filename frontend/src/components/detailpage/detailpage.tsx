@@ -28,7 +28,9 @@ export default function ProductDetailPage() {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [selectedImage, setSelectedImage] = useState<string>("");
-  const [selectedColor, setSelectedColor] = useState<string>(availableColors[0]);
+  const [selectedColor, setSelectedColor] = useState<string>(
+    availableColors[0]
+  );
   const [selectedSize, setSelectedSize] = useState<string>("Large");
   const [quantity, setQuantity] = useState<number>(1);
 
@@ -99,14 +101,18 @@ export default function ProductDetailPage() {
 
         {/* RIGHT SIDE - INFO */}
         <div className="space-y-6">
-          <h1 className="text-3xl font-extrabold text-gray-900">{product.name}</h1>
+          <h1 className="text-3xl font-extrabold text-gray-900">
+            {product.name}
+          </h1>
 
           {/* Rating */}
           <div className="flex items-center gap-2">
             <div className="flex text-yellow-400">
-              {Array(4).fill(0).map((_, i) => (
-                <span key={i}>★</span>
-              ))}
+              {Array(4)
+                .fill(0)
+                .map((_, i) => (
+                  <span key={i}>★</span>
+                ))}
               <span className="text-gray-300">★</span>
             </div>
             <span className="text-sm text-gray-600">4.5/5</span>
@@ -120,7 +126,9 @@ export default function ProductDetailPage() {
 
           {/* Price */}
           <div className="flex items-center gap-4">
-            <span className="text-2xl font-bold text-gray-900">${product.price}</span>
+            <span className="text-2xl font-bold text-gray-900">
+              ${product.price}
+            </span>
             {product.price !== product.originalPrice && (
               <>
                 <span className="line-through text-gray-400 text-sm">
@@ -128,7 +136,9 @@ export default function ProductDetailPage() {
                 </span>
                 <span className="text-sm text-red-500 font-medium">
                   {`-${Math.round(
-                    ((product.originalPrice - product.price) / product.originalPrice) * 100
+                    ((product.originalPrice - product.price) /
+                      product.originalPrice) *
+                      100
                   )}%`}
                 </span>
               </>
@@ -192,7 +202,22 @@ export default function ProductDetailPage() {
             <button className="w-full sm:w-auto bg-black text-white px-6 py-3 rounded-md hover:bg-gray-800 transition">
               Add to Cart
             </button>
-            <button className="w-full sm:w-auto border px-6 py-3 rounded-md hover:bg-gray-200 transition">
+            <button
+              className="w-full sm:w-auto border px-6 py-3 rounded-md hover:bg-gray-200 transition"
+              onClick={() => {
+                const checkoutData = {
+                  id: product.id,
+                  name: product.name,
+                  price: product.price,
+                  imageUrl: selectedImage,
+                  quantity,
+                  color: selectedColor,
+                  size: selectedSize,
+                };
+                localStorage.setItem("checkout", JSON.stringify(checkoutData));
+                window.location.href = "/checkout"; // atau gunakan router.push jika pakai `useRouter`
+              }}
+            >
               Buy Now
             </button>
           </div>

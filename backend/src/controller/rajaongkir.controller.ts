@@ -29,5 +29,4 @@ export class RajaOngkirController {
         });
     }
   }
-
 }

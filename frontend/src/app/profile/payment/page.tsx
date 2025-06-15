@@ -1,221 +1,75 @@
-// // app/(user)/address/create/page.tsx
-// "use client";
+'use client'
 
-// import React, { useEffect, useState } from "react";
-// import axios from "axios";
-// import { useRouter } from "next/navigation";
+import axiosInstance from '@/lib/rajaongkir'
+import React, { useEffect, useState } from 'react'
+ // sesuaikan path jika berbeda
 
-// interface Address {
-//   label: string;
-//   value: string;
-// }
+type Destination = {
+  subdistrict_id: number
+  subdistrict_name: string
+  city_id: number
+  city_name: string
+  province_id: number
+  province_name: string
+  postal_code: string
+}
 
-// export default function CreateAddressPage() {
-//   const router = useRouter();
-//   const [provinces, setProvinces] = useState<Address[]>([]);
-//   const [cities, setCities] = useState<Address[]>([]);
-//   const [formData, setFormData] = useState({
-//     recipientName: "",
-//     phoneNumber: "",
-//     province: "",
-//     city: "",
-//     fullAddress: "",
-//     postalCode: "",
-//   });
+export default function RajaOngkirTestPage() {
+  const [keyword, setKeyword] = useState('53131')
+  const [results, setResults] = useState<Destination[]>([])
+  const [loading, setLoading] = useState(false)
+  const [error, setError] = useState<string | null>(null)
 
-//   const handleChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
-//     const { name, value } = e.target;
+  const fetchDestinations = async (keyword: string) => {
+    setLoading(true)
+    setError(null)
+    try {
+      const response = await axiosInstance.get('/destination/search', {
+        params: { keyword },
+      })
+      setResults(response.data.data || [])
+    } catch (err: any) {
+      setError(err?.response?.data?.message || err.message)
+    } finally {
+      setLoading(false)
+    }
+  }
 
-//     setFormData((prev) => ({
-//       ...prev,
-//       [name]: value,
-//     }));
+  useEffect(() => {
+    fetchDestinations(keyword)
+  }, [])
 
-//     if (name === "province") {
-//       await fetchProvinces(value);
-//     }
+  return (
+    <div className="p-6">
+      <h1 className="text-xl font-bold mb-4">Test RajaOngkir Komerce (dengan Axios)</h1>
+      <input
+        type="text"
+        className="border px-3 py-2 rounded mb-4"
+        value={keyword}
+        onChange={(e) => setKeyword(e.target.value)}
+        placeholder="Masukkan kode pos atau kata kunci"
+      />
+      <button
+        className="bg-blue-600 text-white px-4 py-2 rounded ml-2"
+        onClick={() => fetchDestinations(keyword)}
+        disabled={loading}
+      >
+        Cari
+      </button>
 
-//     if (name === "city") {
-//       await fetchCities(value, formData.province);
-//     }
-//   };
+      {loading && <p className="mt-4">Memuat data...</p>}
+      {error && <p className="mt-4 text-red-500">Error: {error}</p>}
 
-//   const fetchProvinces = async (keyword: string) => {
-//     try {
-//       const res = await axios.get("/rajaongkir/searchDestination", {
-//         params: { keyword },
-//       });
-
-//       const uniqueProvinces = Array.from(
-//         new Set(res.data.map((item: any) => item.province))
-//       ).map((province) => ({
-//         label: province,
-//         value: province,
-//       }));
-
-//       setProvinces(uniqueProvinces);
-//     } catch (error) {
-//       console.error("Gagal mengambil provinsi:", error);
-//     }
-//   };
-
-//   const fetchCities = async (keyword: string, province: string) => {
-//     try {
-//       const res = await axios.get("/rajaongkir/searchDestination", {
-//         params: { keyword },
-//       });
-
-//       const filtered = res.data.filter(
-//         (item: any) => item.province.toLowerCase() === province.toLowerCase()
-//       );
-
-//       const uniqueCities = Array.from(
-//         new Set(filtered.map((item: any) => item.city))
-//       ).map((city) => ({
-//         label: city,
-//         value: city,
-//       }));
-
-//       setCities(uniqueCities);
-//     } catch (error) {
-//       console.error("Gagal mengambil kota:", error);
-//     }
-//   };
-
-//   const handleSubmit = async (e: React.FormEvent) => {
-//     e.preventDefault();
-//     try {
-//       await axios.post("/address", formData);
-//       router.push("/address");
-//     } catch (error) {
-//       console.error("Gagal menyimpan alamat:", error);
-//     }
-//   };
-
-//   return (
-//     <div className="max-w-2xl mx-auto py-10 px-4">
-//       <h1 className="text-2xl font-bold mb-6">Tambah Alamat</h1>
-//       <form onSubmit={handleSubmit} className="space-y-4">
-//         {/* Nama Penerima */}
-//         <div>
-//           <label htmlFor="recipientName" className="block mb-1 font-semibold">
-//             Nama Penerima
-//           </label>
-//           <input
-//             type="text"
-//             id="recipientName"
-//             name="recipientName"
-//             value={formData.recipientName}
-//             onChange={handleChange}
-//             required
-//             className="w-full border rounded px-3 py-2"
-//           />
-//         </div>
-
-//         {/* Nomor Telepon */}
-//         <div>
-//           <label htmlFor="phoneNumber" className="block mb-1 font-semibold">
-//             Nomor Telepon
-//           </label>
-//           <input
-//             type="text"
-//             id="phoneNumber"
-//             name="phoneNumber"
-//             value={formData.phoneNumber}
-//             onChange={handleChange}
-//             required
-//             className="w-full border rounded px-3 py-2"
-//           />
-//         </div>
-
-//         {/* Provinsi */}
-//         <div>
-//           <label htmlFor="province" className="block mb-1 font-semibold">
-//             Provinsi
-//           </label>
-//           <input
-//             type="text"
-//             id="province"
-//             name="province"
-//             list="province-list"
-//             value={formData.province}
-//             onChange={handleChange}
-//             required
-//             className="w-full border rounded px-3 py-2"
-//             placeholder="Ketik nama provinsi"
-//           />
-//           <datalist id="province-list">
-//             {provinces.map((prov) => (
-//               <option key={prov.value} value={prov.label} />
-//             ))}
-//           </datalist>
-//         </div>
-
-//         {/* Kota/Kabupaten */}
-//         <div>
-//           <label htmlFor="city" className="block mb-1 font-semibold">
-//             Kota/Kabupaten
-//           </label>
-//           <input
-//             type="text"
-//             id="city"
-//             name="city"
-//             list="city-list"
-//             value={formData.city}
-//             onChange={handleChange}
-//             required
-//             className="w-full border rounded px-3 py-2"
-//             placeholder="Ketik nama kota/kabupaten"
-//           />
-//           <datalist id="city-list">
-//             {cities.map((city) => (
-//               <option key={city.value} value={city.label} />
-//             ))}
-//           </datalist>
-//         </div>
-
-//         {/* Alamat Lengkap */}
-//         <div>
-//           <label htmlFor="fullAddress" className="block mb-1 font-semibold">
-//             Alamat Lengkap
-//           </label>
-//           <input
-//             type="text"
-//             id="fullAddress"
-//             name="fullAddress"
-//             value={formData.fullAddress}
-//             onChange={handleChange}
-//             required
-//             className="w-full border rounded px-3 py-2"
-//           />
-//         </div>
-
-//         {/* Kode Pos */}
-//         <div>
-//           <label htmlFor="postalCode" className="block mb-1 font-semibold">
-//             Kode Pos
-//           </label>
-//           <input
-//             type="text"
-//             id="postalCode"
-//             name="postalCode"
-//             value={formData.postalCode}
-//             onChange={handleChange}
-//             required
-//             className="w-full border rounded px-3 py-2"
-//           />
-//         </div>
-
-//         {/* Submit */}
-//         <div className="pt-4">
-//           <button
-//             type="submit"
-//             className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition"
-//           >
-//             Simpan Alamat
-//           </button>
-//         </div>
-//       </form>
-//     </div>
-//   );
-// }
+      <ul className="mt-6 space-y-2">
+        {results.map((item) => (
+          <li key={item.subdistrict_id} className="border p-3 rounded shadow">
+            <p><strong>Kecamatan:</strong> {item.subdistrict_name}</p>
+            <p><strong>Kota:</strong> {item.city_name}</p>
+            <p><strong>Provinsi:</strong> {item.province_name}</p>
+            <p><strong>Kode Pos:</strong> {item.postal_code}</p>
+          </li>
+        ))}
+      </ul>
+    </div>
+  )
+}

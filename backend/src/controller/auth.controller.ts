@@ -264,4 +264,60 @@ export class AuthController {
       res.status(500).send({ message: "Error resetting password" });
     }
   }
+  async loginOrRegisterWithGoogle(req: Request, res: Response) {
+    try {
+      const { email, name, avatar } = req.body;
+
+      if (!email || !name) {
+        res.status(400).json({ message: "Missing required Google user data" });
+      }
+
+      let user = await prisma.user.findUnique({ where: { email } });
+
+      // Jika user belum terdaftar, lakukan register
+      if (!user) {
+        user = await prisma.user.create({
+          data: {
+            name,
+            email,
+            password: Math.random().toString(36).slice(-8), // Random password
+            isVerify: true,
+            roles: "CUSTOMER", // Pastikan role CUSTOMER
+            avatar,
+            referralCode: Math.random().toString(36).substring(2, 10),
+          },
+        });
+      }
+
+      // Jika user sudah ada tapi role tidak ada, update jadi CUSTOMER
+      if (!user.roles) {
+        user = await prisma.user.update({
+          where: { email },
+          data: { roles: "CUSTOMER" },
+        });
+      }
+
+      // Buat JWT token
+      const payload = { id: user.id, role: user.roles };
+      const access_token = sign(payload, process.env.KEY_JWT!, {
+        expiresIn: "1h",
+      });
+
+      res.status(200).json({
+        message: "Login with Google successful",
+        data: {
+          id: user.id,
+          name: user.name,
+          email: user.email,
+          role: user.roles,
+          avatar: user.avatar,
+          referralCode: user.referralCode,
+        },
+        access_token,
+      });
+    } catch (err) {
+      console.error(err);
+      res.status(500).json({ message: "Google login failed", error: err });
+    }
+  }
 }
