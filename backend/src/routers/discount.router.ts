@@ -22,28 +22,34 @@ export class DiscountRouter {
       this.discountController.createDiscount
     );
 
-    // ✅ READ ALL by storeId
+    // ✅ READ ALL - semua diskon dari semua store
+    this.router.get(
+      "/",
+      this.authMiddleware.verifyToken,
+      this.discountController.getDiscounts
+    );
+
+    // ✅ READ by storeId - diskon berdasarkan toko
     this.router.get(
       "/store/:storeId",
-      this.authMiddleware.verifyToken, // optional auth
+      this.authMiddleware.verifyToken,
       this.discountController.getAllDiscountsByStore
     );
 
-    // ✅ READ ONE by id
+    // ✅ READ by ID - detail diskon tertentu
     this.router.get(
       "/:id",
-      this.authMiddleware.verifyToken, // optional auth
+      this.authMiddleware.verifyToken,
       this.discountController.getDiscountById
     );
 
-    // ✅ UPDATE - hanya STORE_ADMIN
+ 
     this.router.put(
       "/:id",
       this.authMiddleware.verifyToken,
       this.discountController.updateDiscount
     );
 
-    // ✅ DELETE - hanya STORE_ADMIN
     this.router.delete(
       "/:id",
       this.authMiddleware.verifyToken,

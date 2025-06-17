@@ -11,8 +11,14 @@ type Product = {
   description?: string;
   imageUrl?: string;
   price: number;
-  oldPrice?: number;
-  rating?: number;
+  finalPrice?: number;
+  discount?: {
+    id: string;
+    amount: number;
+    isPercentage: boolean;
+    startDate: string;
+    endDate: string;
+  } | null;
   category?: { name: string };
   store: {
     id: string;
@@ -84,15 +90,30 @@ export default function TopSellingSection() {
                 <p className="text-sm text-gray-600 truncate">
                   {product.description || "No description available"}
                 </p>
-        
-                <p className="mt-2 text-xl font-semibold text-gray-800">
-                  ${product.price}
-                </p>
-                {product.oldPrice && (
-                  <p className="text-sm text-red-500 line-through">
-                    ${product.oldPrice}
+
+                {product.finalPrice !== undefined && product.finalPrice < product.price ? (
+                  <>
+                    <p className="mt-2 text-xl font-semibold text-green-600">
+                      Rp{product.finalPrice.toLocaleString()}
+                    </p>
+                    <p className="text-sm text-red-500 line-through">
+                      Rp{product.price.toLocaleString()}
+                    </p>
+                  </>
+                ) : (
+                  <p className="mt-2 text-xl font-semibold text-gray-800">
+                    Rp{product.price.toLocaleString()}
                   </p>
                 )}
+
+                {product.discount && (
+                  <span className="inline-block mt-1 px-2 py-1 text-xs font-semibold text-white bg-red-500 rounded">
+                    {product.discount.isPercentage
+                      ? `-${product.discount.amount}%`
+                      : `-$${product.discount.amount.toLocaleString()}`}
+                  </span>
+                )}
+
                 <p className="text-sm text-gray-500 mt-1 italic">
                   {product.category?.name || "Uncategorized"} •{" "}
                   {product.store?.name ?? "No Store"}

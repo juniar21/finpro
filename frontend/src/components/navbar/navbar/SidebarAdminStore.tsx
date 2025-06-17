@@ -29,6 +29,11 @@ export default function Sidebarstore() {
       href: "/admin-store/datastore",
       icon: <FiUsers size={20} />,
     },
+    {
+      name: "Diskon Manajemen",
+      href: "/admin-store/discount-management",
+      icon: <FiUsers size={20} />,
+    },
   ];
 
   return (

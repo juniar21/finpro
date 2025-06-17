@@ -36,7 +36,7 @@ export class ProductRouter {
     this.router.get(
       "/",
       this.authMiddleware.verifyToken,
-      this.productController.getProducts
+      this.productController.getProduct
     );
 
     
