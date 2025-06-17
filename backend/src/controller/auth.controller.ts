@@ -120,42 +120,61 @@ export class AuthController {
     try {
       const { email, password } = req.body;
 
-      const user = await prisma.user.findUnique({ where: { email } });
+      const user = await prisma.user.findUnique({
+        where: { email },
+      });
 
       if (!user) {
         res.status(404).send({ message: "User not found" });
-      } else if (!user.isVerify) {
-        res.status(401).send({ message: "Account not verified" });
-      } else {
-        const isValidPass = await compare(password, user.password);
-
-        if (!isValidPass) {
-          res.status(401).send({ message: "Incorrect password" });
-        } else {
-          const payload = { id: user.id, role: user.roles };
-          const access_token = sign(payload, process.env.KEY_JWT!, {
-            expiresIn: "1h",
-          });
-
-          res.status(200).send({
-            message: "Login successfully!",
-            data: {
-              id: user.id,
-              name: user.name,
-              email: user.email,
-              role: user.roles,
-              avatar: user.avatar || "",
-              referralCode: user.referralCode, 
-            },
-            access_token,
-          });
-        }
+        return;
       }
+
+      if (!user.isVerify) {
+        res.status(401).send({ message: "Account not verified" });
+        return;
+      }
+
+      const isValidPass = await compare(password, user.password);
+      if (!isValidPass) {
+        res.status(401).send({ message: "Incorrect password" });
+      }
+
+      // Cari store berdasarkan adminId
+      const store = await prisma.store.findUnique({
+        where: { adminId: user.id },
+      });
+
+      const storeId = store?.id || null;
+
+      const payload = {
+        id: user.id,
+        role: user.roles,
+        storeId, // masukkan ke JWT
+      };
+
+      const access_token = sign(payload, process.env.KEY_JWT!, {
+        expiresIn: "1h",
+      });
+
+      res.status(200).send({
+        message: "Login successfully!",
+        data: {
+          id: user.id,
+          name: user.name,
+          email: user.email,
+          role: user.roles,
+          avatar: user.avatar || "",
+          referralCode: user.referralCode,
+          storeId, // masukkan ke response client
+        },
+        access_token,
+      });
     } catch (err) {
-      console.error(err);
+      console.error("Login error:", err);
       res.status(400).send({ message: "Login failed", error: err });
     }
   }
+
 
   // Verification method
   async verify(req: Request, res: Response) {

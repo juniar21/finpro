@@ -33,6 +33,7 @@ export default function AddressList() {
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [addressToEdit, setAddressToEdit] = useState<Address | null>(null);
 
+  // Fetch alamat saat session ready
   useEffect(() => {
     if (!session?.accessToken) return;
 
@@ -44,7 +45,6 @@ export default function AddressList() {
             Authorization: `Bearer ${session.accessToken}`,
           },
         });
-        // Sesuaikan response jika API return langsung array atau dalam objek
         setAddresses(res.data.addresses ?? res.data);
       } catch (error) {
         console.error("Failed to load addresses", error);
@@ -56,6 +56,7 @@ export default function AddressList() {
     fetchAddresses();
   }, [session]);
 
+  // Hapus alamat
   const handleDelete = async (id: string) => {
     if (!confirm("Yakin ingin menghapus alamat ini?")) return;
 
@@ -68,6 +69,12 @@ export default function AddressList() {
         },
       });
       setAddresses((prev) => prev.filter((addr) => addr.address_id !== id));
+
+      // Jika alamat yang di-edit dihapus, reset pilihan edit
+      if (addressToEdit?.address_id === id) {
+        setAddressToEdit(null);
+        setIsEditModalOpen(false);
+      }
     } catch (error) {
       console.error("Gagal menghapus alamat", error);
       alert("Gagal menghapus alamat, silakan coba lagi.");
@@ -76,19 +83,24 @@ export default function AddressList() {
     }
   };
 
+  // Buka modal edit dan set alamat yang diedit
   const openEditModal = (address: Address) => {
     setAddressToEdit(address);
     setIsEditModalOpen(true);
   };
 
+  // Update alamat setelah diedit (callback dari modal)
   const handleUpdateAddress = (updatedAddress: Address) => {
     setAddresses((prev) =>
       prev.map((addr) =>
         addr.address_id === updatedAddress.address_id ? updatedAddress : addr
       )
     );
+    setAddressToEdit(updatedAddress);
+    setIsEditModalOpen(false);
   };
 
+  // Tampilan loading session
   if (loadingSession) {
     return (
       <div className="flex flex-col items-center justify-center h-screen">
@@ -97,6 +109,7 @@ export default function AddressList() {
     );
   }
 
+  // Jika belum login
   if (!session) {
     return (
       <div className="flex flex-col items-center justify-center h-screen">
@@ -113,56 +126,107 @@ export default function AddressList() {
           <Sidebar />
         </aside>
 
-        <main className="flex-1 p-8 overflow-auto max-w-5xl mx-auto">
-          <h1 className="text-3xl font-bold mb-8">Daftar alamat</h1>
+        <main className="flex-1 p-8 overflow-auto max-w-7xl mx-auto flex gap-8">
+          {/* Daftar alamat */}
+          <div className="flex-1">
+            <h1 className="text-3xl font-bold mb-8">Daftar alamat</h1>
 
-          <a
-            href="/profile/address/addAddress"
-            className="mb-6 inline-block bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition"
-          >
-            Tambah Alamat
-          </a>
+            <a
+              href="/profile/address/addAddress"
+              className="mb-6 inline-block bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition"
+            >
+              Tambah Alamat
+            </a>
 
-          {loading ? (
-            <p>Loading alamat...</p>
-          ) : addresses.length === 0 ? (
-            <p>Belum ada alamat tersimpan.</p>
-          ) : (
-            addresses.map((addr) => (
-              <div
-                key={addr.address_id}
-                className="mb-8 border p-4 rounded shadow flex justify-between items-start"
-              >
-                <div>
-                  <h2 className="font-semibold text-lg mb-1">
-                    {addr.is_primary ? "Alamat Utama" : "Alamat"}
-                  </h2>
-                  <p>{addr.address_name}</p>
-                  <p>{addr.address}</p>
-                  {addr.subdistrict && <p>{addr.subdistrict}</p>}
+            {loading ? (
+              <p>Loading alamat...</p>
+            ) : addresses.length === 0 ? (
+              <p>Belum ada alamat tersimpan.</p>
+            ) : (
+              addresses.map((addr) => (
+                <div
+                  key={addr.address_id}
+                  className="mb-8 border p-4 rounded shadow flex justify-between items-start"
+                >
+                  <div>
+                    <h2 className="font-semibold text-lg mb-1">
+                      {addr.is_primary ? "Alamat Utama" : "Alamat"}
+                    </h2>
+                    <p>{addr.address_name}</p>
+                    <p>{addr.address}</p>
+                    {addr.subdistrict && <p>{addr.subdistrict}</p>}
+                    <p>
+                      {addr.city}, {addr.province} {addr.postcode ?? ""}
+                    </p>
+                  </div>
+                  <div className="flex space-x-2">
+                    <button
+                      onClick={() => openEditModal(addr)}
+                      className="bg-yellow-500 text-white px-3 py-1 rounded hover:bg-yellow-600 transition"
+                    >
+                      Edit
+                    </button>
+                    <button
+                      onClick={() => handleDelete(addr.address_id)}
+                      disabled={deletingId === addr.address_id}
+                      className="bg-red-600 text-white px-3 py-1 rounded hover:bg-red-700 transition disabled:opacity-50 disabled:cursor-not-allowed"
+                    >
+                      {deletingId === addr.address_id ? "Menghapus..." : "Delete"}
+                    </button>
+                  </div>
+                </div>
+              ))
+            )}
+          </div>
+
+          {/* Detail alamat yang sedang diedit */}
+          <div className="w-96 p-6 border rounded shadow bg-gray-50">
+            <h2 className="text-2xl font-semibold mb-4">Detail Alamat yang Diedit</h2>
+            {addressToEdit ? (
+              <>
+                <p>
+                  <span className="font-semibold">Nama Alamat: </span>
+                  {addressToEdit.address_name}
+                </p>
+                <p>
+                  <span className="font-semibold">Alamat: </span>
+                  {addressToEdit.address}
+                </p>
+                {addressToEdit.subdistrict && (
                   <p>
-                    {addr.city}, {addr.province} {addr.postcode ?? ""}
+                    <span className="font-semibold">Kecamatan: </span>
+                    {addressToEdit.subdistrict}
                   </p>
-                </div>
-                <div className="flex space-x-2">
-                  <button
-                    onClick={() => openEditModal(addr)}
-                    className="bg-yellow-500 text-white px-3 py-1 rounded hover:bg-yellow-600 transition"
-                  >
-                    Edit
-                  </button>
-                  <button
-                    onClick={() => handleDelete(addr.address_id)}
-                    disabled={deletingId === addr.address_id}
-                    className="bg-red-600 text-white px-3 py-1 rounded hover:bg-red-700 transition disabled:opacity-50 disabled:cursor-not-allowed"
-                  >
-                    {deletingId === addr.address_id ? "Menghapus..." : "Delete"}
-                  </button>
-                </div>
-              </div>
-            ))
-          )}
+                )}
+                <p>
+                  <span className="font-semibold">Kota: </span>
+                  {addressToEdit.city}
+                </p>
+                <p>
+                  <span className="font-semibold">Provinsi: </span>
+                  {addressToEdit.province}
+                </p>
+                {addressToEdit.postcode && (
+                  <p>
+                    <span className="font-semibold">Kode Pos: </span>
+                    {addressToEdit.postcode}
+                  </p>
+                )}
+                <p>
+                  <span className="font-semibold">Alamat Utama: </span>
+                  {addressToEdit.is_primary ? "Ya" : "Tidak"}
+                </p>
+                <p>
+                  <span className="font-semibold">Terakhir diperbarui: </span>
+                  {new Date(addressToEdit.updated_at).toLocaleString()}
+                </p>
+              </>
+            ) : (
+              <p>Pilih alamat untuk melihat detailnya</p>
+            )}
+          </div>
 
+          {/* Modal edit alamat */}
           <EditAddressModal
             open={isEditModalOpen}
             onClose={() => setIsEditModalOpen(false)}

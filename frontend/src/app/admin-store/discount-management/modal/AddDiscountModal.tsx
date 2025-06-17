@@ -9,6 +9,7 @@ import { useSession } from "next-auth/react";
 interface Product {
   id: string;
   name: string;
+  storeId: string;
 }
 
 interface Store {
@@ -35,56 +36,54 @@ export default function AddDiscountModal({
   const [isPercentage, setIsPercentage] = useState(false);
   const [startDate, setStartDate] = useState("");
   const [endDate, setEndDate] = useState("");
-  const [selectedProducts, setSelectedProducts] = useState<string[]>([]);
-  const [storeId, setStoreId] = useState<string>(""); // default bisa diisi dari session
+  const [selectedProduct, setSelectedProduct] = useState<string>("");
+  const [storeId, setStoreId] = useState<string>("");
   const [products, setProducts] = useState<Product[]>([]);
   const [stores, setStores] = useState<Store[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
+  // Fetch stores saat modal dibuka
   useEffect(() => {
     const accessToken = session?.accessToken;
-    if (!accessToken) return;
-
-    const fetchProducts = async () => {
-      try {
-        const res = await axios.get("/product", {
-          headers: { Authorization: `Bearer ${accessToken}` },
-        });
-        if (Array.isArray(res.data)) setProducts(res.data);
-      } catch (err) {
-        console.error("Gagal mengambil produk:", err);
-      }
-    };
+    if (!accessToken || !isOpen) return;
 
     const fetchStores = async () => {
       try {
         const res = await axios.get("/store", {
           headers: { Authorization: `Bearer ${accessToken}` },
         });
-        if (Array.isArray(res.data)) {
-          setStores(res.data);
-          if (!storeId && session?.user?.role === "STORE_ADMIN") {
-            const userStore = res.data.find((store: Store) => store.id === session.user.id);
-            if (userStore) setStoreId(userStore.id);
-          }
+        setStores(res.data || []);
+        if (session.user.role === "ADMIN" && "storeId" in session.user) {
+          const userStore = res.data.find((store: Store) => store.id === (session.user as any).storeId);
+          if (userStore) setStoreId(userStore.id);
         }
       } catch (err) {
-        console.error("Gagal mengambil data store:", err);
+        console.error("Gagal mengambil data toko:", err);
       }
     };
 
-    if (isOpen) {
-      fetchProducts();
-      fetchStores();
-    }
-  }, [isOpen, session, storeId]);
+    fetchStores();
+  }, [isOpen, session]);
 
-  const toggleProduct = (productId: string) => {
-    setSelectedProducts((prev) =>
-      prev.includes(productId) ? prev.filter((id) => id !== productId) : [...prev, productId]
-    );
-  };
+  // Fetch produk berdasarkan storeId
+  useEffect(() => {
+    const accessToken = session?.accessToken;
+    if (!accessToken || !storeId) return;
+
+    const fetchProductsByStore = async () => {
+      try {
+        const res = await axios.get(`/product/store/${storeId}`, {
+          headers: { Authorization: `Bearer ${accessToken}` },
+        });
+        setProducts(res.data || []);
+      } catch (err) {
+        console.error("Gagal mengambil produk dari toko:", err);
+      }
+    };
+
+    fetchProductsByStore();
+  }, [storeId, session]);
 
   const handleSubmit = async () => {
     setLoading(true);
@@ -100,8 +99,8 @@ export default function AddDiscountModal({
           isPercentage,
           startDate,
           endDate,
-          productId: selectedProducts[0],
-          storeId: storeId || session?.user?.id,
+          productId: selectedProduct,
+          storeId: storeId || (session?.user && (session.user as any).storeId),
         },
         {
           headers: {
@@ -112,18 +111,22 @@ export default function AddDiscountModal({
 
       onDiscountAdded(res.data);
       onClose();
-
-      setName("");
-      setAmount(0);
-      setIsPercentage(false);
-      setStartDate("");
-      setEndDate("");
-      setSelectedProducts([]);
+      resetForm();
     } catch (err: any) {
+      console.error(err);
       setError(err.response?.data?.error || "Gagal menambahkan diskon.");
     } finally {
       setLoading(false);
     }
+  };
+
+  const resetForm = () => {
+    setName("");
+    setAmount(0);
+    setIsPercentage(false);
+    setStartDate("");
+    setEndDate("");
+    setSelectedProduct("");
   };
 
   if (!isOpen) return null;
@@ -132,10 +135,7 @@ export default function AddDiscountModal({
     <Dialog open={isOpen} onClose={onClose} className="fixed z-50 inset-0 overflow-y-auto">
       <div className="flex items-center justify-center min-h-screen px-4">
         <Dialog.Panel className="bg-white rounded-lg shadow-lg p-6 w-full max-w-lg relative">
-          <button
-            onClick={onClose}
-            className="absolute top-4 right-4 text-gray-500 hover:text-gray-700"
-          >
+          <button onClick={onClose} className="absolute top-4 right-4 text-gray-500 hover:text-gray-700">
             <X className="h-5 w-5" />
           </button>
 
@@ -193,22 +193,19 @@ export default function AddDiscountModal({
             </div>
 
             <div>
-              <h4 className="font-semibold mb-2">Pilih Produk:</h4>
-              <div className="max-h-48 overflow-y-auto border rounded p-2">
-                {products.length === 0 && (
-                  <p className="text-sm text-gray-500">Tidak ada produk.</p>
-                )}
+              <label className="block font-semibold mb-1">Pilih Produk:</label>
+              <select
+                className="w-full border px-3 py-2 rounded"
+                value={selectedProduct}
+                onChange={(e) => setSelectedProduct(e.target.value)}
+              >
+                <option value="">-- Pilih Produk --</option>
                 {products.map((product) => (
-                  <label key={product.id} className="flex items-center space-x-2 mb-1">
-                    <input
-                      type="checkbox"
-                      checked={selectedProducts.includes(product.id)}
-                      onChange={() => toggleProduct(product.id)}
-                    />
-                    <span>{product.name}</span>
-                  </label>
+                  <option key={product.id} value={product.id}>
+                    {product.name}
+                  </option>
                 ))}
-              </div>
+              </select>
             </div>
 
             <div>

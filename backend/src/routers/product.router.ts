@@ -36,13 +36,15 @@ export class ProductRouter {
     this.router.get(
       "/",
       this.authMiddleware.verifyToken,
-      this.productController.getProducts
+      this.productController.getProduct
     );
 
     
     this.router.get("/all",this.productController.getAllProducts);
     this.router.get("/:id",this.productController.getProductById);
-    this.router.get("/id",this.productController.getProductsByStoreId)
+    this.router.get("/store/:storeId",this.productController.getProductsByStoreId);
+    this.router.post("/nearest",this.productController.getNearestProducts);
+
 
   }
 

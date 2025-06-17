@@ -8,6 +8,7 @@ declare module "next-auth" {
       email?: string;
       role?: string; 
       avatar?: string;
+      storeId?: string;
       referralCode?: string;
       referredById?: string;
     };
@@ -22,6 +23,7 @@ declare module "next-auth" {
     avatar?: string; 
     referralCode?: string;
     referredById?: string;
+    storeId?: string;
     accessToken?: string;
 
   }
@@ -34,6 +36,7 @@ declare module "next-auth" {
     avatar?: string; 
     referralCode?: string;
     referredById?: string;
+    storeId?: string;
     accessToken?: string;
   }
 }

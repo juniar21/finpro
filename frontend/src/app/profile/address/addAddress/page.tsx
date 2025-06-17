@@ -7,14 +7,95 @@ import { useSession } from "next-auth/react";
 import { useState, ChangeEvent, FormEvent } from "react";
 import axios from "@/lib/axios";
 
+import {
+  MapContainer,
+  TileLayer,
+  Marker,
+  Popup,
+  useMap,
+  useMapEvents,
+} from "react-leaflet";
+import L from "leaflet";
+import "leaflet/dist/leaflet.css";
+
+// Define Option type for select options
+interface Option {
+  label: string;
+  value: string | number;
+}
+
+// Fix Leaflet marker icon issue with webpack/CRA
+const markerIcon = new L.Icon({
+  iconUrl:
+    "https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-icon.png",
+  iconRetinaUrl:
+    "https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-icon-2x.png",
+  shadowUrl:
+    "https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-shadow.png",
+  iconSize: [25, 41],
+  iconAnchor: [12, 41],
+});
+
 interface AddressFormData {
   address_name: string;
   address: string;
   subdistrict: string;
   city: string;
+  city_id?: string;
   province: string;
+  province_id?: string;
   postcode: string;
+  latitude?: number;
+  longitude?: number;
   is_primary: boolean;
+}
+
+// Komponen untuk menggerakkan peta ke koordinat baru
+function MapWrapper({
+  latitude,
+  longitude,
+}: {
+  latitude?: number;
+  longitude?: number;
+}) {
+  const map = useMap();
+
+  if (latitude !== undefined && longitude !== undefined) {
+    map.setView([latitude, longitude], 13, { animate: true });
+  }
+
+  return null;
+}
+
+// Komponen marker lokasi dengan event klik
+function LocationMarker({
+  latitude,
+  longitude,
+  setLatitude,
+  setLongitude,
+}: {
+  latitude?: number;
+  longitude?: number;
+  setLatitude: (lat: number) => void;
+  setLongitude: (lng: number) => void;
+}) {
+  useMapEvents({
+    click(e) {
+      setLatitude(e.latlng.lat);
+      setLongitude(e.latlng.lng);
+    },
+  });
+
+  if (latitude === undefined || longitude === undefined) return null;
+
+  return (
+    <Marker position={[latitude, longitude]} icon={markerIcon}>
+      <Popup>
+        Lokasi terpilih: <br />
+        Lat: {latitude.toFixed(5)}, Lng: {longitude.toFixed(5)}
+      </Popup>
+    </Marker>
+  );
 }
 
 export default function CreateAddressPage() {
@@ -28,54 +109,108 @@ export default function CreateAddressPage() {
     city: "",
     province: "",
     postcode: "",
+    latitude: undefined,
+    longitude: undefined,
     is_primary: false,
   });
 
   const [message, setMessage] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isLocating, setIsLocating] = useState(false);
 
-  if (loading) {
-    return (
-      <div className="flex flex-col items-center justify-center h-screen">
-        <p>Loading session...</p>
-      </div>
-    );
-  }
+  if (loading) return <div>Loading session...</div>;
+  if (!session) return <div>Anda harus login terlebih dahulu.</div>;
 
-  if (!session) {
-    return (
-      <div className="flex flex-col items-center justify-center h-screen text-red-600">
-        <p>Anda harus login terlebih dahulu untuk mengakses halaman ini.</p>
-      </div>
-    );
-  }
+  const user = session.user as { id?: string };
+  const userId = user?.id || "";
+  const token = (session as any).accessToken;
 
   const handleChange = (
     e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => {
-    const target = e.target;
-    const { name, value, type } = target;
-    const checked = (target as HTMLInputElement).checked;
+    const target = e.target as HTMLInputElement;
+    const { name, value, type, checked } = target;
+
+    if (type === "checkbox") {
+      setFormData((prev) => ({
+        ...prev,
+        [name]: checked,
+      }));
+      return;
+    }
+
+    if (name === "latitude" || name === "longitude") {
+      const val = value.trim() === "" ? undefined : parseFloat(value);
+      setFormData((prev) => ({
+        ...prev,
+        [name]: val,
+      }));
+      return;
+    }
+
     setFormData((prev) => ({
       ...prev,
-      [name]: type === "checkbox" ? checked : value,
+      [name]: value,
     }));
+  };
+
+  const handleUseCurrentLocation = () => {
+    if (!navigator.geolocation) {
+      setMessage("Geolocation tidak didukung oleh browser Anda.");
+      return;
+    }
+
+    setIsLocating(true);
+    setMessage(null);
+
+    navigator.geolocation.getCurrentPosition(
+      (position) => {
+        const { latitude, longitude } = position.coords;
+        setFormData((prev) => ({
+          ...prev,
+          latitude,
+          longitude,
+        }));
+        setMessage("Lokasi berhasil diambil.");
+        setIsLocating(false);
+      },
+      (error) => {
+        setMessage(`Gagal mengambil lokasi: ${error.message}`);
+        setIsLocating(false);
+      }
+    );
   };
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
+
+    if (
+      !formData.address_name ||
+      !formData.address ||
+      !formData.subdistrict ||
+      !formData.city ||
+      !formData.province ||
+      !formData.postcode
+    ) {
+      setMessage("Harap isi semua field wajib.");
+      return;
+    }
+
+    if (!token) {
+      setMessage("Token tidak ditemukan, silakan login ulang.");
+      return;
+    }
+
     setIsSubmitting(true);
     setMessage(null);
 
     try {
-      const token = (session as any).accessToken;
-      if (!token) {
-        setMessage("Token tidak ditemukan, silakan login ulang.");
-        setIsSubmitting(false);
-        return;
-      }
+      const payload = {
+        ...formData,
+        id: userId,
+      };
 
-      const res = await axios.post("/address", formData, {
+      const res = await axios.post("/address", payload, {
         headers: {
           Authorization: `Bearer ${token}`,
           "Content-Type": "application/json",
@@ -91,13 +226,14 @@ export default function CreateAddressPage() {
           city: "",
           province: "",
           postcode: "",
+          latitude: undefined,
+          longitude: undefined,
           is_primary: false,
         });
       } else {
         setMessage("Gagal membuat alamat.");
       }
     } catch (error: any) {
-      console.error(error);
       setMessage(
         error.response?.data?.message || "Terjadi kesalahan saat membuat alamat."
       );
@@ -134,26 +270,23 @@ export default function CreateAddressPage() {
               <div>
                 <label
                   htmlFor="address_name"
-                  className="block mb-1 font-semibold text-gray-700"
+                  className="block mb-1 font-semibold"
                 >
-                  Nama Alamat
+                  Nama Lengkap
                 </label>
                 <input
-                  type="text"
                   id="address_name"
                   name="address_name"
                   value={formData.address_name}
                   onChange={handleChange}
                   required
-                  className="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                  className="w-full border rounded px-3 py-2"
+                  placeholder="Contoh: Yanto, Yanti"
                 />
               </div>
 
               <div>
-                <label
-                  htmlFor="address"
-                  className="block mb-1 font-semibold text-gray-700"
-                >
+                <label htmlFor="address" className="block mb-1 font-semibold">
                   Alamat
                 </label>
                 <textarea
@@ -163,106 +296,141 @@ export default function CreateAddressPage() {
                   value={formData.address}
                   onChange={handleChange}
                   required
-                  className="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                  className="w-full border rounded px-3 py-2"
+                  placeholder="Detail alamat lengkap"
                 />
               </div>
 
               <div>
                 <label
                   htmlFor="subdistrict"
-                  className="block mb-1 font-semibold text-gray-700"
+                  className="block mb-1 font-semibold"
                 >
                   Kecamatan
                 </label>
                 <input
-                  type="text"
                   id="subdistrict"
                   name="subdistrict"
                   value={formData.subdistrict}
                   onChange={handleChange}
                   required
-                  className="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                  className="w-full border rounded px-3 py-2"
+                  placeholder="Nama Kecamatan"
                 />
               </div>
 
               <div>
-                <label
-                  htmlFor="city"
-                  className="block mb-1 font-semibold text-gray-700"
-                >
-                  Kota
+                <label htmlFor="city" className="block mb-1 font-semibold">
+                  Kota/Kabupaten
                 </label>
                 <input
-                  type="text"
                   id="city"
                   name="city"
                   value={formData.city}
                   onChange={handleChange}
                   required
-                  className="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                  className="w-full border rounded px-3 py-2"
+                  placeholder="Nama Kota atau Kabupaten"
                 />
               </div>
 
               <div>
-                <label
-                  htmlFor="province"
-                  className="block mb-1 font-semibold text-gray-700"
-                >
+                <label htmlFor="province" className="block mb-1 font-semibold">
                   Provinsi
                 </label>
                 <input
-                  type="text"
                   id="province"
                   name="province"
                   value={formData.province}
                   onChange={handleChange}
                   required
-                  className="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                  className="w-full border rounded px-3 py-2"
+                  placeholder="Nama Provinsi"
                 />
               </div>
 
               <div>
-                <label
-                  htmlFor="postcode"
-                  className="block mb-1 font-semibold text-gray-700"
-                >
+                <label htmlFor="postcode" className="block mb-1 font-semibold">
                   Kode Pos
                 </label>
                 <input
-                  type="text"
                   id="postcode"
                   name="postcode"
+                  type="text"
                   value={formData.postcode}
                   onChange={handleChange}
                   required
-                  className="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                  className="w-full border rounded px-3 py-2"
+                  placeholder="Kode Pos"
                 />
               </div>
 
-              <div className="flex items-center">
-                <input
-                  type="checkbox"
-                  id="is_primary"
-                  name="is_primary"
-                  checked={formData.is_primary}
-                  onChange={handleChange}
-                  className="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500"
-                />
-                <label
-                  htmlFor="is_primary"
-                  className="ml-2 block text-sm text-gray-700 select-none"
+              <div>
+                <label className="block mb-1 font-semibold">
+                  Pilih Lokasi di Peta
+                </label>
+                <div className="h-64 w-full mb-4 rounded border">
+                  <MapContainer
+                    center={[
+                      formData.latitude ?? -2.5489,
+                      formData.longitude ?? 118.0149,
+                    ]}
+                    zoom={formData.latitude && formData.longitude ? 13 : 5}
+                    scrollWheelZoom={true}
+                    style={{ height: "100%", width: "100%" }}
+                  >
+                    <TileLayer
+                      url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+                      attribution='&copy; <a href="https://openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+                    />
+                    <LocationMarker
+                      latitude={formData.latitude}
+                      longitude={formData.longitude}
+                      setLatitude={(lat) =>
+                        setFormData((prev) => ({ ...prev, latitude: lat }))
+                      }
+                      setLongitude={(lng) =>
+                        setFormData((prev) => ({ ...prev, longitude: lng }))
+                      }
+                    />
+                    <MapWrapper
+                      latitude={formData.latitude}
+                      longitude={formData.longitude}
+                    />
+                  </MapContainer>
+                </div>
+                <button
+                  type="button"
+                  onClick={handleUseCurrentLocation}
+                  disabled={isLocating}
+                  className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 disabled:opacity-50"
                 >
-                  Jadikan alamat utama
+                  {isLocating ? "Mengambil Lokasi..." : "Gunakan Lokasi Saat Ini"}
+                </button>
+              </div>
+
+              <div>
+                <label className="inline-flex items-center">
+                  <input
+                    type="checkbox"
+                    name="is_primary"
+                    checked={formData.is_primary}
+                    onChange={handleChange}
+                    className="form-checkbox"
+                  />
+                  <span className="ml-2">Set sebagai alamat utama</span>
                 </label>
               </div>
 
-              <button
-                type="submit"
-                disabled={isSubmitting}
-                className="w-full rounded bg-indigo-600 py-3 px-4 text-white font-semibold hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 disabled:opacity-50"
-              >
-                {isSubmitting ? "Menyimpan..." : "Buat Alamat"}
-              </button>
+              <div>
+                <button
+                  type="submit"
+                  disabled={isSubmitting}
+                  className="w-full px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700 disabled:opacity-50"
+                >
+                  {isSubmitting ? "Menyimpan..." : "Simpan Alamat"}
+                </button>
+              </div>
             </form>
           </div>
         </main>

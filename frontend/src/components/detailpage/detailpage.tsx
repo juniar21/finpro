@@ -10,6 +10,14 @@ interface Product {
   description: string;
   price: number;
   originalPrice: number;
+  finalPrice?: number;
+  discount?: {
+    id: string;
+    amount: number;
+    isPercentage: boolean;
+    startDate: string;
+    endDate: string;
+  } | null;
   imageUrl: string;
   images?: string[];
   category: {
@@ -104,9 +112,11 @@ export default function ProductDetailPage() {
           {/* Rating */}
           <div className="flex items-center gap-2">
             <div className="flex text-yellow-400">
-              {Array(4).fill(0).map((_, i) => (
-                <span key={i}>★</span>
-              ))}
+              {Array(4)
+                .fill(0)
+                .map((_, i) => (
+                  <span key={i}>★</span>
+                ))}
               <span className="text-gray-300">★</span>
             </div>
             <span className="text-sm text-gray-600">4.5/5</span>
@@ -118,20 +128,26 @@ export default function ProductDetailPage() {
           {/* Category */}
           <p className="text-gray-500 text-sm">{product.category.name}</p>
 
-          {/* Price */}
+          {/* Price with Discount */}
           <div className="flex items-center gap-4">
-            <span className="text-2xl font-bold text-gray-900">${product.price}</span>
-            {product.price !== product.originalPrice && (
+            {product.finalPrice !== undefined && product.finalPrice < product.price ? (
               <>
+                <span className="text-2xl font-bold text-green-600">
+                  ${product.finalPrice}
+                </span>
                 <span className="line-through text-gray-400 text-sm">
-                  ${product.originalPrice}
+                  ${product.price}
                 </span>
                 <span className="text-sm text-red-500 font-medium">
-                  {`-${Math.round(
-                    ((product.originalPrice - product.price) / product.originalPrice) * 100
-                  )}%`}
+                  {product.discount && product.discount.isPercentage
+                    ? `-${product.discount.amount}%`
+                    : product.discount
+                    ? `-$${product.discount.amount}`
+                    : ""}
                 </span>
               </>
+            ) : (
+              <span className="text-2xl font-bold text-gray-900">${product.price}</span>
             )}
           </div>
 

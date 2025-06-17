@@ -47,6 +47,7 @@ export default function FormLogin() {
         referralCode: user.referralCode ?? "",
         referralBy: user.referredBy ?? "",
         role: user.role,
+        storeId: user.storeId ?? null,
         accessToken: data.access_token,
       });
 
