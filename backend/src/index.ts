@@ -14,6 +14,7 @@ import { ProductRouter } from "./routers/product.router";
 import { AdminsRouter } from "./routers/store-admins.routers";
 import { DiscountRouter } from "./routers/discount.router";
 import { RajaOngkirRouter } from "./routers/rajaongkir.router";
+import { TransactionRouter } from "./routers/transaction.router";
 // import { RajaOngkirRouter } from "./routers/rajaongkir.router";
 //import cron from "node-cron";
 // import { OrderRouter } from "./routers/order.router";
@@ -65,6 +66,11 @@ app.use("/api/discounts", discountRouter.getRouter());
 
 const rajaongkirRouter = new RajaOngkirRouter();
 app.use("/api/rajaongkir", rajaongkirRouter.getRouter());
+
+const transactionRouter = new TransactionRouter();
+app.use("/api/transaction", transactionRouter.getRouter());
+
+
 
 
 // scheduler

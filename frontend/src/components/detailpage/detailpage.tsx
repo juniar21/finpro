@@ -26,6 +26,7 @@ interface Product {
   stocks: {
     quantity: number;
   };
+  storeId: string;
 }
 
 const availableColors = ["#4B4A40", "#2C2D3C", "#3D4C48"];
@@ -113,18 +114,7 @@ export default function ProductDetailPage() {
             {product.name}
           </h1>
 
-          {/* Rating */}
-          <div className="flex items-center gap-2">
-            <div className="flex text-yellow-400">
-              {Array(4)
-                .fill(0)
-                .map((_, i) => (
-                  <span key={i}>★</span>
-                ))}
-              <span className="text-gray-300">★</span>
-            </div>
-            <span className="text-sm text-gray-600">4.5/5</span>
-          </div>
+
 
           {/* Description */}
           <p className="text-gray-700">{product.description}</p>
@@ -155,42 +145,6 @@ export default function ProductDetailPage() {
             )}
           </div>
 
-          {/* Color Picker */}
-          <div className="space-y-2">
-            <p className="font-medium">Select Color</p>
-            <div className="flex gap-2">
-              {availableColors.map((color) => (
-                <div
-                  key={color}
-                  className={`w-6 h-6 rounded-full cursor-pointer border-2 ${
-                    selectedColor === color ? "border-black" : "border-gray-300"
-                  }`}
-                  style={{ backgroundColor: color }}
-                  onClick={() => setSelectedColor(color)}
-                />
-              ))}
-            </div>
-          </div>
-
-          {/* Size Picker */}
-          <div className="space-y-2">
-            <p className="font-medium">Choose Size</p>
-            <div className="flex gap-2 flex-wrap">
-              {availableSizes.map((size) => (
-                <button
-                  key={size}
-                  className={`px-4 py-1 rounded-full border ${
-                    selectedSize === size
-                      ? "bg-black text-white"
-                      : "text-gray-700 bg-white"
-                  }`}
-                  onClick={() => setSelectedSize(size)}
-                >
-                  {size}
-                </button>
-              ))}
-            </div>
-          </div>
 
           {/* Quantity & Action Buttons */}
           <div className="flex flex-col sm:flex-row sm:items-center sm:gap-4 gap-3">
@@ -221,8 +175,7 @@ export default function ProductDetailPage() {
                   price: product.price,
                   imageUrl: selectedImage,
                   quantity,
-                  color: selectedColor,
-                  size: selectedSize,
+                  storeId: product.storeId,
                 };
                 localStorage.setItem("checkout", JSON.stringify(checkoutData));
                 window.location.href = "/checkout"; // atau gunakan router.push jika pakai `useRouter`

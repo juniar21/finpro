@@ -4,7 +4,7 @@ import Navbar from "@/components/navbar/navbar/Navbar";
 import Sidebar from "@/components/navbar/navbar/Sidebar";
 import Footer from "@/components/navbar/navbar/footer";
 import { useSession } from "next-auth/react";
-import { useState, ChangeEvent, FormEvent } from "react";
+import { useState, useEffect, ChangeEvent, FormEvent } from "react";
 import axios from "@/lib/axios";
 
 import {
@@ -105,14 +105,18 @@ export default function CreateAddressPage() {
   const [formData, setFormData] = useState<AddressFormData>({
     address_name: "",
     address: "",
-    subdistrict: "",
-    city: "",
     province: "",
+    city: "",
+    subdistrict: "",
     postcode: "",
     latitude: undefined,
     longitude: undefined,
     is_primary: false,
   });
+
+  const [provinces, setProvinces] = useState<Option[]>([]);
+  const [cities, setCities] = useState<Option[]>([]);
+  const [subdistricts, setSubdistricts] = useState<Option[]>([]);
 
   const [message, setMessage] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -126,7 +130,7 @@ export default function CreateAddressPage() {
   const token = (session as any).accessToken;
 
   const handleChange = (
-    e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+    e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
   ) => {
     const target = e.target as HTMLInputElement;
     const { name, value, type, checked } = target;
@@ -222,14 +226,16 @@ export default function CreateAddressPage() {
         setFormData({
           address_name: "",
           address: "",
-          subdistrict: "",
-          city: "",
           province: "",
+          city: "",
+          subdistrict: "",
           postcode: "",
           latitude: undefined,
           longitude: undefined,
           is_primary: false,
         });
+        setCities([]);
+        setSubdistricts([]);
       } else {
         setMessage("Gagal membuat alamat.");
       }
@@ -435,7 +441,6 @@ export default function CreateAddressPage() {
           </div>
         </main>
       </div>
-
       <Footer />
     </>
   );
