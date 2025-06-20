@@ -1,80 +1,74 @@
 "use client";
+
 import { useState } from "react";
-import { searchDestination } from "@/lib/rajaongkir"; // ✅ pastikan path ini sesuai dengan file kamu
+import axios from "@/lib/axios";
 
 type Destination = {
-  name: string;
+  city_id: string;
   city_name: string;
-  province: string;
-  type: string;
+  province_name: string;
+  type: "Kota" | "Kabupaten";
 };
 
-export const DestinationSearch = () => {
+export default function RajaOngkirSearchPage() {
   const [keyword, setKeyword] = useState("");
   const [results, setResults] = useState<Destination[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
   const handleSearch = async () => {
-    if (!keyword.trim()) {
-      setError("Masukkan kata kunci pencarian.");
-      return;
-    }
-
     setLoading(true);
     setError("");
+    setResults([]);
+
     try {
-      const res = await searchDestination(keyword);
-      const destinations: Destination[] = res?.data || [];
-      if (Array.isArray(destinations)) {
-        setResults(destinations);
+      const res = await axios.get("/rajaongkir/search", {
+        params: { keyword },
+      });
+
+      if (res.data.success) {
+        setResults(res.data.data);
       } else {
-        setResults([]);
-        setError("Data tujuan tidak ditemukan.");
+        setError("Tidak ada hasil ditemukan.");
       }
     } catch (err: any) {
-      console.error(err);
-      const msg =
-        err?.response?.data?.error ||
-        err?.message ||
-        "Terjadi kesalahan saat mengambil data.";
-      setError(msg);
+      console.error("❌ Error:", err.message);
+      setError("Gagal mengambil data.");
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <div className="p-4 max-w-lg mx-auto">
-      <h2 className="text-xl font-bold mb-4">Cari Tujuan Pengiriman</h2>
+    <div className="p-6 max-w-xl mx-auto">
+      <h1 className="text-xl font-bold mb-4">🔍 Cari Kota dari Komerce API</h1>
 
-      <input
-        type="text"
-        value={keyword}
-        onChange={(e) => setKeyword(e.target.value)}
-        placeholder="Contoh: Jakarta"
-        className="border border-gray-300 p-2 w-full mb-3 rounded"
-      />
+      <div className="flex gap-2 mb-4">
+        <input
+          type="text"
+          placeholder="Contoh: padang"
+          value={keyword}
+          onChange={(e) => setKeyword(e.target.value)}
+          className="border p-2 w-full rounded"
+        />
+        <button
+          onClick={handleSearch}
+          className="bg-blue-600 text-white px-4 py-2 rounded"
+          disabled={loading || !keyword.trim()}
+        >
+          {loading ? "Mencari..." : "Cari"}
+        </button>
+      </div>
 
-      <button
-        onClick={handleSearch}
-        className="bg-blue-600 hover:bg-blue-700 transition text-white px-4 py-2 rounded w-full"
-        disabled={loading}
-      >
-        {loading ? "Mencari..." : "Cari"}
-      </button>
+      {error && <p className="text-red-600">{error}</p>}
 
-      {error && <p className="text-red-500 mt-3">{error}</p>}
-
-      {results.length > 0 && (
-        <ul className="mt-4 space-y-2">
-          {results.map((item, index) => (
-            <li key={index} className="border p-3 rounded shadow-sm bg-white">
-              <strong>{item.name}</strong> - {item.city_name}, {item.province} ({item.type})
-            </li>
-          ))}
-        </ul>
-      )}
+      <ul className="space-y-2 mt-4">
+        {results.map((dest) => (
+          <li key={dest.city_id} className="border rounded p-2">
+            {dest.type} {dest.city_name}, {dest.province_name}
+          </li>
+        ))}
+      </ul>
     </div>
   );
-};
+}

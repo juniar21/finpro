@@ -20,7 +20,6 @@ export class AddressController {
         message: "Address list",
         addresses,
       });
-      return;
     } catch (err) {
       console.error(err);
       if (!res.headersSent) res.status(500).json({ error: (err as Error).message || err });
@@ -48,7 +47,6 @@ export class AddressController {
         message: "Address detail",
         address,
       });
-      return;
     } catch (err) {
       console.error(err);
       if (!res.headersSent) res.status(500).json({ error: (err as Error).message || err });
@@ -66,6 +64,7 @@ export class AddressController {
       const data: Prisma.AddressCreateInput = {
         ...req.body,
         id: userId,
+        destination_id: req.body.destination_id || null, // ✅ tambahkan ini
       };
 
       if (data.is_primary) {
@@ -81,7 +80,6 @@ export class AddressController {
         message: "Address created ✅",
         newAddress,
       });
-      return;
     } catch (err) {
       console.error(err);
       if (!res.headersSent) res.status(500).json({ error: (err as Error).message || err });
@@ -96,7 +94,10 @@ export class AddressController {
         return;
       }
 
-      const data: Prisma.AddressUpdateInput = req.body;
+      const data: Prisma.AddressUpdateInput = {
+        ...req.body,
+        destination_id: req.body.destination_id || null, // ✅ tambahkan ini
+      };
 
       if (data.is_primary === true) {
         const old = await prisma.address.findUnique({ where: { address_id } });
@@ -117,7 +118,6 @@ export class AddressController {
         message: "Address updated ✅",
         updatedAddress,
       });
-      return;
     } catch (err) {
       console.error(err);
       if (!res.headersSent) res.status(500).json({ error: (err as Error).message || err });
@@ -141,7 +141,6 @@ export class AddressController {
       await prisma.address.delete({ where: { address_id } });
 
       res.status(200).json({ message: "Address deleted ✅" });
-      return;
     } catch (err) {
       console.error(err);
       if (!res.headersSent) res.status(500).json({ error: (err as Error).message || err });

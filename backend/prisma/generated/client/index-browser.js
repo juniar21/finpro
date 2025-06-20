@@ -148,6 +148,7 @@ exports.Prisma.AddressScalarFieldEnum = {
   postcode: 'postcode',
   latitude: 'latitude',
   longitude: 'longitude',
+  destination_id: 'destination_id',
   is_primary: 'is_primary',
   created_at: 'created_at',
   updated_at: 'updated_at'

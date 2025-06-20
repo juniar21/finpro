@@ -18,6 +18,7 @@ export class RajaOngkirRouter {
     // GET /rajaongkir/provinces - Get all provinces
 
     this.router.get("/search", this.rajaOngkirController.searchDestination);
+    this.router.get("/cost/", this.rajaOngkirController.calculateCost);
   }
 
   public getRouter(): Router {

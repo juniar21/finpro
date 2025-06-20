@@ -22,6 +22,7 @@ interface Address {
   city: string;
   province: string;
   is_primary: boolean;
+  city_id?: string;
 }
 
 interface Reward {
@@ -48,6 +49,12 @@ export default function CheckoutPage() {
   const [isLoading, setIsLoading] = useState(true);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
+  const [shippingData, setShippingData] = useState<any>(null);
+  const [selectedShippingOption, setSelectedShippingOption] =
+    useState<any>(null);
+  const [shippingLoading, setShippingLoading] = useState(false);
+  const [shippingCost, setShippingCost] = useState<number>(0);
+
   useEffect(() => {
     const fetchData = async () => {
       const data = localStorage.getItem("checkout");
@@ -67,8 +74,8 @@ export default function CheckoutPage() {
           const addrs: Address[] = addressRes.data.addresses ?? addressRes.data;
           setAddresses(addrs);
           const primary = addrs.find((a) => a.is_primary);
-          setSelectedAddressId(primary?.address_id || addrs[0]?.address_id || "");
-
+          const selectedId = primary?.address_id || addrs[0]?.address_id || "";
+          setSelectedAddressId(selectedId);
           setReward(rewardRes.data);
         } catch (err) {
           console.error("Gagal mengambil data:", err);
@@ -81,9 +88,37 @@ export default function CheckoutPage() {
     fetchData();
   }, [session]);
 
+  const fetchShippingCost = async (receiver_destination_id: string) => {
+    setShippingLoading(true);
+    try {
+      const res = await axios.get("/rajaongkir/cost", {
+        params: {
+          shipper_destination_id: "3994", // ID gudang asal
+          receiver_destination_id,
+          weight: product?.quantity || 1,
+          item_value: product?.price || 0,
+        },
+      });
+
+      setShippingData(res.data.data);
+    } catch (err) {
+      console.error("❌ Gagal hitung ongkir:", err);
+      setShippingData(null);
+    } finally {
+      setShippingLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    const selected = addresses.find((a) => a.address_id === selectedAddressId);
+    if (selected?.city_id) {
+      fetchShippingCost(selected.city_id);
+    }
+  }, [selectedAddressId, addresses]);
+
   const handleConfirm = () => {
-    if (!selectedAddressId || !product) {
-      alert("Pilih alamat dan pastikan produk tersedia.");
+    if (!selectedAddressId || !product || !selectedShippingOption) {
+      alert("Pilih alamat, produk, dan opsi pengiriman.");
       return;
     }
 
@@ -105,31 +140,29 @@ export default function CheckoutPage() {
 
   if (!session || !session.accessToken) {
     return (
-      <div className="flex justify-center items-center h-screen">
-        <p>Silakan login untuk melanjutkan checkout.</p>
-      </div>
+      <p className="text-center mt-20">
+        Silakan login untuk melanjutkan checkout.
+      </p>
     );
   }
 
   if (!product) {
     return (
-      <div className="flex justify-center items-center h-screen">
-        <p>Produk tidak ditemukan di keranjang checkout.</p>
-      </div>
+      <p className="text-center mt-20">
+        Produk tidak ditemukan di keranjang checkout.
+      </p>
     );
   }
 
-  // === Hitung total dan reward ===
   const subtotal = product.price * product.quantity;
-
-  const totalPoints = reward?.points?.reduce((acc, p) => acc + p.amount, 0) || 0;
+  const totalPoints =
+    reward?.points?.reduce((acc, p) => acc + p.amount, 0) || 0;
   const pointDiscount = usePoints ? Math.min(subtotal, totalPoints * 1000) : 0;
-
   const voucher = reward?.voucher;
-  const voucherDiscount = useVoucher && voucher
-    ? Math.min((voucher.percentage / 100) * subtotal, voucher.maxDiscount)
-    : 0;
-
+  const voucherDiscount =
+    useVoucher && voucher
+      ? Math.min((voucher.percentage / 100) * subtotal, voucher.maxDiscount)
+      : 0;
   const totalDiscount = pointDiscount + voucherDiscount;
   const finalTotal = subtotal - totalDiscount;
 
@@ -138,9 +171,11 @@ export default function CheckoutPage() {
       <h1 className="text-3xl font-bold mb-6">Checkout</h1>
 
       <div className="bg-white p-6 rounded-xl shadow-md space-y-6">
-        {/* Pilih Alamat */}
+        {/* Alamat */}
         <div>
-          <h2 className="text-lg font-semibold mb-4">Pilih Alamat Pengiriman</h2>
+          <h2 className="text-lg font-semibold mb-4">
+            Pilih Alamat Pengiriman
+          </h2>
           {addresses.length === 0 ? (
             <p className="text-sm text-gray-500">Belum ada alamat tersimpan.</p>
           ) : (
@@ -177,13 +212,6 @@ export default function CheckoutPage() {
                       )}
                     </div>
                   </div>
-                  <button
-                    type="button"
-                    onClick={() => alert(`Edit alamat: ${addr.address_name}`)}
-                    className="text-blue-600 hover:underline text-sm"
-                  >
-                    ✎ Edit
-                  </button>
                 </label>
               ))}
             </div>
@@ -201,74 +229,134 @@ export default function CheckoutPage() {
             <h2 className="text-xl font-semibold">{product.name}</h2>
             <p className="text-sm text-gray-500">Color: {product.color}</p>
             <p className="text-sm text-gray-500">Size: {product.size}</p>
-            <p className="text-sm text-gray-500">Quantity: {product.quantity}</p>
-            <p className="text-sm text-gray-500">Price per item: Rp{product.price.toLocaleString()}</p>
+            <p className="text-sm text-gray-500">
+              Quantity: {product.quantity}
+            </p>
+            <p className="text-sm text-gray-500">
+              Price: Rp{product.price.toLocaleString()}
+            </p>
           </div>
         </div>
 
-        {/* Reward Pilihan */}
+        {/* Reward */}
         {reward && (totalPoints > 0 || voucher) && (
           <div className="space-y-4">
             <h3 className="font-semibold text-lg">Gunakan Reward</h3>
-
-            {/* Karcis Poin */}
             {totalPoints > 0 && (
               <div
-                className={`relative border rounded-lg p-4 shadow-sm cursor-pointer transition group ${
-                  usePoints ? "border-blue-500 bg-blue-50" : "border-gray-200 hover:bg-gray-100"
+                className={`border p-4 rounded-lg cursor-pointer ${
+                  usePoints ? "bg-blue-50 border-blue-500" : "border-gray-200"
                 }`}
                 onClick={() => setUsePoints(!usePoints)}
               >
-                <div className="flex items-center justify-between">
+                <div className="flex justify-between items-center">
                   <div>
-                    <p className="text-base font-semibold text-blue-700">Poin Reward</p>
-                    <p className="text-sm text-gray-600">
-                      {totalPoints} poin • Potongan hingga Rp{pointDiscount.toLocaleString()} (1 poin = Rp1.000)
+                    <p className="font-semibold text-blue-700">Poin</p>
+                    <p className="text-sm">
+                      Potongan Rp{pointDiscount.toLocaleString()} dari{" "}
+                      {totalPoints} poin
                     </p>
                   </div>
                   <input
                     type="checkbox"
                     checked={usePoints}
                     readOnly
-                    className="w-5 h-5 accent-blue-600"
+                    className="accent-blue-600"
                   />
                 </div>
-                <div className="absolute -left-2 top-1/2 w-4 h-4 rounded-full bg-white border border-gray-300 transform -translate-y-1/2" />
-                <div className="absolute -right-2 top-1/2 w-4 h-4 rounded-full bg-white border border-gray-300 transform -translate-y-1/2" />
               </div>
             )}
-
-            {/* Karcis Voucher */}
             {voucher && (
               <div
-                className={`relative border rounded-lg p-4 shadow-sm cursor-pointer transition group ${
-                  useVoucher ? "border-green-500 bg-green-50" : "border-gray-200 hover:bg-gray-100"
+                className={`border p-4 rounded-lg cursor-pointer ${
+                  useVoucher
+                    ? "bg-green-50 border-green-500"
+                    : "border-gray-200"
                 }`}
                 onClick={() => setUseVoucher(!useVoucher)}
               >
-                <div className="flex items-center justify-between">
+                <div className="flex justify-between items-center">
                   <div>
-                    <p className="text-base font-semibold text-green-700">
+                    <p className="font-semibold text-green-700">
                       Voucher {voucher.code}
                     </p>
-                    <p className="text-sm text-gray-600">
-                      {voucher.percentage}% hingga Rp{voucher.maxDiscount.toLocaleString()} • Potongan Rp
-                      {voucherDiscount.toLocaleString()}
-                    </p>
-                    <p className="text-xs text-gray-400 mt-1">
-                      Berlaku hingga: {new Date(voucher.expiredAt).toLocaleDateString()}
+                    <p className="text-sm">
+                      {voucher.percentage}% hingga Rp
+                      {voucher.maxDiscount.toLocaleString()} (Diskon Rp
+                      {voucherDiscount.toLocaleString()})
                     </p>
                   </div>
                   <input
                     type="checkbox"
                     checked={useVoucher}
                     readOnly
-                    className="w-5 h-5 accent-green-600"
+                    className="accent-green-600"
                   />
                 </div>
-                <div className="absolute -left-2 top-1/2 w-4 h-4 rounded-full bg-white border border-gray-300 transform -translate-y-1/2" />
-                <div className="absolute -right-2 top-1/2 w-4 h-4 rounded-full bg-white border border-gray-300 transform -translate-y-1/2" />
               </div>
+            )}
+          </div>
+        )}
+
+        {/* Pengiriman */}
+        {shippingData && (
+          <div className="space-y-4">
+            <h3 className="font-semibold text-lg">Opsi Pengiriman</h3>
+            {["calculate_reguler", "calculate_cargo", "calculate_instant"].map(
+              (type) =>
+                shippingData[type]?.length > 0 && (
+                  <div key={type}>
+                    <h4 className="text-md font-semibold capitalize mb-2">
+                      {type.replace("calculate_", "")}
+                    </h4>
+                    <div className="grid gap-2">
+                      {shippingData[type].map((option: any, index: number) => {
+                        const optionId = `${type}-${index}`;
+                        const isSelected =
+                          selectedShippingOption?.id === optionId;
+
+                        return (
+                          <label
+                            key={optionId}
+                            className={`flex items-center justify-between border p-3 rounded-md cursor-pointer ${
+                              isSelected
+                                ? "border-blue-500 bg-blue-50"
+                                : "bg-gray-50"
+                            }`}
+                          >
+                            <div className="flex items-start gap-3">
+                              <input
+                                type="radio"
+                                name="shipping_option"
+                                checked={isSelected}
+                                onChange={() => {
+                                  setSelectedShippingOption({
+                                    ...option,
+                                    id: optionId,
+                                  });
+                                  setShippingCost(option.shipping_cost_net);
+                                }}
+                                className="accent-blue-600 mt-1"
+                              />
+                              <div>
+                                <div className="font-medium">
+                                  {option.shipping_name} - {option.service_name}
+                                </div>
+                                <div>
+                                  Ongkir: Rp
+                                  {option.shipping_cost_net.toLocaleString()}
+                                </div>
+                                <div className="text-xs text-gray-500">
+                                  Estimasi: {option.etd || "-"}
+                                </div>
+                              </div>
+                            </div>
+                          </label>
+                        );
+                      })}
+                    </div>
+                  </div>
+                )
             )}
           </div>
         )}
@@ -282,35 +370,22 @@ export default function CheckoutPage() {
           <span>Diskon:</span>
           <span>-Rp{totalDiscount.toLocaleString()}</span>
         </div>
+        <div className="flex justify-between text-lg font-medium">
+          <span>Ongkir:</span>
+          <span>
+            {shippingCost ? `Rp${shippingCost.toLocaleString()}` : "-"}
+          </span>
+        </div>
         <div className="flex justify-between text-xl font-bold border-t pt-3">
           <span>Total Bayar:</span>
-          <span>Rp{finalTotal.toLocaleString()}</span>
+          <span>Rp{(finalTotal + shippingCost).toLocaleString()}</span>
         </div>
 
-        {/* Metode Pembayaran */}
-        <div>
-          <p className="font-medium mb-2">Metode Pembayaran</p>
-          <div className="space-y-2">
-            <label className="flex items-center gap-2">
-              <input type="radio" name="payment" defaultChecked />
-              <span>Credit Card</span>
-            </label>
-            <label className="flex items-center gap-2">
-              <input type="radio" name="payment" />
-              <span>Bank Transfer</span>
-            </label>
-            <label className="flex items-center gap-2">
-              <input type="radio" name="payment" />
-              <span>Cash on Delivery</span>
-            </label>
-          </div>
-        </div>
-
-        {/* Tombol */}
+        {/* Checkout Button */}
         <button
           className="w-full bg-black text-white py-3 rounded-md hover:bg-gray-800 transition disabled:opacity-50"
           onClick={handleConfirm}
-          disabled={isSubmitting}
+          disabled={isSubmitting || !selectedShippingOption}
         >
           {isSubmitting ? "Processing..." : "Confirm and Pay"}
         </button>

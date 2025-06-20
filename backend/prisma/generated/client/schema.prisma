@@ -33,22 +33,23 @@ model User {
 }
 
 model Address {
-  address_id   String   @id @default(uuid()) // Change to String
-  id           String // Change to String
-  address_name String   @db.Text
-  address      String   @db.Text
-  subdistrict  String?
-  city         String
-  city_id      String?
-  province     String
-  province_id  String?
-  postcode     String?
-  latitude     Float?
-  longitude    Float?
-  is_primary   Boolean  @default(false)
-  created_at   DateTime @default(now())
-  updated_at   DateTime @default(now())
-  user         User     @relation(fields: [id], references: [id], onDelete: Cascade)
+  address_id     String   @id @default(uuid()) // Change to String
+  id             String // Change to String
+  address_name   String   @db.Text
+  address        String   @db.Text
+  subdistrict    String?
+  city           String
+  city_id        String?
+  province       String
+  province_id    String?
+  postcode       String?
+  latitude       Float?
+  longitude      Float?
+  destination_id String?
+  is_primary     Boolean  @default(false)
+  created_at     DateTime @default(now())
+  updated_at     DateTime @default(now())
+  user           User     @relation(fields: [id], references: [id], onDelete: Cascade)
 }
 
 enum Role {
@@ -65,6 +66,9 @@ model Store {
   adminId   String         @unique
   products  ProductStock[]
   orders    Order[]        @relation("StoreOrders")
+  latitude  Float?
+  longitude Float?
+  discount  Discount[]     @relation("StoreDiscounts")
   createdAt DateTime       @default(now())
 }
 
@@ -85,6 +89,7 @@ model Product {
   stocks      ProductStock[]
   cartItems   CartItem[]
   orderItems  OrderItem[]
+  discount    Discount[]     @relation("ProductDiscounts")
   createdAt   DateTime       @default(now())
 }
 
@@ -182,6 +187,38 @@ model Voucher {
   expiredAt   DateTime
   used        Boolean  @default(false)
   orders      Order[]  @relation("VoucherOrders")
+}
+
+model Discount {
+  id           String       @id @default(uuid())
+  name         String
+  type         DiscountType
+  amount       Int
+  isPercentage Boolean      @default(false)
+  minPurchase  Int?
+  maxDiscount  Int?
+  buyQuantity  Int?
+  getQuantity  Int?
+  productId    String?
+  product      Product?     @relation("ProductDiscounts", fields: [productId], references: [id])
+  storeId      String
+  store        Store        @relation("StoreDiscounts", fields: [storeId], references: [id])
+  startDate    DateTime
+  endDate      DateTime
+  isActive     Boolean      @default(true)
+  createdAt    DateTime     @default(now())
+}
+
+enum DiscountType {
+  MANUAL
+  MIN_PURCHASE
+  BUY_ONE_GET_ONE
+}
+
+enum DiscountStatus {
+  ACTIVE
+  EXPIRED
+  SCHEDULED
 }
 
 model Province {

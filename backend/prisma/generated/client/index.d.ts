@@ -3938,6 +3938,7 @@ export namespace Prisma {
     postcode: string | null
     latitude: number | null
     longitude: number | null
+    destination_id: string | null
     is_primary: boolean | null
     created_at: Date | null
     updated_at: Date | null
@@ -3956,6 +3957,7 @@ export namespace Prisma {
     postcode: string | null
     latitude: number | null
     longitude: number | null
+    destination_id: string | null
     is_primary: boolean | null
     created_at: Date | null
     updated_at: Date | null
@@ -3974,6 +3976,7 @@ export namespace Prisma {
     postcode: number
     latitude: number
     longitude: number
+    destination_id: number
     is_primary: number
     created_at: number
     updated_at: number
@@ -4004,6 +4007,7 @@ export namespace Prisma {
     postcode?: true
     latitude?: true
     longitude?: true
+    destination_id?: true
     is_primary?: true
     created_at?: true
     updated_at?: true
@@ -4022,6 +4026,7 @@ export namespace Prisma {
     postcode?: true
     latitude?: true
     longitude?: true
+    destination_id?: true
     is_primary?: true
     created_at?: true
     updated_at?: true
@@ -4040,6 +4045,7 @@ export namespace Prisma {
     postcode?: true
     latitude?: true
     longitude?: true
+    destination_id?: true
     is_primary?: true
     created_at?: true
     updated_at?: true
@@ -4145,6 +4151,7 @@ export namespace Prisma {
     postcode: string | null
     latitude: number | null
     longitude: number | null
+    destination_id: string | null
     is_primary: boolean
     created_at: Date
     updated_at: Date
@@ -4182,6 +4189,7 @@ export namespace Prisma {
     postcode?: boolean
     latitude?: boolean
     longitude?: boolean
+    destination_id?: boolean
     is_primary?: boolean
     created_at?: boolean
     updated_at?: boolean
@@ -4201,6 +4209,7 @@ export namespace Prisma {
     postcode?: boolean
     latitude?: boolean
     longitude?: boolean
+    destination_id?: boolean
     is_primary?: boolean
     created_at?: boolean
     updated_at?: boolean
@@ -4220,6 +4229,7 @@ export namespace Prisma {
     postcode?: boolean
     latitude?: boolean
     longitude?: boolean
+    destination_id?: boolean
     is_primary?: boolean
     created_at?: boolean
     updated_at?: boolean
@@ -4239,12 +4249,13 @@ export namespace Prisma {
     postcode?: boolean
     latitude?: boolean
     longitude?: boolean
+    destination_id?: boolean
     is_primary?: boolean
     created_at?: boolean
     updated_at?: boolean
   }
 
-  export type AddressOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"address_id" | "id" | "address_name" | "address" | "subdistrict" | "city" | "city_id" | "province" | "province_id" | "postcode" | "latitude" | "longitude" | "is_primary" | "created_at" | "updated_at", ExtArgs["result"]["address"]>
+  export type AddressOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"address_id" | "id" | "address_name" | "address" | "subdistrict" | "city" | "city_id" | "province" | "province_id" | "postcode" | "latitude" | "longitude" | "destination_id" | "is_primary" | "created_at" | "updated_at", ExtArgs["result"]["address"]>
   export type AddressInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     user?: boolean | UserDefaultArgs<ExtArgs>
   }
@@ -4273,6 +4284,7 @@ export namespace Prisma {
       postcode: string | null
       latitude: number | null
       longitude: number | null
+      destination_id: string | null
       is_primary: boolean
       created_at: Date
       updated_at: Date
@@ -4712,6 +4724,7 @@ export namespace Prisma {
     readonly postcode: FieldRef<"Address", 'String'>
     readonly latitude: FieldRef<"Address", 'Float'>
     readonly longitude: FieldRef<"Address", 'Float'>
+    readonly destination_id: FieldRef<"Address", 'String'>
     readonly is_primary: FieldRef<"Address", 'Boolean'>
     readonly created_at: FieldRef<"Address", 'DateTime'>
     readonly updated_at: FieldRef<"Address", 'DateTime'>
@@ -20034,6 +20047,7 @@ export namespace Prisma {
     postcode: 'postcode',
     latitude: 'latitude',
     longitude: 'longitude',
+    destination_id: 'destination_id',
     is_primary: 'is_primary',
     created_at: 'created_at',
     updated_at: 'updated_at'
@@ -20467,6 +20481,7 @@ export namespace Prisma {
     postcode?: StringNullableFilter<"Address"> | string | null
     latitude?: FloatNullableFilter<"Address"> | number | null
     longitude?: FloatNullableFilter<"Address"> | number | null
+    destination_id?: StringNullableFilter<"Address"> | string | null
     is_primary?: BoolFilter<"Address"> | boolean
     created_at?: DateTimeFilter<"Address"> | Date | string
     updated_at?: DateTimeFilter<"Address"> | Date | string
@@ -20486,6 +20501,7 @@ export namespace Prisma {
     postcode?: SortOrderInput | SortOrder
     latitude?: SortOrderInput | SortOrder
     longitude?: SortOrderInput | SortOrder
+    destination_id?: SortOrderInput | SortOrder
     is_primary?: SortOrder
     created_at?: SortOrder
     updated_at?: SortOrder
@@ -20508,6 +20524,7 @@ export namespace Prisma {
     postcode?: StringNullableFilter<"Address"> | string | null
     latitude?: FloatNullableFilter<"Address"> | number | null
     longitude?: FloatNullableFilter<"Address"> | number | null
+    destination_id?: StringNullableFilter<"Address"> | string | null
     is_primary?: BoolFilter<"Address"> | boolean
     created_at?: DateTimeFilter<"Address"> | Date | string
     updated_at?: DateTimeFilter<"Address"> | Date | string
@@ -20527,6 +20544,7 @@ export namespace Prisma {
     postcode?: SortOrderInput | SortOrder
     latitude?: SortOrderInput | SortOrder
     longitude?: SortOrderInput | SortOrder
+    destination_id?: SortOrderInput | SortOrder
     is_primary?: SortOrder
     created_at?: SortOrder
     updated_at?: SortOrder
@@ -20553,6 +20571,7 @@ export namespace Prisma {
     postcode?: StringNullableWithAggregatesFilter<"Address"> | string | null
     latitude?: FloatNullableWithAggregatesFilter<"Address"> | number | null
     longitude?: FloatNullableWithAggregatesFilter<"Address"> | number | null
+    destination_id?: StringNullableWithAggregatesFilter<"Address"> | string | null
     is_primary?: BoolWithAggregatesFilter<"Address"> | boolean
     created_at?: DateTimeWithAggregatesFilter<"Address"> | Date | string
     updated_at?: DateTimeWithAggregatesFilter<"Address"> | Date | string
@@ -21580,6 +21599,7 @@ export namespace Prisma {
     postcode?: string | null
     latitude?: number | null
     longitude?: number | null
+    destination_id?: string | null
     is_primary?: boolean
     created_at?: Date | string
     updated_at?: Date | string
@@ -21599,6 +21619,7 @@ export namespace Prisma {
     postcode?: string | null
     latitude?: number | null
     longitude?: number | null
+    destination_id?: string | null
     is_primary?: boolean
     created_at?: Date | string
     updated_at?: Date | string
@@ -21616,6 +21637,7 @@ export namespace Prisma {
     postcode?: NullableStringFieldUpdateOperationsInput | string | null
     latitude?: NullableFloatFieldUpdateOperationsInput | number | null
     longitude?: NullableFloatFieldUpdateOperationsInput | number | null
+    destination_id?: NullableStringFieldUpdateOperationsInput | string | null
     is_primary?: BoolFieldUpdateOperationsInput | boolean
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -21635,6 +21657,7 @@ export namespace Prisma {
     postcode?: NullableStringFieldUpdateOperationsInput | string | null
     latitude?: NullableFloatFieldUpdateOperationsInput | number | null
     longitude?: NullableFloatFieldUpdateOperationsInput | number | null
+    destination_id?: NullableStringFieldUpdateOperationsInput | string | null
     is_primary?: BoolFieldUpdateOperationsInput | boolean
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -21653,6 +21676,7 @@ export namespace Prisma {
     postcode?: string | null
     latitude?: number | null
     longitude?: number | null
+    destination_id?: string | null
     is_primary?: boolean
     created_at?: Date | string
     updated_at?: Date | string
@@ -21670,6 +21694,7 @@ export namespace Prisma {
     postcode?: NullableStringFieldUpdateOperationsInput | string | null
     latitude?: NullableFloatFieldUpdateOperationsInput | number | null
     longitude?: NullableFloatFieldUpdateOperationsInput | number | null
+    destination_id?: NullableStringFieldUpdateOperationsInput | string | null
     is_primary?: BoolFieldUpdateOperationsInput | boolean
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -21688,6 +21713,7 @@ export namespace Prisma {
     postcode?: NullableStringFieldUpdateOperationsInput | string | null
     latitude?: NullableFloatFieldUpdateOperationsInput | number | null
     longitude?: NullableFloatFieldUpdateOperationsInput | number | null
+    destination_id?: NullableStringFieldUpdateOperationsInput | string | null
     is_primary?: BoolFieldUpdateOperationsInput | boolean
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -22848,6 +22874,7 @@ export namespace Prisma {
     postcode?: SortOrder
     latitude?: SortOrder
     longitude?: SortOrder
+    destination_id?: SortOrder
     is_primary?: SortOrder
     created_at?: SortOrder
     updated_at?: SortOrder
@@ -22871,6 +22898,7 @@ export namespace Prisma {
     postcode?: SortOrder
     latitude?: SortOrder
     longitude?: SortOrder
+    destination_id?: SortOrder
     is_primary?: SortOrder
     created_at?: SortOrder
     updated_at?: SortOrder
@@ -22889,6 +22917,7 @@ export namespace Prisma {
     postcode?: SortOrder
     latitude?: SortOrder
     longitude?: SortOrder
+    destination_id?: SortOrder
     is_primary?: SortOrder
     created_at?: SortOrder
     updated_at?: SortOrder
@@ -25304,6 +25333,7 @@ export namespace Prisma {
     postcode?: string | null
     latitude?: number | null
     longitude?: number | null
+    destination_id?: string | null
     is_primary?: boolean
     created_at?: Date | string
     updated_at?: Date | string
@@ -25321,6 +25351,7 @@ export namespace Prisma {
     postcode?: string | null
     latitude?: number | null
     longitude?: number | null
+    destination_id?: string | null
     is_primary?: boolean
     created_at?: Date | string
     updated_at?: Date | string
@@ -25609,6 +25640,7 @@ export namespace Prisma {
     postcode?: StringNullableFilter<"Address"> | string | null
     latitude?: FloatNullableFilter<"Address"> | number | null
     longitude?: FloatNullableFilter<"Address"> | number | null
+    destination_id?: StringNullableFilter<"Address"> | string | null
     is_primary?: BoolFilter<"Address"> | boolean
     created_at?: DateTimeFilter<"Address"> | Date | string
     updated_at?: DateTimeFilter<"Address"> | Date | string
@@ -27652,6 +27684,7 @@ export namespace Prisma {
     postcode?: string | null
     latitude?: number | null
     longitude?: number | null
+    destination_id?: string | null
     is_primary?: boolean
     created_at?: Date | string
     updated_at?: Date | string
@@ -27846,6 +27879,7 @@ export namespace Prisma {
     postcode?: NullableStringFieldUpdateOperationsInput | string | null
     latitude?: NullableFloatFieldUpdateOperationsInput | number | null
     longitude?: NullableFloatFieldUpdateOperationsInput | number | null
+    destination_id?: NullableStringFieldUpdateOperationsInput | string | null
     is_primary?: BoolFieldUpdateOperationsInput | boolean
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -27863,6 +27897,7 @@ export namespace Prisma {
     postcode?: NullableStringFieldUpdateOperationsInput | string | null
     latitude?: NullableFloatFieldUpdateOperationsInput | number | null
     longitude?: NullableFloatFieldUpdateOperationsInput | number | null
+    destination_id?: NullableStringFieldUpdateOperationsInput | string | null
     is_primary?: BoolFieldUpdateOperationsInput | boolean
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -27880,6 +27915,7 @@ export namespace Prisma {
     postcode?: NullableStringFieldUpdateOperationsInput | string | null
     latitude?: NullableFloatFieldUpdateOperationsInput | number | null
     longitude?: NullableFloatFieldUpdateOperationsInput | number | null
+    destination_id?: NullableStringFieldUpdateOperationsInput | string | null
     is_primary?: BoolFieldUpdateOperationsInput | boolean
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
