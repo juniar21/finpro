@@ -33,22 +33,23 @@ model User {
 }
 
 model Address {
-  address_id   String   @id @default(uuid()) // Change to String
-  id           String // Change to String
-  address_name String   @db.Text
-  address      String   @db.Text
-  subdistrict  String?
-  city         String
-  city_id      String?
-  province     String
-  province_id  String?
-  postcode     String?
-  latitude     Float?
-  longitude    Float?
-  is_primary   Boolean  @default(false)
-  created_at   DateTime @default(now())
-  updated_at   DateTime @default(now())
-  user         User     @relation(fields: [id], references: [id], onDelete: Cascade)
+  address_id     String   @id @default(uuid()) // Change to String
+  id             String // Change to String
+  address_name   String   @db.Text
+  address        String   @db.Text
+  subdistrict    String?
+  city           String
+  city_id        String?
+  province       String
+  province_id    String?
+  postcode       String?
+  latitude       Float?
+  longitude      Float?
+  destination_id String?
+  is_primary     Boolean  @default(false)
+  created_at     DateTime @default(now())
+  updated_at     DateTime @default(now())
+  user           User     @relation(fields: [id], references: [id], onDelete: Cascade)
 }
 
 enum Role {
@@ -68,6 +69,8 @@ model Store {
   latitude  Float?
   longitude Float?
   discount  Discount[]     @relation("StoreDiscounts")
+  cityId    String?
+  city      City?          @relation(fields: [cityId], references: [id])
   createdAt DateTime       @default(now())
 }
 
@@ -122,6 +125,7 @@ model Order {
   shippingAddress String
   totalAmount     Int
   status          OrderStatus @default(PENDING_PAYMENT)
+  invoiceUrl      String?
   warehouse       Warehouse?  @relation(fields: [warehouseId], references: [id])
   store           Store       @relation("StoreOrders", fields: [storeId], references: [id])
   storeId         String

@@ -3938,6 +3938,7 @@ export namespace Prisma {
     postcode: string | null
     latitude: number | null
     longitude: number | null
+    destination_id: string | null
     is_primary: boolean | null
     created_at: Date | null
     updated_at: Date | null
@@ -3956,6 +3957,7 @@ export namespace Prisma {
     postcode: string | null
     latitude: number | null
     longitude: number | null
+    destination_id: string | null
     is_primary: boolean | null
     created_at: Date | null
     updated_at: Date | null
@@ -3974,6 +3976,7 @@ export namespace Prisma {
     postcode: number
     latitude: number
     longitude: number
+    destination_id: number
     is_primary: number
     created_at: number
     updated_at: number
@@ -4004,6 +4007,7 @@ export namespace Prisma {
     postcode?: true
     latitude?: true
     longitude?: true
+    destination_id?: true
     is_primary?: true
     created_at?: true
     updated_at?: true
@@ -4022,6 +4026,7 @@ export namespace Prisma {
     postcode?: true
     latitude?: true
     longitude?: true
+    destination_id?: true
     is_primary?: true
     created_at?: true
     updated_at?: true
@@ -4040,6 +4045,7 @@ export namespace Prisma {
     postcode?: true
     latitude?: true
     longitude?: true
+    destination_id?: true
     is_primary?: true
     created_at?: true
     updated_at?: true
@@ -4145,6 +4151,7 @@ export namespace Prisma {
     postcode: string | null
     latitude: number | null
     longitude: number | null
+    destination_id: string | null
     is_primary: boolean
     created_at: Date
     updated_at: Date
@@ -4182,6 +4189,7 @@ export namespace Prisma {
     postcode?: boolean
     latitude?: boolean
     longitude?: boolean
+    destination_id?: boolean
     is_primary?: boolean
     created_at?: boolean
     updated_at?: boolean
@@ -4201,6 +4209,7 @@ export namespace Prisma {
     postcode?: boolean
     latitude?: boolean
     longitude?: boolean
+    destination_id?: boolean
     is_primary?: boolean
     created_at?: boolean
     updated_at?: boolean
@@ -4220,6 +4229,7 @@ export namespace Prisma {
     postcode?: boolean
     latitude?: boolean
     longitude?: boolean
+    destination_id?: boolean
     is_primary?: boolean
     created_at?: boolean
     updated_at?: boolean
@@ -4239,12 +4249,13 @@ export namespace Prisma {
     postcode?: boolean
     latitude?: boolean
     longitude?: boolean
+    destination_id?: boolean
     is_primary?: boolean
     created_at?: boolean
     updated_at?: boolean
   }
 
-  export type AddressOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"address_id" | "id" | "address_name" | "address" | "subdistrict" | "city" | "city_id" | "province" | "province_id" | "postcode" | "latitude" | "longitude" | "is_primary" | "created_at" | "updated_at", ExtArgs["result"]["address"]>
+  export type AddressOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"address_id" | "id" | "address_name" | "address" | "subdistrict" | "city" | "city_id" | "province" | "province_id" | "postcode" | "latitude" | "longitude" | "destination_id" | "is_primary" | "created_at" | "updated_at", ExtArgs["result"]["address"]>
   export type AddressInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     user?: boolean | UserDefaultArgs<ExtArgs>
   }
@@ -4273,6 +4284,7 @@ export namespace Prisma {
       postcode: string | null
       latitude: number | null
       longitude: number | null
+      destination_id: string | null
       is_primary: boolean
       created_at: Date
       updated_at: Date
@@ -4712,6 +4724,7 @@ export namespace Prisma {
     readonly postcode: FieldRef<"Address", 'String'>
     readonly latitude: FieldRef<"Address", 'Float'>
     readonly longitude: FieldRef<"Address", 'Float'>
+    readonly destination_id: FieldRef<"Address", 'String'>
     readonly is_primary: FieldRef<"Address", 'Boolean'>
     readonly created_at: FieldRef<"Address", 'DateTime'>
     readonly updated_at: FieldRef<"Address", 'DateTime'>
@@ -10839,6 +10852,7 @@ export namespace Prisma {
     shippingAddress: string | null
     totalAmount: number | null
     status: $Enums.OrderStatus | null
+    invoiceUrl: string | null
     storeId: string | null
     voucherId: string | null
     warehouseId: string | null
@@ -10855,6 +10869,7 @@ export namespace Prisma {
     shippingAddress: string | null
     totalAmount: number | null
     status: $Enums.OrderStatus | null
+    invoiceUrl: string | null
     storeId: string | null
     voucherId: string | null
     warehouseId: string | null
@@ -10871,6 +10886,7 @@ export namespace Prisma {
     shippingAddress: number
     totalAmount: number
     status: number
+    invoiceUrl: number
     storeId: number
     voucherId: number
     warehouseId: number
@@ -10897,6 +10913,7 @@ export namespace Prisma {
     shippingAddress?: true
     totalAmount?: true
     status?: true
+    invoiceUrl?: true
     storeId?: true
     voucherId?: true
     warehouseId?: true
@@ -10913,6 +10930,7 @@ export namespace Prisma {
     shippingAddress?: true
     totalAmount?: true
     status?: true
+    invoiceUrl?: true
     storeId?: true
     voucherId?: true
     warehouseId?: true
@@ -10929,6 +10947,7 @@ export namespace Prisma {
     shippingAddress?: true
     totalAmount?: true
     status?: true
+    invoiceUrl?: true
     storeId?: true
     voucherId?: true
     warehouseId?: true
@@ -11032,6 +11051,7 @@ export namespace Prisma {
     shippingAddress: string
     totalAmount: number
     status: $Enums.OrderStatus
+    invoiceUrl: string | null
     storeId: string
     voucherId: string | null
     warehouseId: string | null
@@ -11067,6 +11087,7 @@ export namespace Prisma {
     shippingAddress?: boolean
     totalAmount?: boolean
     status?: boolean
+    invoiceUrl?: boolean
     storeId?: boolean
     voucherId?: boolean
     warehouseId?: boolean
@@ -11089,6 +11110,7 @@ export namespace Prisma {
     shippingAddress?: boolean
     totalAmount?: boolean
     status?: boolean
+    invoiceUrl?: boolean
     storeId?: boolean
     voucherId?: boolean
     warehouseId?: boolean
@@ -11109,6 +11131,7 @@ export namespace Prisma {
     shippingAddress?: boolean
     totalAmount?: boolean
     status?: boolean
+    invoiceUrl?: boolean
     storeId?: boolean
     voucherId?: boolean
     warehouseId?: boolean
@@ -11129,6 +11152,7 @@ export namespace Prisma {
     shippingAddress?: boolean
     totalAmount?: boolean
     status?: boolean
+    invoiceUrl?: boolean
     storeId?: boolean
     voucherId?: boolean
     warehouseId?: boolean
@@ -11139,7 +11163,7 @@ export namespace Prisma {
     confirmedAt?: boolean
   }
 
-  export type OrderOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "userId" | "shippingAddress" | "totalAmount" | "status" | "storeId" | "voucherId" | "warehouseId" | "paymentProof" | "createdAt" | "updatedAt" | "expiredAt" | "confirmedAt", ExtArgs["result"]["order"]>
+  export type OrderOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "userId" | "shippingAddress" | "totalAmount" | "status" | "invoiceUrl" | "storeId" | "voucherId" | "warehouseId" | "paymentProof" | "createdAt" | "updatedAt" | "expiredAt" | "confirmedAt", ExtArgs["result"]["order"]>
   export type OrderInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     user?: boolean | UserDefaultArgs<ExtArgs>
     warehouse?: boolean | Order$warehouseArgs<ExtArgs>
@@ -11176,6 +11200,7 @@ export namespace Prisma {
       shippingAddress: string
       totalAmount: number
       status: $Enums.OrderStatus
+      invoiceUrl: string | null
       storeId: string
       voucherId: string | null
       warehouseId: string | null
@@ -11617,6 +11642,7 @@ export namespace Prisma {
     readonly shippingAddress: FieldRef<"Order", 'String'>
     readonly totalAmount: FieldRef<"Order", 'Int'>
     readonly status: FieldRef<"Order", 'OrderStatus'>
+    readonly invoiceUrl: FieldRef<"Order", 'String'>
     readonly storeId: FieldRef<"Order", 'String'>
     readonly voucherId: FieldRef<"Order", 'String'>
     readonly warehouseId: FieldRef<"Order", 'String'>
@@ -20034,6 +20060,7 @@ export namespace Prisma {
     postcode: 'postcode',
     latitude: 'latitude',
     longitude: 'longitude',
+    destination_id: 'destination_id',
     is_primary: 'is_primary',
     created_at: 'created_at',
     updated_at: 'updated_at'
@@ -20105,6 +20132,7 @@ export namespace Prisma {
     shippingAddress: 'shippingAddress',
     totalAmount: 'totalAmount',
     status: 'status',
+    invoiceUrl: 'invoiceUrl',
     storeId: 'storeId',
     voucherId: 'voucherId',
     warehouseId: 'warehouseId',
@@ -20467,6 +20495,7 @@ export namespace Prisma {
     postcode?: StringNullableFilter<"Address"> | string | null
     latitude?: FloatNullableFilter<"Address"> | number | null
     longitude?: FloatNullableFilter<"Address"> | number | null
+    destination_id?: StringNullableFilter<"Address"> | string | null
     is_primary?: BoolFilter<"Address"> | boolean
     created_at?: DateTimeFilter<"Address"> | Date | string
     updated_at?: DateTimeFilter<"Address"> | Date | string
@@ -20486,6 +20515,7 @@ export namespace Prisma {
     postcode?: SortOrderInput | SortOrder
     latitude?: SortOrderInput | SortOrder
     longitude?: SortOrderInput | SortOrder
+    destination_id?: SortOrderInput | SortOrder
     is_primary?: SortOrder
     created_at?: SortOrder
     updated_at?: SortOrder
@@ -20508,6 +20538,7 @@ export namespace Prisma {
     postcode?: StringNullableFilter<"Address"> | string | null
     latitude?: FloatNullableFilter<"Address"> | number | null
     longitude?: FloatNullableFilter<"Address"> | number | null
+    destination_id?: StringNullableFilter<"Address"> | string | null
     is_primary?: BoolFilter<"Address"> | boolean
     created_at?: DateTimeFilter<"Address"> | Date | string
     updated_at?: DateTimeFilter<"Address"> | Date | string
@@ -20527,6 +20558,7 @@ export namespace Prisma {
     postcode?: SortOrderInput | SortOrder
     latitude?: SortOrderInput | SortOrder
     longitude?: SortOrderInput | SortOrder
+    destination_id?: SortOrderInput | SortOrder
     is_primary?: SortOrder
     created_at?: SortOrder
     updated_at?: SortOrder
@@ -20553,6 +20585,7 @@ export namespace Prisma {
     postcode?: StringNullableWithAggregatesFilter<"Address"> | string | null
     latitude?: FloatNullableWithAggregatesFilter<"Address"> | number | null
     longitude?: FloatNullableWithAggregatesFilter<"Address"> | number | null
+    destination_id?: StringNullableWithAggregatesFilter<"Address"> | string | null
     is_primary?: BoolWithAggregatesFilter<"Address"> | boolean
     created_at?: DateTimeWithAggregatesFilter<"Address"> | Date | string
     updated_at?: DateTimeWithAggregatesFilter<"Address"> | Date | string
@@ -20888,6 +20921,7 @@ export namespace Prisma {
     shippingAddress?: StringFilter<"Order"> | string
     totalAmount?: IntFilter<"Order"> | number
     status?: EnumOrderStatusFilter<"Order"> | $Enums.OrderStatus
+    invoiceUrl?: StringNullableFilter<"Order"> | string | null
     storeId?: StringFilter<"Order"> | string
     voucherId?: StringNullableFilter<"Order"> | string | null
     warehouseId?: StringNullableFilter<"Order"> | string | null
@@ -20909,6 +20943,7 @@ export namespace Prisma {
     shippingAddress?: SortOrder
     totalAmount?: SortOrder
     status?: SortOrder
+    invoiceUrl?: SortOrderInput | SortOrder
     storeId?: SortOrder
     voucherId?: SortOrderInput | SortOrder
     warehouseId?: SortOrderInput | SortOrder
@@ -20933,6 +20968,7 @@ export namespace Prisma {
     shippingAddress?: StringFilter<"Order"> | string
     totalAmount?: IntFilter<"Order"> | number
     status?: EnumOrderStatusFilter<"Order"> | $Enums.OrderStatus
+    invoiceUrl?: StringNullableFilter<"Order"> | string | null
     storeId?: StringFilter<"Order"> | string
     voucherId?: StringNullableFilter<"Order"> | string | null
     warehouseId?: StringNullableFilter<"Order"> | string | null
@@ -20954,6 +20990,7 @@ export namespace Prisma {
     shippingAddress?: SortOrder
     totalAmount?: SortOrder
     status?: SortOrder
+    invoiceUrl?: SortOrderInput | SortOrder
     storeId?: SortOrder
     voucherId?: SortOrderInput | SortOrder
     warehouseId?: SortOrderInput | SortOrder
@@ -20978,6 +21015,7 @@ export namespace Prisma {
     shippingAddress?: StringWithAggregatesFilter<"Order"> | string
     totalAmount?: IntWithAggregatesFilter<"Order"> | number
     status?: EnumOrderStatusWithAggregatesFilter<"Order"> | $Enums.OrderStatus
+    invoiceUrl?: StringNullableWithAggregatesFilter<"Order"> | string | null
     storeId?: StringWithAggregatesFilter<"Order"> | string
     voucherId?: StringNullableWithAggregatesFilter<"Order"> | string | null
     warehouseId?: StringNullableWithAggregatesFilter<"Order"> | string | null
@@ -21580,6 +21618,7 @@ export namespace Prisma {
     postcode?: string | null
     latitude?: number | null
     longitude?: number | null
+    destination_id?: string | null
     is_primary?: boolean
     created_at?: Date | string
     updated_at?: Date | string
@@ -21599,6 +21638,7 @@ export namespace Prisma {
     postcode?: string | null
     latitude?: number | null
     longitude?: number | null
+    destination_id?: string | null
     is_primary?: boolean
     created_at?: Date | string
     updated_at?: Date | string
@@ -21616,6 +21656,7 @@ export namespace Prisma {
     postcode?: NullableStringFieldUpdateOperationsInput | string | null
     latitude?: NullableFloatFieldUpdateOperationsInput | number | null
     longitude?: NullableFloatFieldUpdateOperationsInput | number | null
+    destination_id?: NullableStringFieldUpdateOperationsInput | string | null
     is_primary?: BoolFieldUpdateOperationsInput | boolean
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -21635,6 +21676,7 @@ export namespace Prisma {
     postcode?: NullableStringFieldUpdateOperationsInput | string | null
     latitude?: NullableFloatFieldUpdateOperationsInput | number | null
     longitude?: NullableFloatFieldUpdateOperationsInput | number | null
+    destination_id?: NullableStringFieldUpdateOperationsInput | string | null
     is_primary?: BoolFieldUpdateOperationsInput | boolean
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -21653,6 +21695,7 @@ export namespace Prisma {
     postcode?: string | null
     latitude?: number | null
     longitude?: number | null
+    destination_id?: string | null
     is_primary?: boolean
     created_at?: Date | string
     updated_at?: Date | string
@@ -21670,6 +21713,7 @@ export namespace Prisma {
     postcode?: NullableStringFieldUpdateOperationsInput | string | null
     latitude?: NullableFloatFieldUpdateOperationsInput | number | null
     longitude?: NullableFloatFieldUpdateOperationsInput | number | null
+    destination_id?: NullableStringFieldUpdateOperationsInput | string | null
     is_primary?: BoolFieldUpdateOperationsInput | boolean
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -21688,6 +21732,7 @@ export namespace Prisma {
     postcode?: NullableStringFieldUpdateOperationsInput | string | null
     latitude?: NullableFloatFieldUpdateOperationsInput | number | null
     longitude?: NullableFloatFieldUpdateOperationsInput | number | null
+    destination_id?: NullableStringFieldUpdateOperationsInput | string | null
     is_primary?: BoolFieldUpdateOperationsInput | boolean
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -22018,6 +22063,7 @@ export namespace Prisma {
     shippingAddress: string
     totalAmount: number
     status?: $Enums.OrderStatus
+    invoiceUrl?: string | null
     paymentProof?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -22036,6 +22082,7 @@ export namespace Prisma {
     shippingAddress: string
     totalAmount: number
     status?: $Enums.OrderStatus
+    invoiceUrl?: string | null
     storeId: string
     voucherId?: string | null
     warehouseId?: string | null
@@ -22052,6 +22099,7 @@ export namespace Prisma {
     shippingAddress?: StringFieldUpdateOperationsInput | string
     totalAmount?: IntFieldUpdateOperationsInput | number
     status?: EnumOrderStatusFieldUpdateOperationsInput | $Enums.OrderStatus
+    invoiceUrl?: NullableStringFieldUpdateOperationsInput | string | null
     paymentProof?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -22070,6 +22118,7 @@ export namespace Prisma {
     shippingAddress?: StringFieldUpdateOperationsInput | string
     totalAmount?: IntFieldUpdateOperationsInput | number
     status?: EnumOrderStatusFieldUpdateOperationsInput | $Enums.OrderStatus
+    invoiceUrl?: NullableStringFieldUpdateOperationsInput | string | null
     storeId?: StringFieldUpdateOperationsInput | string
     voucherId?: NullableStringFieldUpdateOperationsInput | string | null
     warehouseId?: NullableStringFieldUpdateOperationsInput | string | null
@@ -22087,6 +22136,7 @@ export namespace Prisma {
     shippingAddress: string
     totalAmount: number
     status?: $Enums.OrderStatus
+    invoiceUrl?: string | null
     storeId: string
     voucherId?: string | null
     warehouseId?: string | null
@@ -22102,6 +22152,7 @@ export namespace Prisma {
     shippingAddress?: StringFieldUpdateOperationsInput | string
     totalAmount?: IntFieldUpdateOperationsInput | number
     status?: EnumOrderStatusFieldUpdateOperationsInput | $Enums.OrderStatus
+    invoiceUrl?: NullableStringFieldUpdateOperationsInput | string | null
     paymentProof?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -22115,6 +22166,7 @@ export namespace Prisma {
     shippingAddress?: StringFieldUpdateOperationsInput | string
     totalAmount?: IntFieldUpdateOperationsInput | number
     status?: EnumOrderStatusFieldUpdateOperationsInput | $Enums.OrderStatus
+    invoiceUrl?: NullableStringFieldUpdateOperationsInput | string | null
     storeId?: StringFieldUpdateOperationsInput | string
     voucherId?: NullableStringFieldUpdateOperationsInput | string | null
     warehouseId?: NullableStringFieldUpdateOperationsInput | string | null
@@ -22848,6 +22900,7 @@ export namespace Prisma {
     postcode?: SortOrder
     latitude?: SortOrder
     longitude?: SortOrder
+    destination_id?: SortOrder
     is_primary?: SortOrder
     created_at?: SortOrder
     updated_at?: SortOrder
@@ -22871,6 +22924,7 @@ export namespace Prisma {
     postcode?: SortOrder
     latitude?: SortOrder
     longitude?: SortOrder
+    destination_id?: SortOrder
     is_primary?: SortOrder
     created_at?: SortOrder
     updated_at?: SortOrder
@@ -22889,6 +22943,7 @@ export namespace Prisma {
     postcode?: SortOrder
     latitude?: SortOrder
     longitude?: SortOrder
+    destination_id?: SortOrder
     is_primary?: SortOrder
     created_at?: SortOrder
     updated_at?: SortOrder
@@ -23196,6 +23251,7 @@ export namespace Prisma {
     shippingAddress?: SortOrder
     totalAmount?: SortOrder
     status?: SortOrder
+    invoiceUrl?: SortOrder
     storeId?: SortOrder
     voucherId?: SortOrder
     warehouseId?: SortOrder
@@ -23216,6 +23272,7 @@ export namespace Prisma {
     shippingAddress?: SortOrder
     totalAmount?: SortOrder
     status?: SortOrder
+    invoiceUrl?: SortOrder
     storeId?: SortOrder
     voucherId?: SortOrder
     warehouseId?: SortOrder
@@ -23232,6 +23289,7 @@ export namespace Prisma {
     shippingAddress?: SortOrder
     totalAmount?: SortOrder
     status?: SortOrder
+    invoiceUrl?: SortOrder
     storeId?: SortOrder
     voucherId?: SortOrder
     warehouseId?: SortOrder
@@ -25226,6 +25284,7 @@ export namespace Prisma {
     shippingAddress: string
     totalAmount: number
     status?: $Enums.OrderStatus
+    invoiceUrl?: string | null
     paymentProof?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -25242,6 +25301,7 @@ export namespace Prisma {
     shippingAddress: string
     totalAmount: number
     status?: $Enums.OrderStatus
+    invoiceUrl?: string | null
     storeId: string
     voucherId?: string | null
     warehouseId?: string | null
@@ -25304,6 +25364,7 @@ export namespace Prisma {
     postcode?: string | null
     latitude?: number | null
     longitude?: number | null
+    destination_id?: string | null
     is_primary?: boolean
     created_at?: Date | string
     updated_at?: Date | string
@@ -25321,6 +25382,7 @@ export namespace Prisma {
     postcode?: string | null
     latitude?: number | null
     longitude?: number | null
+    destination_id?: string | null
     is_primary?: boolean
     created_at?: Date | string
     updated_at?: Date | string
@@ -25532,6 +25594,7 @@ export namespace Prisma {
     shippingAddress?: StringFilter<"Order"> | string
     totalAmount?: IntFilter<"Order"> | number
     status?: EnumOrderStatusFilter<"Order"> | $Enums.OrderStatus
+    invoiceUrl?: StringNullableFilter<"Order"> | string | null
     storeId?: StringFilter<"Order"> | string
     voucherId?: StringNullableFilter<"Order"> | string | null
     warehouseId?: StringNullableFilter<"Order"> | string | null
@@ -25609,6 +25672,7 @@ export namespace Prisma {
     postcode?: StringNullableFilter<"Address"> | string | null
     latitude?: FloatNullableFilter<"Address"> | number | null
     longitude?: FloatNullableFilter<"Address"> | number | null
+    destination_id?: StringNullableFilter<"Address"> | string | null
     is_primary?: BoolFilter<"Address"> | boolean
     created_at?: DateTimeFilter<"Address"> | Date | string
     updated_at?: DateTimeFilter<"Address"> | Date | string
@@ -25790,6 +25854,7 @@ export namespace Prisma {
     shippingAddress: string
     totalAmount: number
     status?: $Enums.OrderStatus
+    invoiceUrl?: string | null
     paymentProof?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -25807,6 +25872,7 @@ export namespace Prisma {
     shippingAddress: string
     totalAmount: number
     status?: $Enums.OrderStatus
+    invoiceUrl?: string | null
     voucherId?: string | null
     warehouseId?: string | null
     paymentProof?: string | null
@@ -26915,6 +26981,7 @@ export namespace Prisma {
     shippingAddress: string
     totalAmount: number
     status?: $Enums.OrderStatus
+    invoiceUrl?: string | null
     paymentProof?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -26932,6 +26999,7 @@ export namespace Prisma {
     shippingAddress: string
     totalAmount: number
     status?: $Enums.OrderStatus
+    invoiceUrl?: string | null
     storeId: string
     voucherId?: string | null
     paymentProof?: string | null
@@ -26973,6 +27041,7 @@ export namespace Prisma {
     shippingAddress: string
     totalAmount: number
     status?: $Enums.OrderStatus
+    invoiceUrl?: string | null
     paymentProof?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -26990,6 +27059,7 @@ export namespace Prisma {
     shippingAddress: string
     totalAmount: number
     status?: $Enums.OrderStatus
+    invoiceUrl?: string | null
     storeId: string
     voucherId?: string | null
     warehouseId?: string | null
@@ -27052,6 +27122,7 @@ export namespace Prisma {
     shippingAddress?: StringFieldUpdateOperationsInput | string
     totalAmount?: IntFieldUpdateOperationsInput | number
     status?: EnumOrderStatusFieldUpdateOperationsInput | $Enums.OrderStatus
+    invoiceUrl?: NullableStringFieldUpdateOperationsInput | string | null
     paymentProof?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -27069,6 +27140,7 @@ export namespace Prisma {
     shippingAddress?: StringFieldUpdateOperationsInput | string
     totalAmount?: IntFieldUpdateOperationsInput | number
     status?: EnumOrderStatusFieldUpdateOperationsInput | $Enums.OrderStatus
+    invoiceUrl?: NullableStringFieldUpdateOperationsInput | string | null
     storeId?: StringFieldUpdateOperationsInput | string
     voucherId?: NullableStringFieldUpdateOperationsInput | string | null
     warehouseId?: NullableStringFieldUpdateOperationsInput | string | null
@@ -27268,6 +27340,7 @@ export namespace Prisma {
     shippingAddress: string
     totalAmount: number
     status?: $Enums.OrderStatus
+    invoiceUrl?: string | null
     paymentProof?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -27285,6 +27358,7 @@ export namespace Prisma {
     shippingAddress: string
     totalAmount: number
     status?: $Enums.OrderStatus
+    invoiceUrl?: string | null
     storeId: string
     warehouseId?: string | null
     paymentProof?: string | null
@@ -27630,6 +27704,7 @@ export namespace Prisma {
     shippingAddress: string
     totalAmount: number
     status?: $Enums.OrderStatus
+    invoiceUrl?: string | null
     storeId: string
     voucherId?: string | null
     warehouseId?: string | null
@@ -27652,6 +27727,7 @@ export namespace Prisma {
     postcode?: string | null
     latitude?: number | null
     longitude?: number | null
+    destination_id?: string | null
     is_primary?: boolean
     created_at?: Date | string
     updated_at?: Date | string
@@ -27792,6 +27868,7 @@ export namespace Prisma {
     shippingAddress?: StringFieldUpdateOperationsInput | string
     totalAmount?: IntFieldUpdateOperationsInput | number
     status?: EnumOrderStatusFieldUpdateOperationsInput | $Enums.OrderStatus
+    invoiceUrl?: NullableStringFieldUpdateOperationsInput | string | null
     paymentProof?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -27808,6 +27885,7 @@ export namespace Prisma {
     shippingAddress?: StringFieldUpdateOperationsInput | string
     totalAmount?: IntFieldUpdateOperationsInput | number
     status?: EnumOrderStatusFieldUpdateOperationsInput | $Enums.OrderStatus
+    invoiceUrl?: NullableStringFieldUpdateOperationsInput | string | null
     storeId?: StringFieldUpdateOperationsInput | string
     voucherId?: NullableStringFieldUpdateOperationsInput | string | null
     warehouseId?: NullableStringFieldUpdateOperationsInput | string | null
@@ -27824,6 +27902,7 @@ export namespace Prisma {
     shippingAddress?: StringFieldUpdateOperationsInput | string
     totalAmount?: IntFieldUpdateOperationsInput | number
     status?: EnumOrderStatusFieldUpdateOperationsInput | $Enums.OrderStatus
+    invoiceUrl?: NullableStringFieldUpdateOperationsInput | string | null
     storeId?: StringFieldUpdateOperationsInput | string
     voucherId?: NullableStringFieldUpdateOperationsInput | string | null
     warehouseId?: NullableStringFieldUpdateOperationsInput | string | null
@@ -27846,6 +27925,7 @@ export namespace Prisma {
     postcode?: NullableStringFieldUpdateOperationsInput | string | null
     latitude?: NullableFloatFieldUpdateOperationsInput | number | null
     longitude?: NullableFloatFieldUpdateOperationsInput | number | null
+    destination_id?: NullableStringFieldUpdateOperationsInput | string | null
     is_primary?: BoolFieldUpdateOperationsInput | boolean
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -27863,6 +27943,7 @@ export namespace Prisma {
     postcode?: NullableStringFieldUpdateOperationsInput | string | null
     latitude?: NullableFloatFieldUpdateOperationsInput | number | null
     longitude?: NullableFloatFieldUpdateOperationsInput | number | null
+    destination_id?: NullableStringFieldUpdateOperationsInput | string | null
     is_primary?: BoolFieldUpdateOperationsInput | boolean
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -27880,6 +27961,7 @@ export namespace Prisma {
     postcode?: NullableStringFieldUpdateOperationsInput | string | null
     latitude?: NullableFloatFieldUpdateOperationsInput | number | null
     longitude?: NullableFloatFieldUpdateOperationsInput | number | null
+    destination_id?: NullableStringFieldUpdateOperationsInput | string | null
     is_primary?: BoolFieldUpdateOperationsInput | boolean
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -27898,6 +27980,7 @@ export namespace Prisma {
     shippingAddress: string
     totalAmount: number
     status?: $Enums.OrderStatus
+    invoiceUrl?: string | null
     voucherId?: string | null
     warehouseId?: string | null
     paymentProof?: string | null
@@ -27950,6 +28033,7 @@ export namespace Prisma {
     shippingAddress?: StringFieldUpdateOperationsInput | string
     totalAmount?: IntFieldUpdateOperationsInput | number
     status?: EnumOrderStatusFieldUpdateOperationsInput | $Enums.OrderStatus
+    invoiceUrl?: NullableStringFieldUpdateOperationsInput | string | null
     paymentProof?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -27967,6 +28051,7 @@ export namespace Prisma {
     shippingAddress?: StringFieldUpdateOperationsInput | string
     totalAmount?: IntFieldUpdateOperationsInput | number
     status?: EnumOrderStatusFieldUpdateOperationsInput | $Enums.OrderStatus
+    invoiceUrl?: NullableStringFieldUpdateOperationsInput | string | null
     voucherId?: NullableStringFieldUpdateOperationsInput | string | null
     warehouseId?: NullableStringFieldUpdateOperationsInput | string | null
     paymentProof?: NullableStringFieldUpdateOperationsInput | string | null
@@ -27983,6 +28068,7 @@ export namespace Prisma {
     shippingAddress?: StringFieldUpdateOperationsInput | string
     totalAmount?: IntFieldUpdateOperationsInput | number
     status?: EnumOrderStatusFieldUpdateOperationsInput | $Enums.OrderStatus
+    invoiceUrl?: NullableStringFieldUpdateOperationsInput | string | null
     voucherId?: NullableStringFieldUpdateOperationsInput | string | null
     warehouseId?: NullableStringFieldUpdateOperationsInput | string | null
     paymentProof?: NullableStringFieldUpdateOperationsInput | string | null
@@ -28277,6 +28363,7 @@ export namespace Prisma {
     shippingAddress: string
     totalAmount: number
     status?: $Enums.OrderStatus
+    invoiceUrl?: string | null
     storeId: string
     voucherId?: string | null
     paymentProof?: string | null
@@ -28291,6 +28378,7 @@ export namespace Prisma {
     shippingAddress?: StringFieldUpdateOperationsInput | string
     totalAmount?: IntFieldUpdateOperationsInput | number
     status?: EnumOrderStatusFieldUpdateOperationsInput | $Enums.OrderStatus
+    invoiceUrl?: NullableStringFieldUpdateOperationsInput | string | null
     paymentProof?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -28308,6 +28396,7 @@ export namespace Prisma {
     shippingAddress?: StringFieldUpdateOperationsInput | string
     totalAmount?: IntFieldUpdateOperationsInput | number
     status?: EnumOrderStatusFieldUpdateOperationsInput | $Enums.OrderStatus
+    invoiceUrl?: NullableStringFieldUpdateOperationsInput | string | null
     storeId?: StringFieldUpdateOperationsInput | string
     voucherId?: NullableStringFieldUpdateOperationsInput | string | null
     paymentProof?: NullableStringFieldUpdateOperationsInput | string | null
@@ -28324,6 +28413,7 @@ export namespace Prisma {
     shippingAddress?: StringFieldUpdateOperationsInput | string
     totalAmount?: IntFieldUpdateOperationsInput | number
     status?: EnumOrderStatusFieldUpdateOperationsInput | $Enums.OrderStatus
+    invoiceUrl?: NullableStringFieldUpdateOperationsInput | string | null
     storeId?: StringFieldUpdateOperationsInput | string
     voucherId?: NullableStringFieldUpdateOperationsInput | string | null
     paymentProof?: NullableStringFieldUpdateOperationsInput | string | null
@@ -28339,6 +28429,7 @@ export namespace Prisma {
     shippingAddress: string
     totalAmount: number
     status?: $Enums.OrderStatus
+    invoiceUrl?: string | null
     storeId: string
     warehouseId?: string | null
     paymentProof?: string | null
@@ -28353,6 +28444,7 @@ export namespace Prisma {
     shippingAddress?: StringFieldUpdateOperationsInput | string
     totalAmount?: IntFieldUpdateOperationsInput | number
     status?: EnumOrderStatusFieldUpdateOperationsInput | $Enums.OrderStatus
+    invoiceUrl?: NullableStringFieldUpdateOperationsInput | string | null
     paymentProof?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -28370,6 +28462,7 @@ export namespace Prisma {
     shippingAddress?: StringFieldUpdateOperationsInput | string
     totalAmount?: IntFieldUpdateOperationsInput | number
     status?: EnumOrderStatusFieldUpdateOperationsInput | $Enums.OrderStatus
+    invoiceUrl?: NullableStringFieldUpdateOperationsInput | string | null
     storeId?: StringFieldUpdateOperationsInput | string
     warehouseId?: NullableStringFieldUpdateOperationsInput | string | null
     paymentProof?: NullableStringFieldUpdateOperationsInput | string | null
@@ -28386,6 +28479,7 @@ export namespace Prisma {
     shippingAddress?: StringFieldUpdateOperationsInput | string
     totalAmount?: IntFieldUpdateOperationsInput | number
     status?: EnumOrderStatusFieldUpdateOperationsInput | $Enums.OrderStatus
+    invoiceUrl?: NullableStringFieldUpdateOperationsInput | string | null
     storeId?: StringFieldUpdateOperationsInput | string
     warehouseId?: NullableStringFieldUpdateOperationsInput | string | null
     paymentProof?: NullableStringFieldUpdateOperationsInput | string | null

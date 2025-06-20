@@ -8,7 +8,7 @@ import { useEffect, useState } from "react";
 import axios from "@/lib/axios";
 import EditAddressModal from "./editAddress/page";
 
-type Address = {
+export type Address = {
   address_id: string;
   address_name: string;
   address: string;
@@ -19,6 +19,7 @@ type Address = {
   is_primary: boolean;
   created_at: string;
   updated_at: string;
+  destination_id?: string | null; // ✅ ditambahkan untuk keperluan ongkir
 };
 
 export default function AddressList() {
@@ -29,11 +30,9 @@ export default function AddressList() {
   const [loading, setLoading] = useState(false);
   const [deletingId, setDeletingId] = useState<string | null>(null);
 
-  // Modal edit state
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [addressToEdit, setAddressToEdit] = useState<Address | null>(null);
 
-  // Fetch alamat saat session ready
   useEffect(() => {
     if (!session?.accessToken) return;
 
@@ -41,9 +40,7 @@ export default function AddressList() {
       setLoading(true);
       try {
         const res = await axios.get("/address", {
-          headers: {
-            Authorization: `Bearer ${session.accessToken}`,
-          },
+          headers: { Authorization: `Bearer ${session.accessToken}` },
         });
         setAddresses(res.data.addresses ?? res.data);
       } catch (error) {
@@ -56,7 +53,6 @@ export default function AddressList() {
     fetchAddresses();
   }, [session]);
 
-  // Hapus alamat
   const handleDelete = async (id: string) => {
     if (!confirm("Yakin ingin menghapus alamat ini?")) return;
 
@@ -64,13 +60,9 @@ export default function AddressList() {
     setDeletingId(id);
     try {
       await axios.delete(`/address/${id}`, {
-        headers: {
-          Authorization: `Bearer ${session.accessToken}`,
-        },
+        headers: { Authorization: `Bearer ${session.accessToken}` },
       });
       setAddresses((prev) => prev.filter((addr) => addr.address_id !== id));
-
-      // Jika alamat yang di-edit dihapus, reset pilihan edit
       if (addressToEdit?.address_id === id) {
         setAddressToEdit(null);
         setIsEditModalOpen(false);
@@ -83,13 +75,11 @@ export default function AddressList() {
     }
   };
 
-  // Buka modal edit dan set alamat yang diedit
   const openEditModal = (address: Address) => {
     setAddressToEdit(address);
     setIsEditModalOpen(true);
   };
 
-  // Update alamat setelah diedit (callback dari modal)
   const handleUpdateAddress = (updatedAddress: Address) => {
     setAddresses((prev) =>
       prev.map((addr) =>
@@ -100,7 +90,6 @@ export default function AddressList() {
     setIsEditModalOpen(false);
   };
 
-  // Tampilan loading session
   if (loadingSession) {
     return (
       <div className="flex flex-col items-center justify-center h-screen">
@@ -109,7 +98,6 @@ export default function AddressList() {
     );
   }
 
-  // Jika belum login
   if (!session) {
     return (
       <div className="flex flex-col items-center justify-center h-screen">
@@ -127,7 +115,6 @@ export default function AddressList() {
         </aside>
 
         <main className="flex-1 p-8 overflow-auto max-w-7xl mx-auto flex gap-8">
-          {/* Daftar alamat */}
           <div className="flex-1">
             <h1 className="text-3xl font-bold mb-8">Daftar alamat</h1>
 
@@ -158,6 +145,11 @@ export default function AddressList() {
                     <p>
                       {addr.city}, {addr.province} {addr.postcode ?? ""}
                     </p>
+                    {addr.destination_id && (
+                      <p className="text-sm text-gray-500 mt-1">
+                        Destination ID: {addr.destination_id}
+                      </p>
+                    )}
                   </div>
                   <div className="flex space-x-2">
                     <button
@@ -179,7 +171,6 @@ export default function AddressList() {
             )}
           </div>
 
-          {/* Detail alamat yang sedang diedit */}
           <div className="w-96 p-6 border rounded shadow bg-gray-50">
             <h2 className="text-2xl font-semibold mb-4">Detail Alamat yang Diedit</h2>
             {addressToEdit ? (
@@ -226,7 +217,6 @@ export default function AddressList() {
             )}
           </div>
 
-          {/* Modal edit alamat */}
           <EditAddressModal
             open={isEditModalOpen}
             onClose={() => setIsEditModalOpen(false)}

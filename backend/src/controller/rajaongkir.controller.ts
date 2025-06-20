@@ -5,19 +5,32 @@ import dotenv from "dotenv";
 dotenv.config();
 
 export class RajaOngkirController {
+  /**
+   * @route   GET /api/rajaongkir/search?keyword=padang
+   * @desc    Search destination from Komerce API by keyword
+   * @access  Public
+   */
   async searchDestination(req: Request, res: Response): Promise<void> {
+    const { keyword } = req.query;
+
+    if (!keyword || typeof keyword !== "string") {
+      res.status(400).json({
+        success: false,
+        message: "Query parameter 'keyword' is required and must be a string",
+      });
+      return;
+    }
+
+    const apiKey = process.env.API_KEY_RAJA_ONGKIR;
+    if (!apiKey) {
+      res.status(500).json({
+        success: false,
+        message: "Missing 'API_KEY_RAJA_ONGKIR' in environment variables",
+      });
+      return;
+    }
+
     try {
-      const { keyword } = req.query;
-
-      if (!keyword || typeof keyword !== "string") {
-         res.status(400).json({ error: "Query 'keyword' is required and must be a string" });
-      }
-
-      const apiKey = process.env.API_KEY_RAJA_ONGKIR;
-      if (!apiKey) {
-         res.status(500).json({ error: "Missing KOMERCE_API_KEY in environment" });
-      }
-
       const response = await axios.get(
         "https://api-sandbox.collaborator.komerce.id/tariff/api/v1/destination/search",
         {
@@ -28,16 +41,94 @@ export class RajaOngkirController {
         }
       );
 
-      res.status(200).json(response.data);
-    } catch (err: any) {
-      console.error("Komerce Search Error:", err?.response?.data || err.message);
+      const results = (response.data?.data || []).map((item: any) => ({
+        id: item.id,
+        label: `${item.subdistrict_name}, ${item.city_name}, ${item.province_name}`,
+        subdistrict_name: item.subdistrict_name,
+        district_name: item.district_name,
+        city_name: item.city_name,
+        province_name: item.province_name,
+        zip_code: item.zip_code,
+      }));
 
+      res.status(200).json({
+        success: true,
+        data: results,
+      });
+    } catch (err: any) {
+      console.error("❌ Komerce Search Error:", err?.response?.data || err.message);
       if (!res.headersSent) {
         res.status(500).json({
-          error: "Failed to fetch destination data from Komerce API",
-          details: err?.response?.data?.message || err.message || "Unknown error",
+          success: false,
+          message: "Failed to fetch destination data from Komerce API",
+          error: err?.response?.data?.message || err.message || "Unknown error",
         });
       }
+    }
+  }
+
+  /**
+   * @route   GET /api/rajaongkir/cost?shipper_destination_id=...&receiver_destination_id=...&weight=...&item_value=...
+   * @desc    Calculate shipping cost using Komerce API
+   * @access  Public
+   */
+  async calculateCost(req: Request, res: Response): Promise<void> {
+    const {
+      shipper_destination_id,
+      receiver_destination_id,
+      weight,
+      item_value,
+      cod,
+    } = req.query;
+
+    if (
+      !shipper_destination_id ||
+      !receiver_destination_id ||
+      !weight ||
+      !item_value
+    ) {
+      res.status(400).json({
+        success: false,
+        message:
+          "Parameter wajib: shipper_destination_id, receiver_destination_id, weight, item_value",
+      });
+      return;
+    }
+
+    const apiKey = process.env.API_KEY_RAJA_ONGKIR;
+    if (!apiKey) {
+      res.status(500).json({ success: false, message: "Missing API Key" });
+      return;
+    }
+
+    try {
+      const response = await axios.get(
+        "https://api-sandbox.collaborator.komerce.id/tariff/api/v1/calculate",
+        {
+          headers: {
+            "x-api-key": apiKey,
+          },
+          params: {
+            shipper_destination_id,
+            receiver_destination_id,
+            weight,
+            item_value,
+            cod: cod || "no",
+          },
+        }
+      );
+
+      res.status(200).json({
+        success: true,
+        data: response.data.data,
+      });
+    } catch (err: any) {
+      console.error("❌ Error Komerce Calculate:", err?.response?.data || err.message);
+      res.status(500).json({
+        success: false,
+        message: "Gagal hitung ongkir dari Komerce",
+        error: err?.response?.data || err.message,
+      });
     }
   }
 }

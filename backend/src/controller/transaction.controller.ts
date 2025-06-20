@@ -3,7 +3,6 @@ import prisma from "../prisma";
 import { CreateInvoiceRequest } from "xendit-node/invoice/models";
 import xenditClient from "../helpers/xendit";
 
-
 export class TransactionController {
   async getAll(req: Request, res: Response) {
     const { userId, id } = req.query;
@@ -21,7 +20,9 @@ export class TransactionController {
         orderBy: { createdAt: "desc" },
       });
 
-      res.status(200).json({ message: "Data transaksi berhasil diambil", orders });
+      res
+        .status(200)
+        .json({ message: "Data transaksi berhasil diambil", orders });
     } catch (err) {
       console.error(err);
       res.status(500).json({ message: "Terjadi kesalahan", error: err });
@@ -30,7 +31,8 @@ export class TransactionController {
 
   async create(req: Request, res: Response) {
     try {
-      const { storeId, shippingAddress, items, totalAmount, voucherId } = req.body;
+      const { storeId, shippingAddress, items, totalAmount, voucherId } =
+        req.body;
       const userId = req.user?.id;
 
       if (!userId || !storeId || !items || !totalAmount || !shippingAddress) {
@@ -73,11 +75,13 @@ export class TransactionController {
           reminderTime: 1,
         };
 
-        const invoice = await xenditClient.Invoice.createInvoice({ data: invoiceData });
+        const invoice = await xenditClient.Invoice.createInvoice({
+          data: invoiceData,
+        });
 
         await txn.order.update({
           where: { id: order.id },
-          data: { paymentProof: invoice.invoiceUrl },
+          data: { invoiceUrl: invoice.invoiceUrl }, // ✅ simpan di kolom yang benar
         });
 
         res.status(201).json({ message: "Order berhasil dibuat", invoice });
@@ -88,57 +92,57 @@ export class TransactionController {
     }
   }
 
-async updateStatus(req: Request, res: Response) {
-  const { status, external_id } = req.body;
+  async updateStatus(req: Request, res: Response) {
+    const { status, external_id } = req.body;
 
-  if (!status || !external_id) {
-    res.status(400).json({ message: "Missing status or external_id" });
-  }
+    if (!status || !external_id) {
+      res.status(400).json({ message: "Missing status or external_id" });
+    }
 
-  try {
-    if (status === "PAID") {
-      // Update dan kurangi stok
-      await prisma.$transaction(async (txn) => {
-        const order = await txn.order.update({
-          where: { id: external_id },
-          data: {
-            status: "PAID",
-            confirmedAt: new Date(),
-          },
-          include: {
-            items: true,
-          },
-        });
-
-        for (const item of order.items) {
-          const stock = await txn.productStock.findFirst({
-            where: {
-              productId: item.productId,
-              storeId: order.storeId,
+    try {
+      if (status === "PAID") {
+        // Update dan kurangi stok
+        await prisma.$transaction(async (txn) => {
+          const order = await txn.order.update({
+            where: { id: external_id },
+            data: {
+              status: "PAID",
+              confirmedAt: new Date(),
+            },
+            include: {
+              items: true,
             },
           });
 
-          if (!stock || stock.quantity < item.quantity) {
-            throw new Error("Stok tidak mencukupi");
+          for (const item of order.items) {
+            const stock = await txn.productStock.findFirst({
+              where: {
+                productId: item.productId,
+                storeId: order.storeId,
+              },
+            });
+
+            if (!stock || stock.quantity < item.quantity) {
+              throw new Error("Stok tidak mencukupi");
+            }
+
+            await txn.productStock.update({
+              where: { id: stock.id },
+              data: { quantity: stock.quantity - item.quantity },
+            });
           }
+        });
+      } else if (status === "EXPIRED") {
+        await prisma.order.update({
+          where: { id: external_id },
+          data: { status: "EXPIRED" },
+        });
+      }
 
-          await txn.productStock.update({
-            where: { id: stock.id },
-            data: { quantity: stock.quantity - item.quantity },
-          });
-        }
-      });
-    } else if (status === "EXPIRED") {
-      await prisma.order.update({
-        where: { id: external_id },
-        data: { status: "EXPIRED" },
-      });
+      res.status(200).json({ message: "Status updated successfully ✅" });
+    } catch (err) {
+      console.error("Update status error:", err);
+      res.status(400).json({ message: "Failed to update status", error: err });
     }
-
-    res.status(200).json({ message: "Status updated successfully ✅" });
-  } catch (err) {
-    console.error("Update status error:", err);
-    res.status(400).json({ message: "Failed to update status", error: err });
   }
-}
 }
