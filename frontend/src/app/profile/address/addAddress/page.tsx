@@ -4,7 +4,7 @@ import Navbar from "@/components/navbar/navbar/Navbar";
 import Sidebar from "@/components/navbar/navbar/Sidebar";
 import Footer from "@/components/navbar/navbar/footer";
 import { useSession } from "next-auth/react";
-import { useState, ChangeEvent, FormEvent } from "react";
+import { useState, useEffect, ChangeEvent, FormEvent } from "react";
 import axios from "@/lib/axios";
 
 import {
@@ -99,9 +99,9 @@ export default function CreateAddressPage() {
   const [formData, setFormData] = useState<AddressFormData>({
     address_name: "",
     address: "",
-    subdistrict: "",
-    city: "",
     province: "",
+    city: "",
+    subdistrict: "",
     postcode: "",
     latitude: undefined,
     longitude: undefined,
@@ -116,9 +116,10 @@ export default function CreateAddressPage() {
   const [message, setMessage] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isLocating, setIsLocating] = useState(false);
+  const [subdistricts, setSubdistricts] = useState<any[]>([]);
 
   const handleChange = (
-    e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+    e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
   ) => {
     const { name, value, type, checked } = e.target as HTMLInputElement;
 
@@ -210,15 +211,16 @@ export default function CreateAddressPage() {
         setFormData({
           address_name: "",
           address: "",
-          subdistrict: "",
-          city: "",
           province: "",
+          city: "",
+          subdistrict: "",
           postcode: "",
           latitude: undefined,
           longitude: undefined,
           is_primary: false,
           destination_id: undefined,
         });
+        setSubdistricts([]);
       } else {
         setMessage("Gagal membuat alamat.");
       }

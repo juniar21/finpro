@@ -249,11 +249,12 @@ getAllProducts = async (req: Request, res: Response) => {
 };
 
 
- getProductById = async (req: Request, res: Response) => {
+getProductById = async (req: Request, res: Response) => {
   try {
     const { id } = req.params;
     if (!id) {
-       res.status(400).json({ message: "Missing id parameter" });
+      res.status(400).json({ message: "Missing id parameter" });
+      return;
     }
 
     const now = new Date();
@@ -268,7 +269,7 @@ getAllProducts = async (req: Request, res: Response) => {
             endDate: { gte: now },
           },
           orderBy: { startDate: "desc" },
-          take: 1, // Ambil hanya diskon aktif terbaru
+          take: 1,
         },
         stocks: {
           include: {
@@ -279,13 +280,14 @@ getAllProducts = async (req: Request, res: Response) => {
     });
 
     if (!product) {
-       res.status(404).json({ message: "Product not found" });
-       return;
+      res.status(404).json({ message: "Product not found" });
+      return;
     }
 
-    // Hitung finalPrice jika ada diskon
+    const storeId = product.stocks[0]?.storeId || null;
+
     let finalPrice = product.price;
-    const activeDiscount = product.discount[0]; // karena hasilnya array
+    const activeDiscount = product.discount[0];
 
     if (activeDiscount) {
       if (activeDiscount.isPercentage) {
@@ -295,8 +297,9 @@ getAllProducts = async (req: Request, res: Response) => {
       }
     }
 
-    res.json({
+    res.status(200).json({
       ...product,
+      storeId,
       discount: activeDiscount || null,
       finalPrice,
     });
@@ -305,7 +308,6 @@ getAllProducts = async (req: Request, res: Response) => {
     res.status(500).json({ message: "Failed to fetch product by id", error });
   }
 };
-
 
 
 

@@ -164,7 +164,9 @@ export class AddressController {
         return;
       }
 
-      const address = await prisma.address.findUnique({ where: { address_id } });
+      const address = await prisma.address.findUnique({
+        where: { address_id },
+      });
       if (!address) {
         res.status(404).json({ message: "Address not found" });
         return;

@@ -161,6 +161,7 @@ exports.Prisma.StoreScalarFieldEnum = {
   adminId: 'adminId',
   latitude: 'latitude',
   longitude: 'longitude',
+  city_id: 'city_id',
   createdAt: 'createdAt'
 };
 
@@ -202,6 +203,7 @@ exports.Prisma.OrderScalarFieldEnum = {
   shippingAddress: 'shippingAddress',
   totalAmount: 'totalAmount',
   status: 'status',
+  invoiceUrl: 'invoiceUrl',
   storeId: 'storeId',
   voucherId: 'voucherId',
   warehouseId: 'warehouseId',

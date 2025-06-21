@@ -1,5 +1,4 @@
-// src/lib/rajaongkir.ts
-import axios from "@/lib/axios";
+import axios from "@/lib/axios"; // gunakan axios yang sudah di-custom
 
 export const searchDestination = async (keyword: string) => {
   const response = await axios.get("/rajaongkir/search", {
