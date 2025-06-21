@@ -27,7 +27,7 @@ type Product = {
   };
 };
 
-export default function TopSellingSection() {
+export default function NewArrivalsSection() {
   const [products, setProducts] = useState<Product[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -36,7 +36,7 @@ export default function TopSellingSection() {
   useEffect(() => {
     const fetchProducts = async () => {
       try {
-        const response = await axios.get("/product/all");
+        const response = await axios.get("/product2/new-arrivals");
         setProducts(response.data);
       } catch (err) {
         setError("Failed to load top selling products");
@@ -71,7 +71,7 @@ export default function TopSellingSection() {
   return (
     <section className="w-full bg-white py-12 px-6">
       <div className="max-w-7xl mx-auto mt-16">
-        <h2 className="text-3xl font-extrabold text-gray-900">TOP SELLING</h2>
+        <h2 className="text-3xl font-extrabold text-gray-900">New Arrivals</h2>
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-8 mt-8">
           {productsToShow.map((product) => (
             <div
@@ -123,12 +123,12 @@ export default function TopSellingSection() {
           ))}
         </div>
         <div className="mt-8 text-center">
-          <button
-            onClick={() => setShowAll((prev) => !prev)}
-            className="px-6 py-3 bg-black text-white rounded-full hover:bg-gray-800 transition-colors duration-300"
-          >
-            {showAll ? "View Less" : "View More"}
-          </button>
+            <Link
+            href="/newarrivals"
+            className="inline-block px-6 py-3 bg-black text-white rounded-full hover:bg-gray-800 transition-colors duration-300"
+            >
+            View All New Arrivals
+            </Link>
         </div>
       </div>
     </section>

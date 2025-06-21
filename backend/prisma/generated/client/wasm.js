@@ -161,6 +161,7 @@ exports.Prisma.StoreScalarFieldEnum = {
   adminId: 'adminId',
   latitude: 'latitude',
   longitude: 'longitude',
+  city_id: 'city_id',
   createdAt: 'createdAt'
 };
 

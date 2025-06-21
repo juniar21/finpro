@@ -14,15 +14,35 @@ export class AddressController {
       const addresses = await prisma.address.findMany({
         where: { id: String(userId) },
         orderBy: { created_at: "desc" },
+        select: {
+          address_id: true,
+          address_name: true,
+          address: true,
+          city: true,
+          province: true,
+          is_primary: true,
+          destination_id: true, // Ambil dari DB
+        },
       });
+
+      const formatted = addresses.map((a) => ({
+        address_id: a.address_id,
+        address_name: a.address_name,
+        address: a.address,
+        city: a.city,
+        province: a.province,
+        is_primary: a.is_primary,
+        city_id: a.destination_id || "", // Rename jadi city_id
+      }));
 
       res.status(200).json({
         message: "Address list",
-        addresses,
+        addresses: formatted,
       });
     } catch (err) {
       console.error(err);
-      if (!res.headersSent) res.status(500).json({ error: (err as Error).message || err });
+      if (!res.headersSent)
+        res.status(500).json({ error: (err as Error).message || err });
     }
   }
 
@@ -45,11 +65,15 @@ export class AddressController {
 
       res.status(200).json({
         message: "Address detail",
-        address,
+        address: {
+          ...address,
+          city_id: address.destination_id,
+        },
       });
     } catch (err) {
       console.error(err);
-      if (!res.headersSent) res.status(500).json({ error: (err as Error).message || err });
+      if (!res.headersSent)
+        res.status(500).json({ error: (err as Error).message || err });
     }
   }
 
@@ -64,7 +88,7 @@ export class AddressController {
       const data: Prisma.AddressCreateInput = {
         ...req.body,
         id: userId,
-        destination_id: req.body.destination_id || null, // ✅ tambahkan ini
+        destination_id: req.body.destination_id || null,
       };
 
       if (data.is_primary) {
@@ -78,11 +102,15 @@ export class AddressController {
 
       res.status(201).json({
         message: "Address created ✅",
-        newAddress,
+        newAddress: {
+          ...newAddress,
+          city_id: newAddress.destination_id,
+        },
       });
     } catch (err) {
       console.error(err);
-      if (!res.headersSent) res.status(500).json({ error: (err as Error).message || err });
+      if (!res.headersSent)
+        res.status(500).json({ error: (err as Error).message || err });
     }
   }
 
@@ -96,7 +124,7 @@ export class AddressController {
 
       const data: Prisma.AddressUpdateInput = {
         ...req.body,
-        destination_id: req.body.destination_id || null, // ✅ tambahkan ini
+        destination_id: req.body.destination_id || null,
       };
 
       if (data.is_primary === true) {
@@ -116,11 +144,15 @@ export class AddressController {
 
       res.status(200).json({
         message: "Address updated ✅",
-        updatedAddress,
+        updatedAddress: {
+          ...updatedAddress,
+          city_id: updatedAddress.destination_id,
+        },
       });
     } catch (err) {
       console.error(err);
-      if (!res.headersSent) res.status(500).json({ error: (err as Error).message || err });
+      if (!res.headersSent)
+        res.status(500).json({ error: (err as Error).message || err });
     }
   }
 
@@ -132,7 +164,9 @@ export class AddressController {
         return;
       }
 
-      const address = await prisma.address.findUnique({ where: { address_id } });
+      const address = await prisma.address.findUnique({
+        where: { address_id },
+      });
       if (!address) {
         res.status(404).json({ message: "Address not found" });
         return;
@@ -143,7 +177,8 @@ export class AddressController {
       res.status(200).json({ message: "Address deleted ✅" });
     } catch (err) {
       console.error(err);
-      if (!res.headersSent) res.status(500).json({ error: (err as Error).message || err });
+      if (!res.headersSent)
+        res.status(500).json({ error: (err as Error).message || err });
     }
   }
 }

@@ -1,9 +1,4 @@
-<<<<<<< HEAD
 import axios from "@/lib/axios"; // gunakan axios yang sudah di-custom
-=======
-// src/lib/rajaongkir.ts
-import axios from "@/lib/axios";
->>>>>>> f4e6b7289c596a9eb7f5612ccac6573a9574f437
 
 export const searchDestination = async (keyword: string) => {
   const response = await axios.get("/rajaongkir/search", {
@@ -12,8 +7,6 @@ export const searchDestination = async (keyword: string) => {
   return response.data;
 };
 
-<<<<<<< HEAD
-=======
 export const calculateShippingCost = async ({
   shipper_destination_id,
   receiver_destination_id,
@@ -38,4 +31,3 @@ export const calculateShippingCost = async ({
   });
   return response.data.data; // return object berisi calculate_reguler, calculate_cargo, etc.
 };
->>>>>>> f4e6b7289c596a9eb7f5612ccac6573a9574f437

@@ -51,7 +51,7 @@ export default function CheckoutPage() {
   const [shippingCost, setShippingCost] = useState<number>(0);
   const [shippingLoading, setShippingLoading] = useState(false);
 
-  const originCityId = "501";
+  const originCityId = "501"; // Kota asal tetap (misalnya Padang)
 
   useEffect(() => {
     const fetchData = async () => {
@@ -87,15 +87,15 @@ export default function CheckoutPage() {
   }, [session]);
 
   const fetchShippingCost = async (receiver_city_id: string) => {
-    if (!originCityId || !receiver_city_id || !product) return;
+    if (!originCityId || !receiver_city_id) return;
     setShippingLoading(true);
     try {
       const res = await axios.get("/rajaongkir/cost", {
         params: {
           shipper_destination_id: originCityId,
           receiver_destination_id: receiver_city_id,
-          weight: product.quantity * 1000,
-          item_value: product.price,
+          weight: product?.quantity || 1,
+          item_value: product?.price || 0,
         },
       });
       setShippingData(res.data.data);
@@ -109,10 +109,12 @@ export default function CheckoutPage() {
 
   useEffect(() => {
     const selected = addresses.find((a) => a.address_id === selectedAddressId);
-    if (selected?.city_id) fetchShippingCost(selected.city_id);
-  }, [selectedAddressId, addresses, product]);
+    if (selected?.city_id) {
+      fetchShippingCost(selected.city_id);
+    }
+  }, [selectedAddressId, addresses]);
 
-  const handleConfirm = async () => {
+  const handleConfirm = () => {
     if (!selectedAddressId || !product || !selectedShippingOption) {
       alert("Pilih alamat, produk, dan opsi pengiriman.");
       return;
@@ -211,7 +213,9 @@ export default function CheckoutPage() {
             <p className="text-sm text-gray-500">Color: {product.color}</p>
             <p className="text-sm text-gray-500">Size: {product.size}</p>
             <p className="text-sm text-gray-500">Quantity: {product.quantity}</p>
-            <p className="text-sm text-gray-500">Price: Rp{product.price.toLocaleString()}</p>
+            <p className="text-sm text-gray-500">
+              Price: Rp{product.price.toLocaleString()}
+            </p>
           </div>
         </div>
 
@@ -259,65 +263,63 @@ export default function CheckoutPage() {
           </div>
         )}
 
-        {/* Pengiriman */}
+        {/* Opsi Pengiriman */}
         {shippingData && (
           <div className="space-y-4">
             <h3 className="font-semibold text-lg">Opsi Pengiriman</h3>
-            {["calculate_reguler", "calculate_cargo", "calculate_instant"].map((type) => {
-              const options = shippingData[type] || [];
-              if (!Array.isArray(options) || options.length === 0) return null;
+            {["calculate_reguler", "calculate_cargo", "calculate_instant"].map(
+              (type) =>
+                shippingData[type]?.length > 0 && (
+                  <div key={type}>
+                    <h4 className="text-md font-semibold capitalize mb-2">
+                      {type.replace("calculate_", "")}
+                    </h4>
+                    <div className="grid gap-2">
+                      {shippingData[type].map((option: any, index: number) => {
+                        const optionId = `${type}-${index}`;
+                        const isSelected = selectedShippingOption?.id === optionId;
 
-              return (
-                <div key={type}>
-                  <h4 className="text-md font-semibold capitalize mb-2">
-                    {type.replace("calculate_", "")}
-                  </h4>
-                  <div className="grid gap-2">
-                    {options.map((option: any, index: number) => {
-                      const optionId = `${type}-${index}`;
-                      const isSelected = selectedShippingOption?.id === optionId;
-
-                      return (
-                        <label
-                          key={optionId}
-                          className={`flex items-center justify-between border p-3 rounded-md cursor-pointer ${
-                            isSelected ? "border-blue-500 bg-blue-50" : "bg-gray-50"
-                          }`}
-                        >
-                          <div className="flex items-start gap-3">
-                            <input
-                              type="radio"
-                              name="shipping_option"
-                              checked={isSelected}
-                              onChange={() => {
-                                setSelectedShippingOption({ ...option, id: optionId });
-                                setShippingCost(option.shipping_cost_net / 1000);
-                              }}
-                              className="accent-blue-600 mt-1"
-                            />
-                            <div>
-                              <div className="font-medium">
-                                {option.shipping_name} - {option.service_name}
-                              </div>
-                              <div className="text-sm text-gray-700">
-                                Ongkir: Rp{(option.shipping_cost_net / 1000).toLocaleString()}
-                              </div>
-                              <div className="text-xs text-gray-500">
-                                Estimasi: {option.etd || "-"}
+                        return (
+                          <label
+                            key={optionId}
+                            className={`flex items-center justify-between border p-3 rounded-md cursor-pointer ${
+                              isSelected ? "border-blue-500 bg-blue-50" : "bg-gray-50"
+                            }`}
+                          >
+                            <div className="flex items-start gap-3">
+                              <input
+                                type="radio"
+                                name="shipping_option"
+                                checked={isSelected}
+                                onChange={() => {
+                                  setSelectedShippingOption({ ...option, id: optionId });
+                                  setShippingCost(option.shipping_cost_net);
+                                }}
+                                className="accent-blue-600 mt-1"
+                              />
+                              <div>
+                                <div className="font-medium">
+                                  {option.shipping_name} - {option.service_name}
+                                </div>
+                                <div>
+                                  Ongkir: Rp{option.shipping_cost_net.toLocaleString()}
+                                </div>
+                                <div className="text-xs text-gray-500">
+                                  Estimasi: {option.etd || "-"}
+                                </div>
                               </div>
                             </div>
-                          </div>
-                        </label>
-                      );
-                    })}
+                          </label>
+                        );
+                      })}
+                    </div>
                   </div>
-                </div>
-              );
-            })}
+                )
+            )}
           </div>
         )}
 
-        {/* Ringkasan Harga */}
+        {/* Total */}
         <div className="flex justify-between text-lg font-medium">
           <span>Subtotal:</span>
           <span>Rp{subtotal.toLocaleString()}</span>
@@ -335,6 +337,7 @@ export default function CheckoutPage() {
           <span>Rp{(finalTotal + shippingCost).toLocaleString()}</span>
         </div>
 
+        {/* Tombol Konfirmasi */}
         <button
           className="w-full bg-black text-white py-3 rounded-md hover:bg-gray-800 transition disabled:opacity-50"
           onClick={handleConfirm}

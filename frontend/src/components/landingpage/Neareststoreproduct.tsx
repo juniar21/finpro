@@ -6,8 +6,8 @@ import axios from "@/lib/axios";
 import dynamic from "next/dynamic";
 import "leaflet/dist/leaflet.css";
 import { Loader2 } from "lucide-react";
+import Link from "next/link";
 
-// Dynamic import untuk Leaflet komponen
 const MapContainer = dynamic(
   () => import("react-leaflet").then((mod) => mod.MapContainer),
   { ssr: false }
@@ -185,56 +185,55 @@ export default function NearestProductsPage() {
       ) : (
         <section>
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-            {productsToShow.map((product) => (
-              <div
-                key={product.id}
-                className="border rounded-lg p-4 shadow-sm hover:shadow-md transition"
-              >
-                <img
-                  src={product.imageUrl || "/default-product-image.png"}
-                  alt={product.name}
-                  className="w-full h-48 object-cover rounded-lg"
-                />
-                <div className="mt-4">
-                  <h3 className="font-semibold text-lg">{product.name}</h3>
-                  <p className="text-sm text-gray-600 truncate">
-                    {product.description || "Tidak ada deskripsi"}
-                  </p>
+{productsToShow.map((product) => (
+  <Link
+    key={product.id}
+    href={`/detail/${product.id}`}
+    className="border rounded-lg p-4 shadow-sm hover:shadow-md transition block"
+  >
+    <img
+      src={product.imageUrl || "/default-product-image.png"}
+      alt={product.name}
+      className="w-full h-48 object-cover rounded-lg"
+    />
+    <div className="mt-4">
+      <h3 className="font-semibold text-lg">{product.name}</h3>
+      <p className="text-sm text-gray-600 truncate">
+        {product.description || "Tidak ada deskripsi"}
+      </p>
 
-                  {product.discount ? (
-                    <div className="mt-2">
-                      <p className="text-sm text-red-500 font-semibold">
-                        Diskon{" "}
-                        {product.discount.isPercentage
-                          ? `${product.discount.amount}%`
-                          : `Rp ${product.discount.amount.toLocaleString()}`}{" "}
-                        tersedia!
-                      </p>
-                      <p className="text-lg font-bold text-green-600">
-                        Rp {product.finalPrice.toLocaleString()}
-                      </p>
-                      <p className="text-sm text-gray-500 line-through">
-                        Rp {product.price.toLocaleString()}
-                      </p>
-                      <p className="text-xs text-gray-400">
-                        Berlaku s.d.{" "}
-                        {new Date(product.discount.endDate).toLocaleDateString(
-                          "id-ID"
-                        )}
-                      </p>
-                    </div>
-                  ) : (
-                    <p className="mt-2 text-xl font-semibold text-gray-800">
-                      Rp {product.price.toLocaleString()}
-                    </p>
-                  )}
+      {product.discount ? (
+        <div className="mt-2">
+          <p className="text-sm text-red-500 font-semibold">
+            Diskon{" "}
+            {product.discount.isPercentage
+              ? `${product.discount.amount}%`
+              : `Rp ${product.discount.amount.toLocaleString()}`}{" "}
+            tersedia!
+          </p>
+          <p className="text-lg font-bold text-green-600">
+            Rp {product.finalPrice.toLocaleString()}
+          </p>
+          <p className="text-sm text-gray-500 line-through">
+            Rp {product.price.toLocaleString()}
+          </p>
+          <p className="text-xs text-gray-400">
+            Berlaku s.d.{" "}
+            {new Date(product.discount.endDate).toLocaleDateString("id-ID")}
+          </p>
+        </div>
+      ) : (
+        <p className="mt-2 text-xl font-semibold text-gray-800">
+          Rp {product.price.toLocaleString()}
+        </p>
+      )}
 
-                  <p className="text-sm text-gray-500 mt-1 italic">
-                    Stok: {product.quantity}
-                  </p>
-                </div>
-              </div>
-            ))}
+      <p className="text-sm text-gray-500 mt-1 italic">
+        Stok: {product.quantity}
+      </p>
+    </div>
+  </Link>
+))}
           </div>
 
           {products.length > 4 && (

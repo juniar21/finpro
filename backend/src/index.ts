@@ -15,6 +15,7 @@ import { AdminsRouter } from "./routers/store-admins.routers";
 import { DiscountRouter } from "./routers/discount.router";
 import { RajaOngkirRouter } from "./routers/rajaongkir.router";
 import { TransactionRouter } from "./routers/transaction.router";
+import { ProductRouter2 } from "./routers/product2.router";
 // import { RajaOngkirRouter } from "./routers/rajaongkir.router";
 //import cron from "node-cron";
 // import { OrderRouter } from "./routers/order.router";
@@ -58,6 +59,9 @@ app.use("/api/store",storeRouter.getRouter());
 const productRouter = new ProductRouter();
 app.use("/api/product",productRouter.getRouter());
 
+const productRouter2 = new ProductRouter2();
+app.use("/api/product2",productRouter2.getRouter());
+
 const categoryRouter = new CategoryRouter();
 app.use("/api/category", categoryRouter.getRouter());
 
@@ -69,6 +73,8 @@ app.use("/api/rajaongkir", rajaongkirRouter.getRouter());
 
 const transactionRouter = new TransactionRouter();
 app.use("/api/transaction", transactionRouter.getRouter());
+
+
 
 
 

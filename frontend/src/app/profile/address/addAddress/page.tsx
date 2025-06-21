@@ -109,20 +109,14 @@ export default function CreateAddressPage() {
     destination_id: undefined,
   });
 
-<<<<<<< HEAD
-  const [provinces, setProvinces] = useState<Option[]>([]);
-  const [cities, setCities] = useState<Option[]>([]);
-  const [subdistricts, setSubdistricts] = useState<Option[]>([]);
-
-=======
   const [destKeyword, setDestKeyword] = useState("");
   const [destResults, setDestResults] = useState<Destination[]>([]);
   const [destLoading, setDestLoading] = useState(false);
   const [destError, setDestError] = useState("");
->>>>>>> f4e6b7289c596a9eb7f5612ccac6573a9574f437
   const [message, setMessage] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isLocating, setIsLocating] = useState(false);
+  const [subdistricts, setSubdistricts] = useState<any[]>([]);
 
   const handleChange = (
     e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
@@ -226,7 +220,6 @@ export default function CreateAddressPage() {
           is_primary: false,
           destination_id: undefined,
         });
-        setCities([]);
         setSubdistricts([]);
       } else {
         setMessage("Gagal membuat alamat.");

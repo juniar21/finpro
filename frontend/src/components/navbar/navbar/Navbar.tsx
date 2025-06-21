@@ -18,16 +18,8 @@ export default function Navbar() {
       {showPromo && (
         <div className="bg-black text-white text-center text-sm py-2 px-4 relative">
           <span>
-            Sign up and get 20% off to your first order.{" "}
-            <a className="underline font-semibold hover:text-gray-300">Sign Up Now</a>
+            Wellcome To Shop.co!{" "}
           </span>
-            <button
-            onClick={() => setShowPromo(false)}
-            className="absolute right-2 top-2 text-white hover:text-gray-400"
-            aria-label="Close Promo"
-            >
-            ✕
-            </button>
         </div>
       )}
 
@@ -56,10 +48,7 @@ export default function Navbar() {
               
             </li>
             <li>
-              <a className="hover:text-gray-700">On Sale</a>
-            </li>
-            <li>
-              <Link href="/category" className="hover:text-gray-700">New Arrivals</Link>
+              <Link href="/newarrivals" className="hover:text-gray-700">New Arrivals</Link>
             </li>
             <li>
               <Link href="/category" className="hover:text-gray-700">All Brands</Link>
