@@ -1,4 +1,3 @@
-// src/routes/transaction.router.ts
 import { Router } from "express";
 import { TransactionController } from "../controller/transaction.controller";
 import { AuthMiddleware } from "../middleware/auth.middleware";
@@ -37,7 +36,7 @@ export class TransactionRouter {
     );
   }
 
-  public getRouter(): Router {
+  getRouter(): Router {
     return this.router;
   }
 }

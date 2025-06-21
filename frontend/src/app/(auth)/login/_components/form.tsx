@@ -57,7 +57,6 @@ export default function FormLogin() {
       toast.error("Terjadi kesalahan saat login.");
     }
   };
-
   const handleGoogleLogin = async () => {
     try {
       const googleResponse = await signIn("google", {
@@ -76,7 +75,6 @@ export default function FormLogin() {
         throw new Error("Data user Google tidak ditemukan.");
       }
 
-      // Kirim ke backend untuk verifikasi atau pendaftaran
       const { data } = await axios.post("/auth/google", {
         email: googleUser.email,
         name: googleUser.name,
@@ -85,15 +83,14 @@ export default function FormLogin() {
 
       const user = data.data;
 
-      // Logout dari session Google (agar tidak dobel sesi)
+
       await signOut({ redirect: false });
 
-      // Login ulang dengan credentials biasa
       await signIn("credentials", {
         redirectTo: "/",
         id: user.id,
         email: user.email,
-        password: user.generatedPassword, // Pastikan backend mengirim ini
+        password: user.generatedPassword, 
         name: user.name,
         avatar: user.avatar ?? "",
         referralCode: user.referralCode ?? "",

@@ -71,14 +71,9 @@ export default function CheckoutPage() {
           ]);
           const addrs: Address[] = addrRes.data.addresses ?? addrRes.data;
           setAddresses(addrs);
-<<<<<<< HEAD
-          const primary = addrs.find(a => a.is_primary);
-          setSelectedAddressId(primary?.address_id || addrs[0]?.address_id || "");
-=======
           const primary = addrs.find((a) => a.is_primary);
           const selectedId = primary?.address_id || addrs[0]?.address_id || "";
           setSelectedAddressId(selectedId);
->>>>>>> f4e6b7289c596a9eb7f5612ccac6573a9574f437
           setReward(rewardRes.data);
         } catch (e) {
           console.error("error fetchData", e);
@@ -91,11 +86,6 @@ export default function CheckoutPage() {
     fetchData();
   }, [session]);
 
-<<<<<<< HEAD
-  const handleConfirm = async () => {
-    if (!selectedAddressId || !product || !product.storeId) {
-      alert("Data tidak lengkap. Pastikan produk dan alamat tersedia.");
-=======
   const fetchShippingCost = async (receiver_destination_id: string) => {
     setShippingLoading(true);
     try {
@@ -124,10 +114,9 @@ export default function CheckoutPage() {
     }
   }, [selectedAddressId, addresses]);
 
-  const handleConfirm = () => {
+  const handleConfirm = async () => {
     if (!selectedAddressId || !product || !selectedShippingOption) {
       alert("Pilih alamat, produk, dan opsi pengiriman.");
->>>>>>> f4e6b7289c596a9eb7f5612ccac6573a9574f437
       return;
     }
 
@@ -187,23 +176,6 @@ export default function CheckoutPage() {
     );
   }
 
-<<<<<<< HEAD
-  if (!session?.accessToken) {
-    return <div className="p-8 text-center">Silakan login untuk melanjutkan checkout.</div>;
-  }
-
-  if (!product) {
-    return <div className="p-8 text-center">Produk tidak ditemukan.</div>;
-  }
-
-  const subtotal = product.price * product.quantity;
-  const totalPoints = reward?.points.reduce((a, p) => a + p.amount, 0) || 0;
-  const pointDiscount = usePoints ? Math.min(subtotal, totalPoints * 1000) : 0;
-  const voucher = reward?.voucher;
-  const voucherDiscount = useVoucher && voucher
-    ? Math.min((voucher.percentage / 100) * subtotal, voucher.maxDiscount)
-    : 0;
-=======
   if (!session || !session.accessToken) {
     return (
       <p className="text-center mt-20">
@@ -229,7 +201,6 @@ export default function CheckoutPage() {
     useVoucher && voucher
       ? Math.min((voucher.percentage / 100) * subtotal, voucher.maxDiscount)
       : 0;
->>>>>>> f4e6b7289c596a9eb7f5612ccac6573a9574f437
   const totalDiscount = pointDiscount + voucherDiscount;
   const finalTotal = subtotal - totalDiscount;
 
@@ -245,17 +216,6 @@ export default function CheckoutPage() {
         ))}
       </select>
 
-<<<<<<< HEAD
-      <div className="flex gap-4 mb-4">
-        <img src={product.imageUrl} className="w-32 h-32 object-cover rounded" />
-        <div>
-          <p className="font-semibold">{product.name}</p>
-          <p>Warna: {product.color}</p>
-          <p>Ukuran: {product.size}</p>
-          <p>Jumlah: {product.quantity}</p>
-          <p>Harga satuan: Rp{product.price.toLocaleString()}</p>
-        </div>
-=======
       <div className="bg-white p-6 rounded-xl shadow-md space-y-6">
         {/* Alamat */}
         <div>
@@ -475,7 +435,6 @@ export default function CheckoutPage() {
         >
           {isSubmitting ? "Processing..." : "Confirm and Pay"}
         </button>
->>>>>>> f4e6b7289c596a9eb7f5612ccac6573a9574f437
       </div>
 
       {reward && (

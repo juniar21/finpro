@@ -462,6 +462,94 @@ getProductById = async (req: Request, res: Response) => {
      res.status(500).json({ error: "Terjadi kesalahan server." });
   }
 };
+
+ getNewArrivalProducts = async (req: Request, res: Response) => {
+  try {
+    const limit = parseInt(req.query.limit as string) || 10;
+
+    // Hitung tanggal 10 hari yang lalu dari sekarang
+    const tenDaysAgo = new Date();
+    tenDaysAgo.setDate(tenDaysAgo.getDate() - 10);
+
+    const products = await prisma.product.findMany({
+      where: {
+        createdAt: {
+          gte: tenDaysAgo, // hanya ambil produk yang dibuat dalam 10 hari terakhir
+        },
+      },
+      orderBy: {
+        createdAt: "desc",
+      },
+      take: limit,
+      include: {
+        category: true,
+        discount: true,
+        stocks: {
+          include: {
+            store: true,
+          },
+        },
+      },
+    });
+
+    if (!products || products.length === 0) {
+      return res.status(404).json({ message: "Tidak ada produk baru dalam 10 hari terakhir" });
+    }
+
+    const now = new Date();
+
+    const result = products.map((product) => {
+      const totalStock = product.stocks.reduce((sum, stock) => sum + stock.quantity, 0);
+      const store = product.stocks[0]?.store;
+
+      let finalPrice = product.price;
+      const discount = product.discount.length > 0 ? product.discount[0] : null;
+
+      if (
+        discount &&
+        new Date(discount.startDate) <= now &&
+        new Date(discount.endDate) >= now
+      ) {
+        finalPrice = discount.isPercentage
+          ? Math.round(product.price * (1 - discount.amount / 100))
+          : Math.max(0, product.price - discount.amount);
+      }
+
+      return {
+        id: product.id,
+        name: product.name,
+        description: product.description,
+        imageUrl: product.imageUrl,
+        price: product.price,
+        finalPrice,
+        totalStock,
+        category: product.category,
+        store: store
+          ? {
+              id: store.id,
+              name: store.name,
+              address: store.address,
+            }
+          : null,
+        discount: discount
+          ? {
+              id: discount.id,
+              amount: discount.amount,
+              isPercentage: discount.isPercentage,
+              startDate: discount.startDate,
+              endDate: discount.endDate,
+            }
+          : null,
+        createdAt: product.createdAt,
+      };
+    });
+
+    return res.status(200).json(result);
+  } catch (error) {
+    console.error("Error fetching new arrivals:", error);
+    return res.status(500).json({ message: "Gagal mengambil produk terbaru", error });
+  }
+};
 }
 
 
