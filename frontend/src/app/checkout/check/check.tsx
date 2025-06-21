@@ -13,6 +13,7 @@ interface CheckoutProduct {
   quantity: number;
   color: string;
   size: string;
+  weight: number;
 }
 
 interface Address {
@@ -47,16 +48,21 @@ export default function CheckoutPage() {
   const [isLoading, setIsLoading] = useState(true);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [shippingData, setShippingData] = useState<any>(null);
-  const [selectedShippingOption, setSelectedShippingOption] = useState<any>(null);
+  const [selectedShippingOption, setSelectedShippingOption] =
+    useState<any>(null);
   const [shippingCost, setShippingCost] = useState<number>(0);
   const [shippingLoading, setShippingLoading] = useState(false);
 
-  const originCityId = "501";
+  const [originCityId, setOriginCityId] = useState<string | null>(null);
 
   useEffect(() => {
     const fetchData = async () => {
       const data = localStorage.getItem("checkout");
-      if (data) setProduct(JSON.parse(data));
+      if (data) {
+        const parsed = JSON.parse(data);
+        setProduct(parsed);
+        setOriginCityId(parsed.originCityId ?? null); // ✅
+      }
 
       if (session?.accessToken) {
         try {
@@ -135,15 +141,24 @@ export default function CheckoutPage() {
   }
 
   if (!session || !session.accessToken) {
-    return <p className="text-center mt-20">Silakan login untuk melanjutkan checkout.</p>;
+    return (
+      <p className="text-center mt-20">
+        Silakan login untuk melanjutkan checkout.
+      </p>
+    );
   }
 
   if (!product) {
-    return <p className="text-center mt-20">Produk tidak ditemukan di keranjang checkout.</p>;
+    return (
+      <p className="text-center mt-20">
+        Produk tidak ditemukan di keranjang checkout.
+      </p>
+    );
   }
 
   const subtotal = product.price * product.quantity;
-  const totalPoints = reward?.points?.reduce((acc, p) => acc + p.amount, 0) || 0;
+  const totalPoints =
+    reward?.points?.reduce((acc, p) => acc + p.amount, 0) || 0;
   const pointDiscount = usePoints ? Math.min(subtotal, totalPoints * 1000) : 0;
   const voucher = reward?.voucher;
   const voucherDiscount =
@@ -160,7 +175,9 @@ export default function CheckoutPage() {
       <div className="bg-white p-6 rounded-xl shadow-md space-y-6">
         {/* Alamat */}
         <div>
-          <h2 className="text-lg font-semibold mb-4">Pilih Alamat Pengiriman</h2>
+          <h2 className="text-lg font-semibold mb-4">
+            Pilih Alamat Pengiriman
+          </h2>
           {addresses.length === 0 ? (
             <p className="text-sm text-gray-500">Belum ada alamat tersimpan.</p>
           ) : (
@@ -184,12 +201,16 @@ export default function CheckoutPage() {
                       className="mt-1 accent-blue-600"
                     />
                     <div className="flex flex-col">
-                      <span className="text-sm font-medium text-gray-800">{addr.address_name}</span>
+                      <span className="text-sm font-medium text-gray-800">
+                        {addr.address_name}
+                      </span>
                       <span className="text-sm text-gray-500">
                         {addr.address}, {addr.city}, {addr.province}
                       </span>
                       {addr.is_primary && (
-                        <span className="text-xs text-green-600 font-medium mt-1">Alamat Utama</span>
+                        <span className="text-xs text-green-600 font-medium mt-1">
+                          Alamat Utama
+                        </span>
                       )}
                     </div>
                   </div>
@@ -210,8 +231,15 @@ export default function CheckoutPage() {
             <h2 className="text-xl font-semibold">{product.name}</h2>
             <p className="text-sm text-gray-500">Color: {product.color}</p>
             <p className="text-sm text-gray-500">Size: {product.size}</p>
-            <p className="text-sm text-gray-500">Quantity: {product.quantity}</p>
-            <p className="text-sm text-gray-500">Price: Rp{product.price.toLocaleString()}</p>
+            <p className="text-sm text-gray-500">
+              Quantity: {product.quantity}
+            </p>
+            <p className="text-sm text-gray-500">
+              Price: Rp{product.price.toLocaleString()}
+            </p>
+            <p className="text-sm text-gray-500">
+              Berat: {((product.quantity * 1000) / 1000).toFixed(2)} kg
+            </p>
           </div>
         </div>
 
@@ -230,29 +258,45 @@ export default function CheckoutPage() {
                   <div>
                     <p className="font-semibold text-blue-700">Poin</p>
                     <p className="text-sm">
-                      Potongan Rp{pointDiscount.toLocaleString()} dari {totalPoints} poin
+                      Potongan Rp{pointDiscount.toLocaleString()} dari{" "}
+                      {totalPoints} poin
                     </p>
                   </div>
-                  <input type="checkbox" checked={usePoints} readOnly className="accent-blue-600" />
+                  <input
+                    type="checkbox"
+                    checked={usePoints}
+                    readOnly
+                    className="accent-blue-600"
+                  />
                 </div>
               </div>
             )}
             {voucher && (
               <div
                 className={`border p-4 rounded-lg cursor-pointer ${
-                  useVoucher ? "bg-green-50 border-green-500" : "border-gray-200"
+                  useVoucher
+                    ? "bg-green-50 border-green-500"
+                    : "border-gray-200"
                 }`}
                 onClick={() => setUseVoucher(!useVoucher)}
               >
                 <div className="flex justify-between items-center">
                   <div>
-                    <p className="font-semibold text-green-700">Voucher {voucher.code}</p>
+                    <p className="font-semibold text-green-700">
+                      Voucher {voucher.code}
+                    </p>
                     <p className="text-sm">
-                      {voucher.percentage}% hingga Rp{voucher.maxDiscount.toLocaleString()} (Diskon Rp
+                      {voucher.percentage}% hingga Rp
+                      {voucher.maxDiscount.toLocaleString()} (Diskon Rp
                       {voucherDiscount.toLocaleString()})
                     </p>
                   </div>
-                  <input type="checkbox" checked={useVoucher} readOnly className="accent-green-600" />
+                  <input
+                    type="checkbox"
+                    checked={useVoucher}
+                    readOnly
+                    className="accent-green-600"
+                  />
                 </div>
               </div>
             )}
@@ -263,57 +307,71 @@ export default function CheckoutPage() {
         {shippingData && (
           <div className="space-y-4">
             <h3 className="font-semibold text-lg">Opsi Pengiriman</h3>
-            {["calculate_reguler", "calculate_cargo", "calculate_instant"].map((type) => {
-              const options = shippingData[type] || [];
-              if (!Array.isArray(options) || options.length === 0) return null;
+            {["calculate_reguler", "calculate_cargo", "calculate_instant"].map(
+              (type) => {
+                const options = shippingData[type] || [];
+                if (!Array.isArray(options) || options.length === 0)
+                  return null;
 
-              return (
-                <div key={type}>
-                  <h4 className="text-md font-semibold capitalize mb-2">
-                    {type.replace("calculate_", "")}
-                  </h4>
-                  <div className="grid gap-2">
-                    {options.map((option: any, index: number) => {
-                      const optionId = `${type}-${index}`;
-                      const isSelected = selectedShippingOption?.id === optionId;
+                return (
+                  <div key={type}>
+                    <h4 className="text-md font-semibold capitalize mb-2">
+                      {type.replace("calculate_", "")}
+                    </h4>
+                    <div className="grid gap-2">
+                      {options.map((option: any, index: number) => {
+                        const optionId = `${type}-${index}`;
+                        const isSelected =
+                          selectedShippingOption?.id === optionId;
 
-                      return (
-                        <label
-                          key={optionId}
-                          className={`flex items-center justify-between border p-3 rounded-md cursor-pointer ${
-                            isSelected ? "border-blue-500 bg-blue-50" : "bg-gray-50"
-                          }`}
-                        >
-                          <div className="flex items-start gap-3">
-                            <input
-                              type="radio"
-                              name="shipping_option"
-                              checked={isSelected}
-                              onChange={() => {
-                                setSelectedShippingOption({ ...option, id: optionId });
-                                setShippingCost(option.shipping_cost_net / 1000);
-                              }}
-                              className="accent-blue-600 mt-1"
-                            />
-                            <div>
-                              <div className="font-medium">
-                                {option.shipping_name} - {option.service_name}
-                              </div>
-                              <div className="text-sm text-gray-700">
-                                Ongkir: Rp{(option.shipping_cost_net / 1000).toLocaleString()}
-                              </div>
-                              <div className="text-xs text-gray-500">
-                                Estimasi: {option.etd || "-"}
+                        return (
+                          <label
+                            key={optionId}
+                            className={`flex items-center justify-between border p-3 rounded-md cursor-pointer ${
+                              isSelected
+                                ? "border-blue-500 bg-blue-50"
+                                : "bg-gray-50"
+                            }`}
+                          >
+                            <div className="flex items-start gap-3">
+                              <input
+                                type="radio"
+                                name="shipping_option"
+                                checked={isSelected}
+                                onChange={() => {
+                                  setSelectedShippingOption({
+                                    ...option,
+                                    id: optionId,
+                                  });
+                                  setShippingCost(
+                                    option.shipping_cost_net / 1000
+                                  );
+                                }}
+                                className="accent-blue-600 mt-1"
+                              />
+                              <div>
+                                <div className="font-medium">
+                                  {option.shipping_name} - {option.service_name}
+                                </div>
+                                <div className="text-sm text-gray-700">
+                                  Ongkir: Rp
+                                  {(
+                                    option.shipping_cost_net / 1000
+                                  ).toLocaleString()}
+                                </div>
+                                <div className="text-xs text-gray-500">
+                                  Estimasi: {option.etd || "-"}
+                                </div>
                               </div>
                             </div>
-                          </div>
-                        </label>
-                      );
-                    })}
+                          </label>
+                        );
+                      })}
+                    </div>
                   </div>
-                </div>
-              );
-            })}
+                );
+              }
+            )}
           </div>
         )}
 
@@ -328,7 +386,9 @@ export default function CheckoutPage() {
         </div>
         <div className="flex justify-between text-lg font-medium">
           <span>Ongkir:</span>
-          <span>{shippingCost ? `Rp${shippingCost.toLocaleString()}` : "-"}</span>
+          <span>
+            {shippingCost ? `Rp${shippingCost.toLocaleString()}` : "-"}
+          </span>
         </div>
         <div className="flex justify-between text-xl font-bold border-t pt-3">
           <span>Total Bayar:</span>

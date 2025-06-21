@@ -2539,37 +2539,6 @@ export namespace Prisma {
 
 
   /**
-   * Count Type CityCountOutputType
-   */
-
-  export type CityCountOutputType = {
-    stores: number
-  }
-
-  export type CityCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    stores?: boolean | CityCountOutputTypeCountStoresArgs
-  }
-
-  // Custom InputTypes
-  /**
-   * CityCountOutputType without action
-   */
-  export type CityCountOutputTypeDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the CityCountOutputType
-     */
-    select?: CityCountOutputTypeSelect<ExtArgs> | null
-  }
-
-  /**
-   * CityCountOutputType without action
-   */
-  export type CityCountOutputTypeCountStoresArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    where?: StoreWhereInput
-  }
-
-
-  /**
    * Models
    */
 
@@ -5188,13 +5157,11 @@ export namespace Prisma {
   export type StoreAvgAggregateOutputType = {
     latitude: number | null
     longitude: number | null
-    city_id: number | null
   }
 
   export type StoreSumAggregateOutputType = {
     latitude: number | null
     longitude: number | null
-    city_id: number | null
   }
 
   export type StoreMinAggregateOutputType = {
@@ -5204,7 +5171,7 @@ export namespace Prisma {
     adminId: string | null
     latitude: number | null
     longitude: number | null
-    city_id: number | null
+    city_id: string | null
     createdAt: Date | null
   }
 
@@ -5215,7 +5182,7 @@ export namespace Prisma {
     adminId: string | null
     latitude: number | null
     longitude: number | null
-    city_id: number | null
+    city_id: string | null
     createdAt: Date | null
   }
 
@@ -5235,13 +5202,11 @@ export namespace Prisma {
   export type StoreAvgAggregateInputType = {
     latitude?: true
     longitude?: true
-    city_id?: true
   }
 
   export type StoreSumAggregateInputType = {
     latitude?: true
     longitude?: true
-    city_id?: true
   }
 
   export type StoreMinAggregateInputType = {
@@ -5371,7 +5336,7 @@ export namespace Prisma {
     adminId: string
     latitude: number | null
     longitude: number | null
-    city_id: number | null
+    city_id: string | null
     createdAt: Date
     _count: StoreCountAggregateOutputType | null
     _avg: StoreAvgAggregateOutputType | null
@@ -5407,7 +5372,6 @@ export namespace Prisma {
     products?: boolean | Store$productsArgs<ExtArgs>
     orders?: boolean | Store$ordersArgs<ExtArgs>
     discount?: boolean | Store$discountArgs<ExtArgs>
-    city?: boolean | Store$cityArgs<ExtArgs>
     _count?: boolean | StoreCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["store"]>
 
@@ -5421,7 +5385,6 @@ export namespace Prisma {
     city_id?: boolean
     createdAt?: boolean
     admin?: boolean | UserDefaultArgs<ExtArgs>
-    city?: boolean | Store$cityArgs<ExtArgs>
   }, ExtArgs["result"]["store"]>
 
   export type StoreSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
@@ -5434,7 +5397,6 @@ export namespace Prisma {
     city_id?: boolean
     createdAt?: boolean
     admin?: boolean | UserDefaultArgs<ExtArgs>
-    city?: boolean | Store$cityArgs<ExtArgs>
   }, ExtArgs["result"]["store"]>
 
   export type StoreSelectScalar = {
@@ -5454,16 +5416,13 @@ export namespace Prisma {
     products?: boolean | Store$productsArgs<ExtArgs>
     orders?: boolean | Store$ordersArgs<ExtArgs>
     discount?: boolean | Store$discountArgs<ExtArgs>
-    city?: boolean | Store$cityArgs<ExtArgs>
     _count?: boolean | StoreCountOutputTypeDefaultArgs<ExtArgs>
   }
   export type StoreIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     admin?: boolean | UserDefaultArgs<ExtArgs>
-    city?: boolean | Store$cityArgs<ExtArgs>
   }
   export type StoreIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     admin?: boolean | UserDefaultArgs<ExtArgs>
-    city?: boolean | Store$cityArgs<ExtArgs>
   }
 
   export type $StorePayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -5473,7 +5432,6 @@ export namespace Prisma {
       products: Prisma.$ProductStockPayload<ExtArgs>[]
       orders: Prisma.$OrderPayload<ExtArgs>[]
       discount: Prisma.$DiscountPayload<ExtArgs>[]
-      city: Prisma.$CityPayload<ExtArgs> | null
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
@@ -5482,7 +5440,7 @@ export namespace Prisma {
       adminId: string
       latitude: number | null
       longitude: number | null
-      city_id: number | null
+      city_id: string | null
       createdAt: Date
     }, ExtArgs["result"]["store"]>
     composites: {}
@@ -5882,7 +5840,6 @@ export namespace Prisma {
     products<T extends Store$productsArgs<ExtArgs> = {}>(args?: Subset<T, Store$productsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ProductStockPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     orders<T extends Store$ordersArgs<ExtArgs> = {}>(args?: Subset<T, Store$ordersArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$OrderPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     discount<T extends Store$discountArgs<ExtArgs> = {}>(args?: Subset<T, Store$discountArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$DiscountPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
-    city<T extends Store$cityArgs<ExtArgs> = {}>(args?: Subset<T, Store$cityArgs<ExtArgs>>): Prisma__CityClient<$Result.GetResult<Prisma.$CityPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -5918,7 +5875,7 @@ export namespace Prisma {
     readonly adminId: FieldRef<"Store", 'String'>
     readonly latitude: FieldRef<"Store", 'Float'>
     readonly longitude: FieldRef<"Store", 'Float'>
-    readonly city_id: FieldRef<"Store", 'Int'>
+    readonly city_id: FieldRef<"Store", 'String'>
     readonly createdAt: FieldRef<"Store", 'DateTime'>
   }
     
@@ -6385,25 +6342,6 @@ export namespace Prisma {
     take?: number
     skip?: number
     distinct?: DiscountScalarFieldEnum | DiscountScalarFieldEnum[]
-  }
-
-  /**
-   * Store.city
-   */
-  export type Store$cityArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the City
-     */
-    select?: CitySelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the City
-     */
-    omit?: CityOmit<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: CityInclude<ExtArgs> | null
-    where?: CityWhereInput
   }
 
   /**
@@ -19207,8 +19145,6 @@ export namespace Prisma {
     name?: boolean
     province_id?: boolean
     province?: boolean | ProvinceDefaultArgs<ExtArgs>
-    stores?: boolean | City$storesArgs<ExtArgs>
-    _count?: boolean | CityCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["city"]>
 
   export type CitySelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
@@ -19234,8 +19170,6 @@ export namespace Prisma {
   export type CityOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "province_id", ExtArgs["result"]["city"]>
   export type CityInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     province?: boolean | ProvinceDefaultArgs<ExtArgs>
-    stores?: boolean | City$storesArgs<ExtArgs>
-    _count?: boolean | CityCountOutputTypeDefaultArgs<ExtArgs>
   }
   export type CityIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     province?: boolean | ProvinceDefaultArgs<ExtArgs>
@@ -19248,7 +19182,6 @@ export namespace Prisma {
     name: "City"
     objects: {
       province: Prisma.$ProvincePayload<ExtArgs>
-      stores: Prisma.$StorePayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
       id: number
@@ -19649,7 +19582,6 @@ export namespace Prisma {
   export interface Prisma__CityClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
     readonly [Symbol.toStringTag]: "PrismaPromise"
     province<T extends ProvinceDefaultArgs<ExtArgs> = {}>(args?: Subset<T, ProvinceDefaultArgs<ExtArgs>>): Prisma__ProvinceClient<$Result.GetResult<Prisma.$ProvincePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
-    stores<T extends City$storesArgs<ExtArgs> = {}>(args?: Subset<T, City$storesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$StorePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -20075,30 +20007,6 @@ export namespace Prisma {
      * Limit how many Cities to delete.
      */
     limit?: number
-  }
-
-  /**
-   * City.stores
-   */
-  export type City$storesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the Store
-     */
-    select?: StoreSelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the Store
-     */
-    omit?: StoreOmit<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: StoreInclude<ExtArgs> | null
-    where?: StoreWhereInput
-    orderBy?: StoreOrderByWithRelationInput | StoreOrderByWithRelationInput[]
-    cursor?: StoreWhereUniqueInput
-    take?: number
-    skip?: number
-    distinct?: StoreScalarFieldEnum | StoreScalarFieldEnum[]
   }
 
   /**
@@ -20707,13 +20615,12 @@ export namespace Prisma {
     adminId?: StringFilter<"Store"> | string
     latitude?: FloatNullableFilter<"Store"> | number | null
     longitude?: FloatNullableFilter<"Store"> | number | null
-    city_id?: IntNullableFilter<"Store"> | number | null
+    city_id?: StringNullableFilter<"Store"> | string | null
     createdAt?: DateTimeFilter<"Store"> | Date | string
     admin?: XOR<UserScalarRelationFilter, UserWhereInput>
     products?: ProductStockListRelationFilter
     orders?: OrderListRelationFilter
     discount?: DiscountListRelationFilter
-    city?: XOR<CityNullableScalarRelationFilter, CityWhereInput> | null
   }
 
   export type StoreOrderByWithRelationInput = {
@@ -20729,7 +20636,6 @@ export namespace Prisma {
     products?: ProductStockOrderByRelationAggregateInput
     orders?: OrderOrderByRelationAggregateInput
     discount?: DiscountOrderByRelationAggregateInput
-    city?: CityOrderByWithRelationInput
   }
 
   export type StoreWhereUniqueInput = Prisma.AtLeast<{
@@ -20742,13 +20648,12 @@ export namespace Prisma {
     address?: StringFilter<"Store"> | string
     latitude?: FloatNullableFilter<"Store"> | number | null
     longitude?: FloatNullableFilter<"Store"> | number | null
-    city_id?: IntNullableFilter<"Store"> | number | null
+    city_id?: StringNullableFilter<"Store"> | string | null
     createdAt?: DateTimeFilter<"Store"> | Date | string
     admin?: XOR<UserScalarRelationFilter, UserWhereInput>
     products?: ProductStockListRelationFilter
     orders?: OrderListRelationFilter
     discount?: DiscountListRelationFilter
-    city?: XOR<CityNullableScalarRelationFilter, CityWhereInput> | null
   }, "id" | "adminId">
 
   export type StoreOrderByWithAggregationInput = {
@@ -20777,7 +20682,7 @@ export namespace Prisma {
     adminId?: StringWithAggregatesFilter<"Store"> | string
     latitude?: FloatNullableWithAggregatesFilter<"Store"> | number | null
     longitude?: FloatNullableWithAggregatesFilter<"Store"> | number | null
-    city_id?: IntNullableWithAggregatesFilter<"Store"> | number | null
+    city_id?: StringNullableWithAggregatesFilter<"Store"> | string | null
     createdAt?: DateTimeWithAggregatesFilter<"Store"> | Date | string
   }
 
@@ -21549,7 +21454,6 @@ export namespace Prisma {
     name?: StringFilter<"City"> | string
     province_id?: IntFilter<"City"> | number
     province?: XOR<ProvinceScalarRelationFilter, ProvinceWhereInput>
-    stores?: StoreListRelationFilter
   }
 
   export type CityOrderByWithRelationInput = {
@@ -21557,7 +21461,6 @@ export namespace Prisma {
     name?: SortOrder
     province_id?: SortOrder
     province?: ProvinceOrderByWithRelationInput
-    stores?: StoreOrderByRelationAggregateInput
   }
 
   export type CityWhereUniqueInput = Prisma.AtLeast<{
@@ -21568,7 +21471,6 @@ export namespace Prisma {
     name?: StringFilter<"City"> | string
     province_id?: IntFilter<"City"> | number
     province?: XOR<ProvinceScalarRelationFilter, ProvinceWhereInput>
-    stores?: StoreListRelationFilter
   }, "id">
 
   export type CityOrderByWithAggregationInput = {
@@ -21861,12 +21763,12 @@ export namespace Prisma {
     address: string
     latitude?: number | null
     longitude?: number | null
+    city_id?: string | null
     createdAt?: Date | string
     admin: UserCreateNestedOneWithoutStoreInput
     products?: ProductStockCreateNestedManyWithoutStoreInput
     orders?: OrderCreateNestedManyWithoutStoreInput
     discount?: DiscountCreateNestedManyWithoutStoreInput
-    city?: CityCreateNestedOneWithoutStoresInput
   }
 
   export type StoreUncheckedCreateInput = {
@@ -21876,7 +21778,7 @@ export namespace Prisma {
     adminId: string
     latitude?: number | null
     longitude?: number | null
-    city_id?: number | null
+    city_id?: string | null
     createdAt?: Date | string
     products?: ProductStockUncheckedCreateNestedManyWithoutStoreInput
     orders?: OrderUncheckedCreateNestedManyWithoutStoreInput
@@ -21889,12 +21791,12 @@ export namespace Prisma {
     address?: StringFieldUpdateOperationsInput | string
     latitude?: NullableFloatFieldUpdateOperationsInput | number | null
     longitude?: NullableFloatFieldUpdateOperationsInput | number | null
+    city_id?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     admin?: UserUpdateOneRequiredWithoutStoreNestedInput
     products?: ProductStockUpdateManyWithoutStoreNestedInput
     orders?: OrderUpdateManyWithoutStoreNestedInput
     discount?: DiscountUpdateManyWithoutStoreNestedInput
-    city?: CityUpdateOneWithoutStoresNestedInput
   }
 
   export type StoreUncheckedUpdateInput = {
@@ -21904,7 +21806,7 @@ export namespace Prisma {
     adminId?: StringFieldUpdateOperationsInput | string
     latitude?: NullableFloatFieldUpdateOperationsInput | number | null
     longitude?: NullableFloatFieldUpdateOperationsInput | number | null
-    city_id?: NullableIntFieldUpdateOperationsInput | number | null
+    city_id?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     products?: ProductStockUncheckedUpdateManyWithoutStoreNestedInput
     orders?: OrderUncheckedUpdateManyWithoutStoreNestedInput
@@ -21918,7 +21820,7 @@ export namespace Prisma {
     adminId: string
     latitude?: number | null
     longitude?: number | null
-    city_id?: number | null
+    city_id?: string | null
     createdAt?: Date | string
   }
 
@@ -21928,6 +21830,7 @@ export namespace Prisma {
     address?: StringFieldUpdateOperationsInput | string
     latitude?: NullableFloatFieldUpdateOperationsInput | number | null
     longitude?: NullableFloatFieldUpdateOperationsInput | number | null
+    city_id?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
@@ -21938,7 +21841,7 @@ export namespace Prisma {
     adminId?: StringFieldUpdateOperationsInput | string
     latitude?: NullableFloatFieldUpdateOperationsInput | number | null
     longitude?: NullableFloatFieldUpdateOperationsInput | number | null
-    city_id?: NullableIntFieldUpdateOperationsInput | number | null
+    city_id?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
@@ -22716,28 +22619,24 @@ export namespace Prisma {
     id: number
     name: string
     province: ProvinceCreateNestedOneWithoutCityInput
-    stores?: StoreCreateNestedManyWithoutCityInput
   }
 
   export type CityUncheckedCreateInput = {
     id: number
     name: string
     province_id: number
-    stores?: StoreUncheckedCreateNestedManyWithoutCityInput
   }
 
   export type CityUpdateInput = {
     id?: IntFieldUpdateOperationsInput | number
     name?: StringFieldUpdateOperationsInput | string
     province?: ProvinceUpdateOneRequiredWithoutCityNestedInput
-    stores?: StoreUpdateManyWithoutCityNestedInput
   }
 
   export type CityUncheckedUpdateInput = {
     id?: IntFieldUpdateOperationsInput | number
     name?: StringFieldUpdateOperationsInput | string
     province_id?: IntFieldUpdateOperationsInput | number
-    stores?: StoreUncheckedUpdateManyWithoutCityNestedInput
   }
 
   export type CityCreateManyInput = {
@@ -23097,17 +22996,6 @@ export namespace Prisma {
     _max?: NestedFloatNullableFilter<$PrismaModel>
   }
 
-  export type IntNullableFilter<$PrismaModel = never> = {
-    equals?: number | IntFieldRefInput<$PrismaModel> | null
-    in?: number[] | ListIntFieldRefInput<$PrismaModel> | null
-    notIn?: number[] | ListIntFieldRefInput<$PrismaModel> | null
-    lt?: number | IntFieldRefInput<$PrismaModel>
-    lte?: number | IntFieldRefInput<$PrismaModel>
-    gt?: number | IntFieldRefInput<$PrismaModel>
-    gte?: number | IntFieldRefInput<$PrismaModel>
-    not?: NestedIntNullableFilter<$PrismaModel> | number | null
-  }
-
   export type ProductStockListRelationFilter = {
     every?: ProductStockWhereInput
     some?: ProductStockWhereInput
@@ -23118,11 +23006,6 @@ export namespace Prisma {
     every?: DiscountWhereInput
     some?: DiscountWhereInput
     none?: DiscountWhereInput
-  }
-
-  export type CityNullableScalarRelationFilter = {
-    is?: CityWhereInput | null
-    isNot?: CityWhereInput | null
   }
 
   export type ProductStockOrderByRelationAggregateInput = {
@@ -23147,7 +23030,6 @@ export namespace Prisma {
   export type StoreAvgOrderByAggregateInput = {
     latitude?: SortOrder
     longitude?: SortOrder
-    city_id?: SortOrder
   }
 
   export type StoreMaxOrderByAggregateInput = {
@@ -23175,23 +23057,6 @@ export namespace Prisma {
   export type StoreSumOrderByAggregateInput = {
     latitude?: SortOrder
     longitude?: SortOrder
-    city_id?: SortOrder
-  }
-
-  export type IntNullableWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: number | IntFieldRefInput<$PrismaModel> | null
-    in?: number[] | ListIntFieldRefInput<$PrismaModel> | null
-    notIn?: number[] | ListIntFieldRefInput<$PrismaModel> | null
-    lt?: number | IntFieldRefInput<$PrismaModel>
-    lte?: number | IntFieldRefInput<$PrismaModel>
-    gt?: number | IntFieldRefInput<$PrismaModel>
-    gte?: number | IntFieldRefInput<$PrismaModel>
-    not?: NestedIntNullableWithAggregatesFilter<$PrismaModel> | number | null
-    _count?: NestedIntNullableFilter<$PrismaModel>
-    _avg?: NestedFloatNullableFilter<$PrismaModel>
-    _sum?: NestedIntNullableFilter<$PrismaModel>
-    _min?: NestedIntNullableFilter<$PrismaModel>
-    _max?: NestedIntNullableFilter<$PrismaModel>
   }
 
   export type ProductListRelationFilter = {
@@ -23674,6 +23539,17 @@ export namespace Prisma {
     not?: NestedEnumDiscountTypeFilter<$PrismaModel> | $Enums.DiscountType
   }
 
+  export type IntNullableFilter<$PrismaModel = never> = {
+    equals?: number | IntFieldRefInput<$PrismaModel> | null
+    in?: number[] | ListIntFieldRefInput<$PrismaModel> | null
+    notIn?: number[] | ListIntFieldRefInput<$PrismaModel> | null
+    lt?: number | IntFieldRefInput<$PrismaModel>
+    lte?: number | IntFieldRefInput<$PrismaModel>
+    gt?: number | IntFieldRefInput<$PrismaModel>
+    gte?: number | IntFieldRefInput<$PrismaModel>
+    not?: NestedIntNullableFilter<$PrismaModel> | number | null
+  }
+
   export type ProductNullableScalarRelationFilter = {
     is?: ProductWhereInput | null
     isNot?: ProductWhereInput | null
@@ -23759,6 +23635,22 @@ export namespace Prisma {
     _max?: NestedEnumDiscountTypeFilter<$PrismaModel>
   }
 
+  export type IntNullableWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: number | IntFieldRefInput<$PrismaModel> | null
+    in?: number[] | ListIntFieldRefInput<$PrismaModel> | null
+    notIn?: number[] | ListIntFieldRefInput<$PrismaModel> | null
+    lt?: number | IntFieldRefInput<$PrismaModel>
+    lte?: number | IntFieldRefInput<$PrismaModel>
+    gt?: number | IntFieldRefInput<$PrismaModel>
+    gte?: number | IntFieldRefInput<$PrismaModel>
+    not?: NestedIntNullableWithAggregatesFilter<$PrismaModel> | number | null
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _avg?: NestedFloatNullableFilter<$PrismaModel>
+    _sum?: NestedIntNullableFilter<$PrismaModel>
+    _min?: NestedIntNullableFilter<$PrismaModel>
+    _max?: NestedIntNullableFilter<$PrismaModel>
+  }
+
   export type CityListRelationFilter = {
     every?: CityWhereInput
     some?: CityWhereInput
@@ -23795,16 +23687,6 @@ export namespace Prisma {
   export type ProvinceScalarRelationFilter = {
     is?: ProvinceWhereInput
     isNot?: ProvinceWhereInput
-  }
-
-  export type StoreListRelationFilter = {
-    every?: StoreWhereInput
-    some?: StoreWhereInput
-    none?: StoreWhereInput
-  }
-
-  export type StoreOrderByRelationAggregateInput = {
-    _count?: SortOrder
   }
 
   export type CityCountOrderByAggregateInput = {
@@ -24204,12 +24086,6 @@ export namespace Prisma {
     connect?: DiscountWhereUniqueInput | DiscountWhereUniqueInput[]
   }
 
-  export type CityCreateNestedOneWithoutStoresInput = {
-    create?: XOR<CityCreateWithoutStoresInput, CityUncheckedCreateWithoutStoresInput>
-    connectOrCreate?: CityCreateOrConnectWithoutStoresInput
-    connect?: CityWhereUniqueInput
-  }
-
   export type ProductStockUncheckedCreateNestedManyWithoutStoreInput = {
     create?: XOR<ProductStockCreateWithoutStoreInput, ProductStockUncheckedCreateWithoutStoreInput> | ProductStockCreateWithoutStoreInput[] | ProductStockUncheckedCreateWithoutStoreInput[]
     connectOrCreate?: ProductStockCreateOrConnectWithoutStoreInput | ProductStockCreateOrConnectWithoutStoreInput[]
@@ -24279,24 +24155,6 @@ export namespace Prisma {
     update?: DiscountUpdateWithWhereUniqueWithoutStoreInput | DiscountUpdateWithWhereUniqueWithoutStoreInput[]
     updateMany?: DiscountUpdateManyWithWhereWithoutStoreInput | DiscountUpdateManyWithWhereWithoutStoreInput[]
     deleteMany?: DiscountScalarWhereInput | DiscountScalarWhereInput[]
-  }
-
-  export type CityUpdateOneWithoutStoresNestedInput = {
-    create?: XOR<CityCreateWithoutStoresInput, CityUncheckedCreateWithoutStoresInput>
-    connectOrCreate?: CityCreateOrConnectWithoutStoresInput
-    upsert?: CityUpsertWithoutStoresInput
-    disconnect?: CityWhereInput | boolean
-    delete?: CityWhereInput | boolean
-    connect?: CityWhereUniqueInput
-    update?: XOR<XOR<CityUpdateToOneWithWhereWithoutStoresInput, CityUpdateWithoutStoresInput>, CityUncheckedUpdateWithoutStoresInput>
-  }
-
-  export type NullableIntFieldUpdateOperationsInput = {
-    set?: number | null
-    increment?: number
-    decrement?: number
-    multiply?: number
-    divide?: number
   }
 
   export type ProductStockUncheckedUpdateManyWithoutStoreNestedInput = {
@@ -24905,6 +24763,14 @@ export namespace Prisma {
     set?: $Enums.DiscountType
   }
 
+  export type NullableIntFieldUpdateOperationsInput = {
+    set?: number | null
+    increment?: number
+    decrement?: number
+    multiply?: number
+    divide?: number
+  }
+
   export type ProductUpdateOneWithoutDiscountNestedInput = {
     create?: XOR<ProductCreateWithoutDiscountInput, ProductUncheckedCreateWithoutDiscountInput>
     connectOrCreate?: ProductCreateOrConnectWithoutDiscountInput
@@ -24971,54 +24837,12 @@ export namespace Prisma {
     connect?: ProvinceWhereUniqueInput
   }
 
-  export type StoreCreateNestedManyWithoutCityInput = {
-    create?: XOR<StoreCreateWithoutCityInput, StoreUncheckedCreateWithoutCityInput> | StoreCreateWithoutCityInput[] | StoreUncheckedCreateWithoutCityInput[]
-    connectOrCreate?: StoreCreateOrConnectWithoutCityInput | StoreCreateOrConnectWithoutCityInput[]
-    createMany?: StoreCreateManyCityInputEnvelope
-    connect?: StoreWhereUniqueInput | StoreWhereUniqueInput[]
-  }
-
-  export type StoreUncheckedCreateNestedManyWithoutCityInput = {
-    create?: XOR<StoreCreateWithoutCityInput, StoreUncheckedCreateWithoutCityInput> | StoreCreateWithoutCityInput[] | StoreUncheckedCreateWithoutCityInput[]
-    connectOrCreate?: StoreCreateOrConnectWithoutCityInput | StoreCreateOrConnectWithoutCityInput[]
-    createMany?: StoreCreateManyCityInputEnvelope
-    connect?: StoreWhereUniqueInput | StoreWhereUniqueInput[]
-  }
-
   export type ProvinceUpdateOneRequiredWithoutCityNestedInput = {
     create?: XOR<ProvinceCreateWithoutCityInput, ProvinceUncheckedCreateWithoutCityInput>
     connectOrCreate?: ProvinceCreateOrConnectWithoutCityInput
     upsert?: ProvinceUpsertWithoutCityInput
     connect?: ProvinceWhereUniqueInput
     update?: XOR<XOR<ProvinceUpdateToOneWithWhereWithoutCityInput, ProvinceUpdateWithoutCityInput>, ProvinceUncheckedUpdateWithoutCityInput>
-  }
-
-  export type StoreUpdateManyWithoutCityNestedInput = {
-    create?: XOR<StoreCreateWithoutCityInput, StoreUncheckedCreateWithoutCityInput> | StoreCreateWithoutCityInput[] | StoreUncheckedCreateWithoutCityInput[]
-    connectOrCreate?: StoreCreateOrConnectWithoutCityInput | StoreCreateOrConnectWithoutCityInput[]
-    upsert?: StoreUpsertWithWhereUniqueWithoutCityInput | StoreUpsertWithWhereUniqueWithoutCityInput[]
-    createMany?: StoreCreateManyCityInputEnvelope
-    set?: StoreWhereUniqueInput | StoreWhereUniqueInput[]
-    disconnect?: StoreWhereUniqueInput | StoreWhereUniqueInput[]
-    delete?: StoreWhereUniqueInput | StoreWhereUniqueInput[]
-    connect?: StoreWhereUniqueInput | StoreWhereUniqueInput[]
-    update?: StoreUpdateWithWhereUniqueWithoutCityInput | StoreUpdateWithWhereUniqueWithoutCityInput[]
-    updateMany?: StoreUpdateManyWithWhereWithoutCityInput | StoreUpdateManyWithWhereWithoutCityInput[]
-    deleteMany?: StoreScalarWhereInput | StoreScalarWhereInput[]
-  }
-
-  export type StoreUncheckedUpdateManyWithoutCityNestedInput = {
-    create?: XOR<StoreCreateWithoutCityInput, StoreUncheckedCreateWithoutCityInput> | StoreCreateWithoutCityInput[] | StoreUncheckedCreateWithoutCityInput[]
-    connectOrCreate?: StoreCreateOrConnectWithoutCityInput | StoreCreateOrConnectWithoutCityInput[]
-    upsert?: StoreUpsertWithWhereUniqueWithoutCityInput | StoreUpsertWithWhereUniqueWithoutCityInput[]
-    createMany?: StoreCreateManyCityInputEnvelope
-    set?: StoreWhereUniqueInput | StoreWhereUniqueInput[]
-    disconnect?: StoreWhereUniqueInput | StoreWhereUniqueInput[]
-    delete?: StoreWhereUniqueInput | StoreWhereUniqueInput[]
-    connect?: StoreWhereUniqueInput | StoreWhereUniqueInput[]
-    update?: StoreUpdateWithWhereUniqueWithoutCityInput | StoreUpdateWithWhereUniqueWithoutCityInput[]
-    updateMany?: StoreUpdateManyWithWhereWithoutCityInput | StoreUpdateManyWithWhereWithoutCityInput[]
-    deleteMany?: StoreScalarWhereInput | StoreScalarWhereInput[]
   }
 
   export type NestedStringFilter<$PrismaModel = never> = {
@@ -25187,22 +25011,6 @@ export namespace Prisma {
     _max?: NestedFloatNullableFilter<$PrismaModel>
   }
 
-  export type NestedIntNullableWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: number | IntFieldRefInput<$PrismaModel> | null
-    in?: number[] | ListIntFieldRefInput<$PrismaModel> | null
-    notIn?: number[] | ListIntFieldRefInput<$PrismaModel> | null
-    lt?: number | IntFieldRefInput<$PrismaModel>
-    lte?: number | IntFieldRefInput<$PrismaModel>
-    gt?: number | IntFieldRefInput<$PrismaModel>
-    gte?: number | IntFieldRefInput<$PrismaModel>
-    not?: NestedIntNullableWithAggregatesFilter<$PrismaModel> | number | null
-    _count?: NestedIntNullableFilter<$PrismaModel>
-    _avg?: NestedFloatNullableFilter<$PrismaModel>
-    _sum?: NestedIntNullableFilter<$PrismaModel>
-    _min?: NestedIntNullableFilter<$PrismaModel>
-    _max?: NestedIntNullableFilter<$PrismaModel>
-  }
-
   export type NestedIntWithAggregatesFilter<$PrismaModel = never> = {
     equals?: number | IntFieldRefInput<$PrismaModel>
     in?: number[] | ListIntFieldRefInput<$PrismaModel>
@@ -25303,6 +25111,22 @@ export namespace Prisma {
     _count?: NestedIntFilter<$PrismaModel>
     _min?: NestedEnumDiscountTypeFilter<$PrismaModel>
     _max?: NestedEnumDiscountTypeFilter<$PrismaModel>
+  }
+
+  export type NestedIntNullableWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: number | IntFieldRefInput<$PrismaModel> | null
+    in?: number[] | ListIntFieldRefInput<$PrismaModel> | null
+    notIn?: number[] | ListIntFieldRefInput<$PrismaModel> | null
+    lt?: number | IntFieldRefInput<$PrismaModel>
+    lte?: number | IntFieldRefInput<$PrismaModel>
+    gt?: number | IntFieldRefInput<$PrismaModel>
+    gte?: number | IntFieldRefInput<$PrismaModel>
+    not?: NestedIntNullableWithAggregatesFilter<$PrismaModel> | number | null
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _avg?: NestedFloatNullableFilter<$PrismaModel>
+    _sum?: NestedIntNullableFilter<$PrismaModel>
+    _min?: NestedIntNullableFilter<$PrismaModel>
+    _max?: NestedIntNullableFilter<$PrismaModel>
   }
 
   export type UserCreateWithoutReferralsInput = {
@@ -25534,11 +25358,11 @@ export namespace Prisma {
     address: string
     latitude?: number | null
     longitude?: number | null
+    city_id?: string | null
     createdAt?: Date | string
     products?: ProductStockCreateNestedManyWithoutStoreInput
     orders?: OrderCreateNestedManyWithoutStoreInput
     discount?: DiscountCreateNestedManyWithoutStoreInput
-    city?: CityCreateNestedOneWithoutStoresInput
   }
 
   export type StoreUncheckedCreateWithoutAdminInput = {
@@ -25547,7 +25371,7 @@ export namespace Prisma {
     address: string
     latitude?: number | null
     longitude?: number | null
-    city_id?: number | null
+    city_id?: string | null
     createdAt?: Date | string
     products?: ProductStockUncheckedCreateNestedManyWithoutStoreInput
     orders?: OrderUncheckedCreateNestedManyWithoutStoreInput
@@ -25829,11 +25653,11 @@ export namespace Prisma {
     address?: StringFieldUpdateOperationsInput | string
     latitude?: NullableFloatFieldUpdateOperationsInput | number | null
     longitude?: NullableFloatFieldUpdateOperationsInput | number | null
+    city_id?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     products?: ProductStockUpdateManyWithoutStoreNestedInput
     orders?: OrderUpdateManyWithoutStoreNestedInput
     discount?: DiscountUpdateManyWithoutStoreNestedInput
-    city?: CityUpdateOneWithoutStoresNestedInput
   }
 
   export type StoreUncheckedUpdateWithoutAdminInput = {
@@ -25842,7 +25666,7 @@ export namespace Prisma {
     address?: StringFieldUpdateOperationsInput | string
     latitude?: NullableFloatFieldUpdateOperationsInput | number | null
     longitude?: NullableFloatFieldUpdateOperationsInput | number | null
-    city_id?: NullableIntFieldUpdateOperationsInput | number | null
+    city_id?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     products?: ProductStockUncheckedUpdateManyWithoutStoreNestedInput
     orders?: OrderUncheckedUpdateManyWithoutStoreNestedInput
@@ -26146,23 +25970,6 @@ export namespace Prisma {
     skipDuplicates?: boolean
   }
 
-  export type CityCreateWithoutStoresInput = {
-    id: number
-    name: string
-    province: ProvinceCreateNestedOneWithoutCityInput
-  }
-
-  export type CityUncheckedCreateWithoutStoresInput = {
-    id: number
-    name: string
-    province_id: number
-  }
-
-  export type CityCreateOrConnectWithoutStoresInput = {
-    where: CityWhereUniqueInput
-    create: XOR<CityCreateWithoutStoresInput, CityUncheckedCreateWithoutStoresInput>
-  }
-
   export type UserUpsertWithoutStoreInput = {
     update: XOR<UserUpdateWithoutStoreInput, UserUncheckedUpdateWithoutStoreInput>
     create: XOR<UserCreateWithoutStoreInput, UserUncheckedCreateWithoutStoreInput>
@@ -26294,29 +26101,6 @@ export namespace Prisma {
     endDate?: DateTimeFilter<"Discount"> | Date | string
     isActive?: BoolFilter<"Discount"> | boolean
     createdAt?: DateTimeFilter<"Discount"> | Date | string
-  }
-
-  export type CityUpsertWithoutStoresInput = {
-    update: XOR<CityUpdateWithoutStoresInput, CityUncheckedUpdateWithoutStoresInput>
-    create: XOR<CityCreateWithoutStoresInput, CityUncheckedCreateWithoutStoresInput>
-    where?: CityWhereInput
-  }
-
-  export type CityUpdateToOneWithWhereWithoutStoresInput = {
-    where?: CityWhereInput
-    data: XOR<CityUpdateWithoutStoresInput, CityUncheckedUpdateWithoutStoresInput>
-  }
-
-  export type CityUpdateWithoutStoresInput = {
-    id?: IntFieldUpdateOperationsInput | number
-    name?: StringFieldUpdateOperationsInput | string
-    province?: ProvinceUpdateOneRequiredWithoutCityNestedInput
-  }
-
-  export type CityUncheckedUpdateWithoutStoresInput = {
-    id?: IntFieldUpdateOperationsInput | number
-    name?: StringFieldUpdateOperationsInput | string
-    province_id?: IntFieldUpdateOperationsInput | number
   }
 
   export type ProductCreateWithoutCategoryInput = {
@@ -26619,11 +26403,11 @@ export namespace Prisma {
     address: string
     latitude?: number | null
     longitude?: number | null
+    city_id?: string | null
     createdAt?: Date | string
     admin: UserCreateNestedOneWithoutStoreInput
     orders?: OrderCreateNestedManyWithoutStoreInput
     discount?: DiscountCreateNestedManyWithoutStoreInput
-    city?: CityCreateNestedOneWithoutStoresInput
   }
 
   export type StoreUncheckedCreateWithoutProductsInput = {
@@ -26633,7 +26417,7 @@ export namespace Prisma {
     adminId: string
     latitude?: number | null
     longitude?: number | null
-    city_id?: number | null
+    city_id?: string | null
     createdAt?: Date | string
     orders?: OrderUncheckedCreateNestedManyWithoutStoreInput
     discount?: DiscountUncheckedCreateNestedManyWithoutStoreInput
@@ -26692,11 +26476,11 @@ export namespace Prisma {
     address?: StringFieldUpdateOperationsInput | string
     latitude?: NullableFloatFieldUpdateOperationsInput | number | null
     longitude?: NullableFloatFieldUpdateOperationsInput | number | null
+    city_id?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     admin?: UserUpdateOneRequiredWithoutStoreNestedInput
     orders?: OrderUpdateManyWithoutStoreNestedInput
     discount?: DiscountUpdateManyWithoutStoreNestedInput
-    city?: CityUpdateOneWithoutStoresNestedInput
   }
 
   export type StoreUncheckedUpdateWithoutProductsInput = {
@@ -26706,7 +26490,7 @@ export namespace Prisma {
     adminId?: StringFieldUpdateOperationsInput | string
     latitude?: NullableFloatFieldUpdateOperationsInput | number | null
     longitude?: NullableFloatFieldUpdateOperationsInput | number | null
-    city_id?: NullableIntFieldUpdateOperationsInput | number | null
+    city_id?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     orders?: OrderUncheckedUpdateManyWithoutStoreNestedInput
     discount?: DiscountUncheckedUpdateManyWithoutStoreNestedInput
@@ -26993,11 +26777,11 @@ export namespace Prisma {
     address: string
     latitude?: number | null
     longitude?: number | null
+    city_id?: string | null
     createdAt?: Date | string
     admin: UserCreateNestedOneWithoutStoreInput
     products?: ProductStockCreateNestedManyWithoutStoreInput
     discount?: DiscountCreateNestedManyWithoutStoreInput
-    city?: CityCreateNestedOneWithoutStoresInput
   }
 
   export type StoreUncheckedCreateWithoutOrdersInput = {
@@ -27007,7 +26791,7 @@ export namespace Prisma {
     adminId: string
     latitude?: number | null
     longitude?: number | null
-    city_id?: number | null
+    city_id?: string | null
     createdAt?: Date | string
     products?: ProductStockUncheckedCreateNestedManyWithoutStoreInput
     discount?: DiscountUncheckedCreateNestedManyWithoutStoreInput
@@ -27166,11 +26950,11 @@ export namespace Prisma {
     address?: StringFieldUpdateOperationsInput | string
     latitude?: NullableFloatFieldUpdateOperationsInput | number | null
     longitude?: NullableFloatFieldUpdateOperationsInput | number | null
+    city_id?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     admin?: UserUpdateOneRequiredWithoutStoreNestedInput
     products?: ProductStockUpdateManyWithoutStoreNestedInput
     discount?: DiscountUpdateManyWithoutStoreNestedInput
-    city?: CityUpdateOneWithoutStoresNestedInput
   }
 
   export type StoreUncheckedUpdateWithoutOrdersInput = {
@@ -27180,7 +26964,7 @@ export namespace Prisma {
     adminId?: StringFieldUpdateOperationsInput | string
     latitude?: NullableFloatFieldUpdateOperationsInput | number | null
     longitude?: NullableFloatFieldUpdateOperationsInput | number | null
-    city_id?: NullableIntFieldUpdateOperationsInput | number | null
+    city_id?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     products?: ProductStockUncheckedUpdateManyWithoutStoreNestedInput
     discount?: DiscountUncheckedUpdateManyWithoutStoreNestedInput
@@ -27742,11 +27526,11 @@ export namespace Prisma {
     address: string
     latitude?: number | null
     longitude?: number | null
+    city_id?: string | null
     createdAt?: Date | string
     admin: UserCreateNestedOneWithoutStoreInput
     products?: ProductStockCreateNestedManyWithoutStoreInput
     orders?: OrderCreateNestedManyWithoutStoreInput
-    city?: CityCreateNestedOneWithoutStoresInput
   }
 
   export type StoreUncheckedCreateWithoutDiscountInput = {
@@ -27756,7 +27540,7 @@ export namespace Prisma {
     adminId: string
     latitude?: number | null
     longitude?: number | null
-    city_id?: number | null
+    city_id?: string | null
     createdAt?: Date | string
     products?: ProductStockUncheckedCreateNestedManyWithoutStoreInput
     orders?: OrderUncheckedCreateNestedManyWithoutStoreInput
@@ -27821,11 +27605,11 @@ export namespace Prisma {
     address?: StringFieldUpdateOperationsInput | string
     latitude?: NullableFloatFieldUpdateOperationsInput | number | null
     longitude?: NullableFloatFieldUpdateOperationsInput | number | null
+    city_id?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     admin?: UserUpdateOneRequiredWithoutStoreNestedInput
     products?: ProductStockUpdateManyWithoutStoreNestedInput
     orders?: OrderUpdateManyWithoutStoreNestedInput
-    city?: CityUpdateOneWithoutStoresNestedInput
   }
 
   export type StoreUncheckedUpdateWithoutDiscountInput = {
@@ -27835,7 +27619,7 @@ export namespace Prisma {
     adminId?: StringFieldUpdateOperationsInput | string
     latitude?: NullableFloatFieldUpdateOperationsInput | number | null
     longitude?: NullableFloatFieldUpdateOperationsInput | number | null
-    city_id?: NullableIntFieldUpdateOperationsInput | number | null
+    city_id?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     products?: ProductStockUncheckedUpdateManyWithoutStoreNestedInput
     orders?: OrderUncheckedUpdateManyWithoutStoreNestedInput
@@ -27844,13 +27628,11 @@ export namespace Prisma {
   export type CityCreateWithoutProvinceInput = {
     id: number
     name: string
-    stores?: StoreCreateNestedManyWithoutCityInput
   }
 
   export type CityUncheckedCreateWithoutProvinceInput = {
     id: number
     name: string
-    stores?: StoreUncheckedCreateNestedManyWithoutCityInput
   }
 
   export type CityCreateOrConnectWithoutProvinceInput = {
@@ -27903,42 +27685,6 @@ export namespace Prisma {
     create: XOR<ProvinceCreateWithoutCityInput, ProvinceUncheckedCreateWithoutCityInput>
   }
 
-  export type StoreCreateWithoutCityInput = {
-    id?: string
-    name: string
-    address: string
-    latitude?: number | null
-    longitude?: number | null
-    createdAt?: Date | string
-    admin: UserCreateNestedOneWithoutStoreInput
-    products?: ProductStockCreateNestedManyWithoutStoreInput
-    orders?: OrderCreateNestedManyWithoutStoreInput
-    discount?: DiscountCreateNestedManyWithoutStoreInput
-  }
-
-  export type StoreUncheckedCreateWithoutCityInput = {
-    id?: string
-    name: string
-    address: string
-    adminId: string
-    latitude?: number | null
-    longitude?: number | null
-    createdAt?: Date | string
-    products?: ProductStockUncheckedCreateNestedManyWithoutStoreInput
-    orders?: OrderUncheckedCreateNestedManyWithoutStoreInput
-    discount?: DiscountUncheckedCreateNestedManyWithoutStoreInput
-  }
-
-  export type StoreCreateOrConnectWithoutCityInput = {
-    where: StoreWhereUniqueInput
-    create: XOR<StoreCreateWithoutCityInput, StoreUncheckedCreateWithoutCityInput>
-  }
-
-  export type StoreCreateManyCityInputEnvelope = {
-    data: StoreCreateManyCityInput | StoreCreateManyCityInput[]
-    skipDuplicates?: boolean
-  }
-
   export type ProvinceUpsertWithoutCityInput = {
     update: XOR<ProvinceUpdateWithoutCityInput, ProvinceUncheckedUpdateWithoutCityInput>
     create: XOR<ProvinceCreateWithoutCityInput, ProvinceUncheckedCreateWithoutCityInput>
@@ -27958,36 +27704,6 @@ export namespace Prisma {
   export type ProvinceUncheckedUpdateWithoutCityInput = {
     id?: IntFieldUpdateOperationsInput | number
     name?: StringFieldUpdateOperationsInput | string
-  }
-
-  export type StoreUpsertWithWhereUniqueWithoutCityInput = {
-    where: StoreWhereUniqueInput
-    update: XOR<StoreUpdateWithoutCityInput, StoreUncheckedUpdateWithoutCityInput>
-    create: XOR<StoreCreateWithoutCityInput, StoreUncheckedCreateWithoutCityInput>
-  }
-
-  export type StoreUpdateWithWhereUniqueWithoutCityInput = {
-    where: StoreWhereUniqueInput
-    data: XOR<StoreUpdateWithoutCityInput, StoreUncheckedUpdateWithoutCityInput>
-  }
-
-  export type StoreUpdateManyWithWhereWithoutCityInput = {
-    where: StoreScalarWhereInput
-    data: XOR<StoreUpdateManyMutationInput, StoreUncheckedUpdateManyWithoutCityInput>
-  }
-
-  export type StoreScalarWhereInput = {
-    AND?: StoreScalarWhereInput | StoreScalarWhereInput[]
-    OR?: StoreScalarWhereInput[]
-    NOT?: StoreScalarWhereInput | StoreScalarWhereInput[]
-    id?: StringFilter<"Store"> | string
-    name?: StringFilter<"Store"> | string
-    address?: StringFilter<"Store"> | string
-    adminId?: StringFilter<"Store"> | string
-    latitude?: FloatNullableFilter<"Store"> | number | null
-    longitude?: FloatNullableFilter<"Store"> | number | null
-    city_id?: IntNullableFilter<"Store"> | number | null
-    createdAt?: DateTimeFilter<"Store"> | Date | string
   }
 
   export type UserCreateManyReferredByInput = {
@@ -28826,64 +28542,16 @@ export namespace Prisma {
   export type CityUpdateWithoutProvinceInput = {
     id?: IntFieldUpdateOperationsInput | number
     name?: StringFieldUpdateOperationsInput | string
-    stores?: StoreUpdateManyWithoutCityNestedInput
   }
 
   export type CityUncheckedUpdateWithoutProvinceInput = {
     id?: IntFieldUpdateOperationsInput | number
     name?: StringFieldUpdateOperationsInput | string
-    stores?: StoreUncheckedUpdateManyWithoutCityNestedInput
   }
 
   export type CityUncheckedUpdateManyWithoutProvinceInput = {
     id?: IntFieldUpdateOperationsInput | number
     name?: StringFieldUpdateOperationsInput | string
-  }
-
-  export type StoreCreateManyCityInput = {
-    id?: string
-    name: string
-    address: string
-    adminId: string
-    latitude?: number | null
-    longitude?: number | null
-    createdAt?: Date | string
-  }
-
-  export type StoreUpdateWithoutCityInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    name?: StringFieldUpdateOperationsInput | string
-    address?: StringFieldUpdateOperationsInput | string
-    latitude?: NullableFloatFieldUpdateOperationsInput | number | null
-    longitude?: NullableFloatFieldUpdateOperationsInput | number | null
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    admin?: UserUpdateOneRequiredWithoutStoreNestedInput
-    products?: ProductStockUpdateManyWithoutStoreNestedInput
-    orders?: OrderUpdateManyWithoutStoreNestedInput
-    discount?: DiscountUpdateManyWithoutStoreNestedInput
-  }
-
-  export type StoreUncheckedUpdateWithoutCityInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    name?: StringFieldUpdateOperationsInput | string
-    address?: StringFieldUpdateOperationsInput | string
-    adminId?: StringFieldUpdateOperationsInput | string
-    latitude?: NullableFloatFieldUpdateOperationsInput | number | null
-    longitude?: NullableFloatFieldUpdateOperationsInput | number | null
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    products?: ProductStockUncheckedUpdateManyWithoutStoreNestedInput
-    orders?: OrderUncheckedUpdateManyWithoutStoreNestedInput
-    discount?: DiscountUncheckedUpdateManyWithoutStoreNestedInput
-  }
-
-  export type StoreUncheckedUpdateManyWithoutCityInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    name?: StringFieldUpdateOperationsInput | string
-    address?: StringFieldUpdateOperationsInput | string
-    adminId?: StringFieldUpdateOperationsInput | string
-    latitude?: NullableFloatFieldUpdateOperationsInput | number | null
-    longitude?: NullableFloatFieldUpdateOperationsInput | number | null
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
 
