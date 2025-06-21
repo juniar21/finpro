@@ -2,13 +2,15 @@ import { Request, Response } from 'express';
 import prisma from '../prisma';
 
 export class StoreController {
-  // ✅ Create Store
+  // Create Store
   async createStore(req: Request, res: Response) {
     try {
-      const { name, address, adminId } = req.body;
+      const { name, address, adminId, city_id } = req.body;
 
-      if (!name || !address || !adminId) {
-         res.status(400).json({ error: 'Missing required fields: name, address, adminId' });
+      if (!name || !address || !adminId || !city_id) {
+         res.status(400).json({
+          error: 'Missing required fields: name, address, adminId, city_id',
+        });
       }
 
       const adminUser = await prisma.user.findUnique({
@@ -16,7 +18,9 @@ export class StoreController {
       });
 
       if (!adminUser || adminUser.roles !== 'ADMIN') {
-         res.status(400).json({ error: 'adminId invalid atau user bukan ADMIN' });
+         res
+          .status(400)
+          .json({ error: 'adminId invalid atau user bukan ADMIN' });
       }
 
       const existingStore = await prisma.store.findFirst({
@@ -24,7 +28,9 @@ export class StoreController {
       });
 
       if (existingStore) {
-         res.status(400).json({ error: 'Store untuk admin ini sudah ada' });
+         res
+          .status(400)
+          .json({ error: 'Store untuk admin ini sudah ada' });
       }
 
       const newStore = await prisma.store.create({
@@ -32,6 +38,7 @@ export class StoreController {
           name,
           address,
           adminId,
+          city_id, // string langsung, tanpa Number()
         },
       });
 
@@ -42,7 +49,7 @@ export class StoreController {
     }
   }
 
-  // ✅ GET all stores with admin + product stocks + product + category
+  // Get all stores with admin and product stocks
   async getStores(req: Request, res: Response) {
     try {
       const stores = await prisma.store.findMany({
@@ -75,59 +82,68 @@ export class StoreController {
     }
   }
 
-  // ✅ Get All Products (optionally by storeId)
-async getProducts(req: Request, res: Response) {
-  try {
-    const { storeId } = req.query;
+  // Get all products (optionally by storeId)
+  async getProducts(req: Request, res: Response) {
+    try {
+      const { storeId } = req.query;
 
-    if (storeId && typeof storeId !== 'string') {
-     res.status(400).json({ error: 'Invalid storeId' });
+      let storeIdStr: string | undefined;
+      if (storeId) {
+        if (typeof storeId === 'string') {
+          storeIdStr = storeId;
+        } else if (Array.isArray(storeId) && typeof storeId[0] === 'string') {
+          storeIdStr = storeId[0];
+        } else {
+           res.status(400).json({ error: 'Invalid storeId' });
+        }
+      }
+
+      const productStocks = await prisma.productStock.findMany({
+        where: storeIdStr ? { storeId: storeIdStr } : undefined,
+        include: {
+          product: {
+            include: {
+              category: true,
+            },
+          },
+          store: {
+            select: {
+              id: true,
+              name: true,
+              address: true,
+              city_id: true,
+            },
+          },
+        },
+      });
+
+      res.status(200).json(productStocks);
+    } catch (error) {
+      console.error('Error fetching products:', error);
+      res.status(500).json({ error: 'Internal server error' });
     }
-
-    const productStocks = await prisma.productStock.findMany({
-      where: storeId ? { storeId: storeId as string } : undefined,
-      include: {
-        product: {
-          include: {
-            category: true,
-          },
-        },
-        store: {
-          select: {
-            id: true,
-            name: true,
-            address: true,
-          },
-        },
-      },
-    });
-
-    res.status(200).json(productStocks);
-  } catch (error) {
-    console.error('Error fetching products:', error);
-    res.status(500).json({ error: 'Internal server error' });
   }
-}
 
-
-
-  // ✅ Update Store
+  // Update Store
   async updateStore(req: Request, res: Response) {
     try {
       const { id } = req.params;
-      const { name, address, adminId } = req.body;
+      const { name, address, adminId, city_id } = req.body;
 
       const store = await prisma.store.findUnique({ where: { id } });
-
       if (!store) {
          res.status(404).json({ error: 'Store not found' });
       }
 
       if (adminId) {
-        const adminUser = await prisma.user.findUnique({ where: { id: adminId } });
+        const adminUser = await prisma.user.findUnique({
+          where: { id: adminId },
+        });
 
         if (!adminUser || adminUser.roles !== 'ADMIN') {
-           res.status(400).json({ error: 'adminId invalid atau user bukan ADMIN' });
+           res
+            .status(400)
+            .json({ error: 'adminId invalid atau user bukan ADMIN' });
         }
 
         const existingStore = await prisma.store.findFirst({
@@ -138,7 +154,9 @@ async getProducts(req: Request, res: Response) {
         });
 
         if (existingStore) {
-           res.status(400).json({ error: 'Admin ini sudah memiliki store lain' });
+           res
+            .status(400)
+            .json({ error: 'Admin ini sudah memiliki store lain' });
         }
       }
 
@@ -148,6 +166,7 @@ async getProducts(req: Request, res: Response) {
           name,
           address,
           adminId,
+          city_id,
         },
       });
 
@@ -158,13 +177,12 @@ async getProducts(req: Request, res: Response) {
     }
   }
 
-  // ✅ Delete Store
+  // Delete Store
   async deleteStore(req: Request, res: Response) {
     try {
       const { id } = req.params;
 
       const store = await prisma.store.findUnique({ where: { id } });
-
       if (!store) {
          res.status(404).json({ error: 'Store not found' });
       }

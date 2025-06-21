@@ -69,8 +69,7 @@ model Store {
   latitude  Float?
   longitude Float?
   discount  Discount[]     @relation("StoreDiscounts")
-  city_id    Int?
-  city      City?          @relation(fields: [city_id], references: [id])
+  city_id   String?
   createdAt DateTime       @default(now())
 }
 
@@ -235,7 +234,7 @@ model City {
   name        String
   province_id Int
   province    Province @relation(fields: [province_id], references: [id])
-  stores      Store[]
+  
 
 
 }

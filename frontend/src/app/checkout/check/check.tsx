@@ -1,9 +1,9 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
-import { Loader2 } from "lucide-react";
-import axios from "@/lib/axios";
 import { useSession } from "next-auth/react";
+import axios from "@/lib/axios";
+import { Loader2 } from "lucide-react";
 
 interface CheckoutProduct {
   id: string;
@@ -13,6 +13,7 @@ interface CheckoutProduct {
   quantity: number;
   color: string;
   size: string;
+  storeId: string;
 }
 
 interface Address {
@@ -46,37 +47,36 @@ export default function CheckoutPage() {
   const [useVoucher, setUseVoucher] = useState(true);
   const [isLoading, setIsLoading] = useState(true);
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [shippingData, setShippingData] = useState<any>(null);
-  const [selectedShippingOption, setSelectedShippingOption] = useState<any>(null);
-  const [shippingCost, setShippingCost] = useState<number>(0);
-  const [shippingLoading, setShippingLoading] = useState(false);
 
-  const originCityId = "501";
+  const [shippingData, setShippingData] = useState<any>(null);
+  const [selectedShippingOption, setSelectedShippingOption] =
+    useState<any>(null);
+  const [shippingLoading, setShippingLoading] = useState(false);
+  const [shippingCost, setShippingCost] = useState<number>(0);
 
   useEffect(() => {
     const fetchData = async () => {
-      const data = localStorage.getItem("checkout");
-      if (data) setProduct(JSON.parse(data));
+      const dataString = localStorage.getItem("checkout");
+      if (dataString) {
+        const parsed: CheckoutProduct = JSON.parse(dataString);
+        console.log("Data dari localStorage:", parsed);
+        setProduct(parsed);
+      }
 
       if (session?.accessToken) {
         try {
-          const [addressRes, rewardRes] = await Promise.all([
-            axios.get("/address", {
-              headers: { Authorization: `Bearer ${session.accessToken}` },
-            }),
-            axios.get("/rewards", {
-              headers: { Authorization: `Bearer ${session.accessToken}` },
-            }),
+          const [addrRes, rewardRes] = await Promise.all([
+            axios.get("/address", { headers: { Authorization: `Bearer ${session.accessToken}` } }),
+            axios.get("/rewards", { headers: { Authorization: `Bearer ${session.accessToken}` } }),
           ]);
-
-          const addrs: Address[] = addressRes.data.addresses ?? addressRes.data;
+          const addrs: Address[] = addrRes.data.addresses ?? addrRes.data;
           setAddresses(addrs);
           const primary = addrs.find((a) => a.is_primary);
           const selectedId = primary?.address_id || addrs[0]?.address_id || "";
           setSelectedAddressId(selectedId);
           setReward(rewardRes.data);
-        } catch (err) {
-          console.error("Gagal mengambil data:", err);
+        } catch (e) {
+          console.error("error fetchData", e);
         }
       }
 
@@ -86,18 +86,18 @@ export default function CheckoutPage() {
     fetchData();
   }, [session]);
 
-  const fetchShippingCost = async (receiver_city_id: string) => {
-    if (!originCityId || !receiver_city_id || !product) return;
+  const fetchShippingCost = async (receiver_destination_id: string) => {
     setShippingLoading(true);
     try {
       const res = await axios.get("/rajaongkir/cost", {
         params: {
-          shipper_destination_id: originCityId,
-          receiver_destination_id: receiver_city_id,
-          weight: product.quantity * 1000,
-          item_value: product.price,
+          shipper_destination_id: "3994", // ID gudang asal
+          receiver_destination_id,
+          weight: product?.quantity || 1,
+          item_value: product?.price || 0,
         },
       });
+
       setShippingData(res.data.data);
     } catch (err) {
       console.error("❌ Gagal hitung ongkir:", err);
@@ -109,8 +109,10 @@ export default function CheckoutPage() {
 
   useEffect(() => {
     const selected = addresses.find((a) => a.address_id === selectedAddressId);
-    if (selected?.city_id) fetchShippingCost(selected.city_id);
-  }, [selectedAddressId, addresses, product]);
+    if (selected?.city_id) {
+      fetchShippingCost(selected.city_id);
+    }
+  }, [selectedAddressId, addresses]);
 
   const handleConfirm = async () => {
     if (!selectedAddressId || !product || !selectedShippingOption) {
@@ -119,31 +121,80 @@ export default function CheckoutPage() {
     }
 
     setIsSubmitting(true);
-    setTimeout(() => {
-      alert("Order berhasil dikonfirmasi ✅");
-      localStorage.removeItem("checkout");
+
+    const subtotal = product.price * product.quantity;
+    const totalPoints = reward?.points.reduce((a, p) => a + p.amount, 0) || 0;
+    const pointDiscount = usePoints ? Math.min(subtotal, totalPoints * 1000) : 0;
+    const voucher = reward?.voucher;
+    const voucherDiscount = useVoucher && voucher
+      ? Math.min((voucher.percentage / 100) * subtotal, voucher.maxDiscount)
+      : 0;
+    const totalDiscount = pointDiscount + voucherDiscount;
+    const finalTotal = subtotal - totalDiscount;
+
+    try {
+      const payload = {
+        storeId: product.storeId,
+        shippingAddress: selectedAddressId,
+        totalAmount: finalTotal,
+        voucherId: useVoucher && voucher ? voucher.id : null,
+        usePoints,
+        items: [
+          {
+            productId: product.id,
+            quantity: product.quantity,
+            price: product.price,
+          },
+        ],
+      };
+
+      console.log("Payload yang dikirim ke /transaction:", payload);
+
+      const res = await axios.post("/transaction", payload, {
+        headers: { Authorization: `Bearer ${session?.accessToken}` },
+      });
+
+      const invoiceUrl = res.data.invoice?.invoiceUrl;
+      if (invoiceUrl) {
+        localStorage.removeItem("checkout");
+        window.location.href = invoiceUrl;
+      } else {
+        alert("Gagal membuat invoice.");
+      }
+    } catch (e) {
+      console.error("Gagal mengirim transaksi:", e);
+    } finally {
       setIsSubmitting(false);
-    }, 1500);
+    }
   };
 
   if (status === "loading" || isLoading) {
     return (
       <div className="flex justify-center items-center h-screen">
-        <Loader2 className="animate-spin h-10 w-10" />
+        <Loader2 className="h-10 w-10 animate-spin" />
       </div>
     );
   }
 
   if (!session || !session.accessToken) {
-    return <p className="text-center mt-20">Silakan login untuk melanjutkan checkout.</p>;
+    return (
+      <p className="text-center mt-20">
+        Silakan login untuk melanjutkan checkout.
+      </p>
+    );
   }
 
   if (!product) {
-    return <p className="text-center mt-20">Produk tidak ditemukan di keranjang checkout.</p>;
+    return (
+      <p className="text-center mt-20">
+        Produk tidak ditemukan di keranjang checkout.
+      </p>
+    );
   }
 
   const subtotal = product.price * product.quantity;
-  const totalPoints = reward?.points?.reduce((acc, p) => acc + p.amount, 0) || 0;
+  const totalPoints =
+    reward?.points?.reduce((acc, p) => acc + p.amount, 0) || 0;
   const pointDiscount = usePoints ? Math.min(subtotal, totalPoints * 1000) : 0;
   const voucher = reward?.voucher;
   const voucherDiscount =
@@ -154,13 +205,23 @@ export default function CheckoutPage() {
   const finalTotal = subtotal - totalDiscount;
 
   return (
-    <section className="max-w-4xl mx-auto px-4 py-12">
-      <h1 className="text-3xl font-bold mb-6">Checkout</h1>
+    <section className="max-w-4xl mx-auto px-4 py-10">
+      <h1 className="text-2xl font-bold mb-6">Checkout</h1>
+      <p className="mb-2 font-semibold">Alamat Pengiriman</p>
+      <select value={selectedAddressId} onChange={(e) => setSelectedAddressId(e.target.value)} className="border px-4 py-2 mb-6 w-full">
+        {addresses.map(addr => (
+          <option key={addr.address_id} value={addr.address_id}>
+            {addr.address_name} - {addr.city}, {addr.province}
+          </option>
+        ))}
+      </select>
 
       <div className="bg-white p-6 rounded-xl shadow-md space-y-6">
         {/* Alamat */}
         <div>
-          <h2 className="text-lg font-semibold mb-4">Pilih Alamat Pengiriman</h2>
+          <h2 className="text-lg font-semibold mb-4">
+            Pilih Alamat Pengiriman
+          </h2>
           {addresses.length === 0 ? (
             <p className="text-sm text-gray-500">Belum ada alamat tersimpan.</p>
           ) : (
@@ -184,12 +245,16 @@ export default function CheckoutPage() {
                       className="mt-1 accent-blue-600"
                     />
                     <div className="flex flex-col">
-                      <span className="text-sm font-medium text-gray-800">{addr.address_name}</span>
+                      <span className="text-sm font-medium text-gray-800">
+                        {addr.address_name}
+                      </span>
                       <span className="text-sm text-gray-500">
                         {addr.address}, {addr.city}, {addr.province}
                       </span>
                       {addr.is_primary && (
-                        <span className="text-xs text-green-600 font-medium mt-1">Alamat Utama</span>
+                        <span className="text-xs text-green-600 font-medium mt-1">
+                          Alamat Utama
+                        </span>
                       )}
                     </div>
                   </div>
@@ -210,8 +275,12 @@ export default function CheckoutPage() {
             <h2 className="text-xl font-semibold">{product.name}</h2>
             <p className="text-sm text-gray-500">Color: {product.color}</p>
             <p className="text-sm text-gray-500">Size: {product.size}</p>
-            <p className="text-sm text-gray-500">Quantity: {product.quantity}</p>
-            <p className="text-sm text-gray-500">Price: Rp{product.price.toLocaleString()}</p>
+            <p className="text-sm text-gray-500">
+              Quantity: {product.quantity}
+            </p>
+            <p className="text-sm text-gray-500">
+              Price: Rp{product.price.toLocaleString()}
+            </p>
           </div>
         </div>
 
@@ -230,29 +299,45 @@ export default function CheckoutPage() {
                   <div>
                     <p className="font-semibold text-blue-700">Poin</p>
                     <p className="text-sm">
-                      Potongan Rp{pointDiscount.toLocaleString()} dari {totalPoints} poin
+                      Potongan Rp{pointDiscount.toLocaleString()} dari{" "}
+                      {totalPoints} poin
                     </p>
                   </div>
-                  <input type="checkbox" checked={usePoints} readOnly className="accent-blue-600" />
+                  <input
+                    type="checkbox"
+                    checked={usePoints}
+                    readOnly
+                    className="accent-blue-600"
+                  />
                 </div>
               </div>
             )}
             {voucher && (
               <div
                 className={`border p-4 rounded-lg cursor-pointer ${
-                  useVoucher ? "bg-green-50 border-green-500" : "border-gray-200"
+                  useVoucher
+                    ? "bg-green-50 border-green-500"
+                    : "border-gray-200"
                 }`}
                 onClick={() => setUseVoucher(!useVoucher)}
               >
                 <div className="flex justify-between items-center">
                   <div>
-                    <p className="font-semibold text-green-700">Voucher {voucher.code}</p>
+                    <p className="font-semibold text-green-700">
+                      Voucher {voucher.code}
+                    </p>
                     <p className="text-sm">
-                      {voucher.percentage}% hingga Rp{voucher.maxDiscount.toLocaleString()} (Diskon Rp
+                      {voucher.percentage}% hingga Rp
+                      {voucher.maxDiscount.toLocaleString()} (Diskon Rp
                       {voucherDiscount.toLocaleString()})
                     </p>
                   </div>
-                  <input type="checkbox" checked={useVoucher} readOnly className="accent-green-600" />
+                  <input
+                    type="checkbox"
+                    checked={useVoucher}
+                    readOnly
+                    className="accent-green-600"
+                  />
                 </div>
               </div>
             )}
@@ -263,61 +348,66 @@ export default function CheckoutPage() {
         {shippingData && (
           <div className="space-y-4">
             <h3 className="font-semibold text-lg">Opsi Pengiriman</h3>
-            {["calculate_reguler", "calculate_cargo", "calculate_instant"].map((type) => {
-              const options = shippingData[type] || [];
-              if (!Array.isArray(options) || options.length === 0) return null;
+            {["calculate_reguler", "calculate_cargo", "calculate_instant"].map(
+              (type) =>
+                shippingData[type]?.length > 0 && (
+                  <div key={type}>
+                    <h4 className="text-md font-semibold capitalize mb-2">
+                      {type.replace("calculate_", "")}
+                    </h4>
+                    <div className="grid gap-2">
+                      {shippingData[type].map((option: any, index: number) => {
+                        const optionId = `${type}-${index}`;
+                        const isSelected =
+                          selectedShippingOption?.id === optionId;
 
-              return (
-                <div key={type}>
-                  <h4 className="text-md font-semibold capitalize mb-2">
-                    {type.replace("calculate_", "")}
-                  </h4>
-                  <div className="grid gap-2">
-                    {options.map((option: any, index: number) => {
-                      const optionId = `${type}-${index}`;
-                      const isSelected = selectedShippingOption?.id === optionId;
-
-                      return (
-                        <label
-                          key={optionId}
-                          className={`flex items-center justify-between border p-3 rounded-md cursor-pointer ${
-                            isSelected ? "border-blue-500 bg-blue-50" : "bg-gray-50"
-                          }`}
-                        >
-                          <div className="flex items-start gap-3">
-                            <input
-                              type="radio"
-                              name="shipping_option"
-                              checked={isSelected}
-                              onChange={() => {
-                                setSelectedShippingOption({ ...option, id: optionId });
-                                setShippingCost(option.shipping_cost_net / 1000);
-                              }}
-                              className="accent-blue-600 mt-1"
-                            />
-                            <div>
-                              <div className="font-medium">
-                                {option.shipping_name} - {option.service_name}
-                              </div>
-                              <div className="text-sm text-gray-700">
-                                Ongkir: Rp{(option.shipping_cost_net / 1000).toLocaleString()}
-                              </div>
-                              <div className="text-xs text-gray-500">
-                                Estimasi: {option.etd || "-"}
+                        return (
+                          <label
+                            key={optionId}
+                            className={`flex items-center justify-between border p-3 rounded-md cursor-pointer ${
+                              isSelected
+                                ? "border-blue-500 bg-blue-50"
+                                : "bg-gray-50"
+                            }`}
+                          >
+                            <div className="flex items-start gap-3">
+                              <input
+                                type="radio"
+                                name="shipping_option"
+                                checked={isSelected}
+                                onChange={() => {
+                                  setSelectedShippingOption({
+                                    ...option,
+                                    id: optionId,
+                                  });
+                                  setShippingCost(option.shipping_cost_net);
+                                }}
+                                className="accent-blue-600 mt-1"
+                              />
+                              <div>
+                                <div className="font-medium">
+                                  {option.shipping_name} - {option.service_name}
+                                </div>
+                                <div>
+                                  Ongkir: Rp
+                                  {option.shipping_cost_net.toLocaleString()}
+                                </div>
+                                <div className="text-xs text-gray-500">
+                                  Estimasi: {option.etd || "-"}
+                                </div>
                               </div>
                             </div>
-                          </div>
-                        </label>
-                      );
-                    })}
+                          </label>
+                        );
+                      })}
+                    </div>
                   </div>
-                </div>
-              );
-            })}
+                )
+            )}
           </div>
         )}
 
-        {/* Ringkasan Harga */}
+        {/* Total */}
         <div className="flex justify-between text-lg font-medium">
           <span>Subtotal:</span>
           <span>Rp{subtotal.toLocaleString()}</span>
@@ -328,13 +418,16 @@ export default function CheckoutPage() {
         </div>
         <div className="flex justify-between text-lg font-medium">
           <span>Ongkir:</span>
-          <span>{shippingCost ? `Rp${shippingCost.toLocaleString()}` : "-"}</span>
+          <span>
+            {shippingCost ? `Rp${shippingCost.toLocaleString()}` : "-"}
+          </span>
         </div>
         <div className="flex justify-between text-xl font-bold border-t pt-3">
           <span>Total Bayar:</span>
           <span>Rp{(finalTotal + shippingCost).toLocaleString()}</span>
         </div>
 
+        {/* Checkout Button */}
         <button
           className="w-full bg-black text-white py-3 rounded-md hover:bg-gray-800 transition disabled:opacity-50"
           onClick={handleConfirm}
@@ -343,6 +436,37 @@ export default function CheckoutPage() {
           {isSubmitting ? "Processing..." : "Confirm and Pay"}
         </button>
       </div>
+
+      {reward && (
+        <>
+          {totalPoints > 0 && (
+            <label className="block my-2">
+              <input type="checkbox" checked={usePoints} onChange={() => setUsePoints(!usePoints)} className="mr-2" />
+              Gunakan Poin ({totalPoints} poin)
+            </label>
+          )}
+          {voucher && (
+            <label className="block my-2">
+              <input type="checkbox" checked={useVoucher} onChange={() => setUseVoucher(!useVoucher)} className="mr-2" />
+              Gunakan Voucher {voucher.code}
+            </label>
+          )}
+        </>
+      )}
+
+      <div className="border-t pt-4 mt-4">
+        <p>Subtotal: Rp{subtotal.toLocaleString()}</p>
+        <p>Diskon: Rp{totalDiscount.toLocaleString()}</p>
+        <p className="font-bold text-lg mt-2">Total: Rp{finalTotal.toLocaleString()}</p>
+      </div>
+
+      <button
+        onClick={handleConfirm}
+        disabled={isSubmitting}
+        className="w-full mt-6 bg-black text-white py-3 rounded hover:bg-gray-800 disabled:opacity-50"
+      >
+        {isSubmitting ? "Memproses..." : "Konfirmasi dan Bayar"}
+      </button>
     </section>
   );
 }

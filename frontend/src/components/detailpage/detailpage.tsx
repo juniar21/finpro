@@ -26,7 +26,11 @@ interface Product {
   stocks: {
     quantity: number;
   };
+  weight: number; // ✅ tambahkan jika tersedia
   storeId: string;
+  store?: {
+    city_id: string;
+  };
 }
 
 const availableColors = ["#4B4A40", "#2C2D3C", "#3D4C48"];
@@ -37,9 +41,7 @@ export default function ProductDetailPage() {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [selectedImage, setSelectedImage] = useState<string>("");
-  const [selectedColor, setSelectedColor] = useState<string>(
-    availableColors[0]
-  );
+  const [selectedColor, setSelectedColor] = useState<string>(availableColors[0]);
   const [selectedSize, setSelectedSize] = useState<string>("Large");
   const [quantity, setQuantity] = useState<number>(1);
 
@@ -84,7 +86,7 @@ export default function ProductDetailPage() {
   return (
     <section className="w-full px-4 py-10 lg:py-16 bg-white">
       <div className="max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-10">
-        {/* LEFT SIDE - IMAGES */}
+        {/* LEFT - Images */}
         <div className="flex flex-col items-center">
           <div className="w-full max-w-md">
             <img
@@ -108,45 +110,38 @@ export default function ProductDetailPage() {
           </div>
         </div>
 
-        {/* RIGHT SIDE - INFO */}
+        {/* RIGHT - Info */}
         <div className="space-y-6">
-          <h1 className="text-3xl font-extrabold text-gray-900">
-            {product.name}
-          </h1>
-
-
-
-          {/* Description */}
+          <h1 className="text-3xl font-extrabold text-gray-900">{product.name}</h1>
           <p className="text-gray-700">{product.description}</p>
-
-          {/* Category */}
           <p className="text-gray-500 text-sm">{product.category.name}</p>
 
-          {/* Price with Discount */}
+          {/* Price */}
           <div className="flex items-center gap-4">
             {product.finalPrice !== undefined && product.finalPrice < product.price ? (
               <>
                 <span className="text-2xl font-bold text-green-600">
-                  ${product.finalPrice}
+                  Rp{product.finalPrice.toLocaleString()}
                 </span>
                 <span className="line-through text-gray-400 text-sm">
-                  ${product.price}
+                  Rp{product.price.toLocaleString()}
                 </span>
                 <span className="text-sm text-red-500 font-medium">
                   {product.discount && product.discount.isPercentage
                     ? `-${product.discount.amount}%`
                     : product.discount
-                    ? `-$${product.discount.amount}`
+                    ? `-Rp${product.discount.amount.toLocaleString()}`
                     : ""}
                 </span>
               </>
             ) : (
-              <span className="text-2xl font-bold text-gray-900">${product.price}</span>
+              <span className="text-2xl font-bold text-gray-900">
+                Rp{product.price.toLocaleString()}
+              </span>
             )}
           </div>
 
-
-          {/* Quantity & Action Buttons */}
+          {/* Quantity & Buttons */}
           <div className="flex flex-col sm:flex-row sm:items-center sm:gap-4 gap-3">
             <div className="flex items-center border rounded-md px-3 py-2 w-fit">
               <button
@@ -163,22 +158,33 @@ export default function ProductDetailPage() {
                 +
               </button>
             </div>
+
             <button className="w-full sm:w-auto bg-black text-white px-6 py-3 rounded-md hover:bg-gray-800 transition">
               Add to Cart
             </button>
+
             <button
               className="w-full sm:w-auto border px-6 py-3 rounded-md hover:bg-gray-200 transition"
               onClick={() => {
+                if (!product.store?.city_id) {
+                  alert("Lokasi asal toko tidak ditemukan.");
+                  return;
+                }
+
                 const checkoutData = {
                   id: product.id,
                   name: product.name,
-                  price: product.price,
+                  price: product.finalPrice ?? product.price,
                   imageUrl: selectedImage,
                   quantity,
-                  storeId: product.storeId,
+                  color: selectedColor,
+                  size: selectedSize,
+                  weight: product.weight ?? 1000, // default 1000g jika null
+                  originCityId: product.store.city_id, // ✅ penting untuk ongkir
                 };
+
                 localStorage.setItem("checkout", JSON.stringify(checkoutData));
-                window.location.href = "/checkout"; // atau gunakan router.push jika pakai `useRouter`
+                window.location.href = "/checkout";
               }}
             >
               Buy Now
