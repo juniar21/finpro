@@ -500,4 +500,50 @@ export class ProductController {
       res.status(500).json({ error: "Terjadi kesalahan server." });
     }
   };
+
+  deleteProduct = async (req: Request, res: Response) => {
+  try {
+    const { id } = req.params;
+
+    // Cari produk terlebih dahulu
+    const product = await prisma.product.findUnique({
+      where: { id },
+      include: {
+        stocks: true,
+        discount: true,
+      },
+    });
+
+    if (!product) {
+       res.status(404).json({ message: "Produk tidak ditemukan" });
+       return;
+    }
+
+    // Hapus stok produk dari semua store
+    await prisma.productStock.deleteMany({
+      where: { productId: id },
+    });
+
+    // Hapus relasi diskon (jika ada)
+    await prisma.discount.deleteMany({
+      where: { productId: id },
+    });
+
+    // Hapus gambar dari Cloudinary jika ada
+    if (product.imageUrl) {
+      await cloudinaryRemove(product.imageUrl);
+    }
+
+    // Hapus produk
+    await prisma.product.delete({
+      where: { id },
+    });
+
+    res.status(200).json({ message: "Produk berhasil dihapus" });
+  } catch (error) {
+    console.error("Gagal menghapus produk:", error);
+    res.status(500).json({ message: "Gagal menghapus produk", error });
+  }
+};
+
 }

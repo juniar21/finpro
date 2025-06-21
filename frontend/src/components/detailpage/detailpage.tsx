@@ -29,6 +29,7 @@ interface Product {
   weight: number; // ✅ tambahkan jika tersedia
   storeId: string;
   store?: {
+    id: string;
     city_id: string;
   };
 }
@@ -179,8 +180,9 @@ export default function ProductDetailPage() {
                   quantity,
                   color: selectedColor,
                   size: selectedSize,
-                  weight: product.weight ?? 1000, // default 1000g jika null
-                  originCityId: product.store.city_id, // ✅ penting untuk ongkir
+                  storeId: product.store?.id ?? "",
+                  weight: product.weight ?? 1000, 
+                  originCityId: product.store.city_id, 
                 };
 
                 localStorage.setItem("checkout", JSON.stringify(checkoutData));
